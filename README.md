@@ -169,6 +169,77 @@ Because some default host ports were already in use, production uses:
 
 Cloudflare Tunnel forwards those domains to the local server ports.
 
+## Private Server Access With Tailscale
+
+This project also uses Tailscale for private machine-to-machine access between the development PC and the home server.
+
+Verified nodes:
+
+- local PC: `100.115.223.114`
+- server: `100.99.151.115`
+
+Tailscale is used for:
+
+- private SSH access to the server
+- private SSH port forwarding
+- accessing internal services without exposing them publicly
+
+### Check Tailscale status
+
+On either machine:
+
+```bash
+tailscale status
+```
+
+### SSH to the server over Tailscale
+
+```bash
+ssh test@100.99.151.115
+```
+
+If password automation is needed:
+
+```bash
+sshpass -p '<your-server-password>' ssh test@100.99.151.115
+```
+
+### Tunnel phpMyAdmin to your PC
+
+phpMyAdmin runs on the server at `localhost:8081`.
+
+To expose it on your local machine at `http://localhost:8080`:
+
+```bash
+sshpass -p '<your-server-password>' ssh -N -L 8080:localhost:8081 test@100.99.151.115
+```
+
+Then open:
+
+```text
+http://localhost:8080
+```
+
+### Other useful Tailscale SSH tunnels
+
+Laravel API:
+
+```bash
+sshpass -p '<your-server-password>' ssh -N -L 8000:localhost:8001 test@100.99.151.115
+```
+
+React frontend:
+
+```bash
+sshpass -p '<your-server-password>' ssh -N -L 5000:localhost:5001 test@100.99.151.115
+```
+
+MySQL direct access:
+
+```bash
+sshpass -p '<your-server-password>' ssh -N -L 3307:localhost:3307 test@100.99.151.115
+```
+
 ## Database
 
 The production MySQL database was loaded from:
