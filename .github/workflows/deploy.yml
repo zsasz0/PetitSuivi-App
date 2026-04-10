@@ -88,8 +88,23 @@ jobs:
         if: steps.changes.outputs.services != ''
         shell: bash
         run: |
-          curl -fsS https://petitsuivi.me >/dev/null
-          curl -fsS https://api.petitsuivi.me/ >/dev/null
-          curl -fsS -X OPTIONS https://api.petitsuivi.me/api/login \
+          retry() {
+            local attempts="$1"
+            shift
+
+            local n=1
+            until "$@"; do
+              if [ "$n" -ge "$attempts" ]; then
+                return 1
+              fi
+
+              n=$((n + 1))
+              sleep 5
+            done
+          }
+
+          retry 12 curl -fsS https://petitsuivi.me >/dev/null
+          retry 12 curl -fsS https://api.petitsuivi.me/ >/dev/null
+          retry 12 curl -fsS -X OPTIONS https://api.petitsuivi.me/api/login \
             -H 'Origin: https://petitsuivi.me' \
             -H 'Access-Control-Request-Method: POST' >/dev/null
