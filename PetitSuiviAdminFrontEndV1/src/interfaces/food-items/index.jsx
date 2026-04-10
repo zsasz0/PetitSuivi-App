@@ -123,6 +123,7 @@ const FoodItems = () => {
                 return enabled;
             }
         } catch (err) { console.error('Failed to fetch AI status:', err); }
+        // TODO: Remove aiEnabled from deps - return false/undefined on error instead of stale state
         return aiEnabled;
     }, [aiEnabled]);
 

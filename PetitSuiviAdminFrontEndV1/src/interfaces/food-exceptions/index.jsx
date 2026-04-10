@@ -62,6 +62,7 @@
  * │           exception_count: int,                                         │
  * │           dietary_comment: string,                                      │
  * │           exceptions: [{                                                │
+ * │             exception_id: int,  ← ID for delete                          │
  * │             meal_id: int,                                               │
  * │             meal_name: string,                                          │
  * │             reason: string                                              │
