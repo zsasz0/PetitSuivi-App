@@ -37,6 +37,188 @@ The current Docker stack runs these services:
 
 The Flutter app is not deployed in Docker in the current setup.
 
+## Container Architecture
+
+The Docker stack is made of these services:
+
+- `frontreact`: React admin frontend served by Nginx
+- `backend`: Laravel API backend
+- `mysql`: MySQL database
+- `phpmyadmin`: database administration UI
+- `copilot`: AI proxy service
+- `petitsuivi-cloudflared`: Cloudflare Tunnel container running on the server
+
+### How the containers communicate
+
+Docker Compose creates an internal network for the services in `docker-compose.yml`.
+
+Inside that Docker network, each service can reach the others by its Compose service name.
+
+That means these hostnames work from one container to another:
+
+- `backend`
+- `mysql`
+- `copilot`
+- `frontreact`
+- `phpmyadmin`
+
+### Important rule: service names vs localhost
+
+Use the Docker Compose service name when one container calls another container.
+
+Examples:
+
+- Laravel backend to MySQL:
+  - correct: `mysql:3306`
+  - wrong: `localhost:3306`
+
+- Laravel backend to Copilot:
+  - correct: `http://copilot:4141`
+  - wrong: `http://localhost:4141`
+
+Why:
+
+- inside a container, `localhost` means that same container
+- it does not mean the Docker host
+- it does not mean another service container
+
+So inside the `backend` container:
+
+- `localhost` means the Laravel container itself
+- `copilot` means the Copilot container
+- `mysql` means the MySQL container
+
+### Host machine access is different
+
+From the server shell or from your PC through a tunnel, you use the published host ports instead of Compose service names.
+
+Examples on the server host:
+
+- frontend: `http://localhost:5001`
+- backend: `http://localhost:8001`
+- phpMyAdmin: `http://localhost:8081`
+- Copilot: `http://localhost:4141`
+- MySQL host port: `127.0.0.1:3307`
+
+So the rule is:
+
+- host machine to app: use published host ports
+- container to container: use Compose service names
+
+## Request Flow
+
+### Public website flow
+
+The public frontend flow is:
+
+```text
+Browser
+  -> https://petitsuivi.me
+  -> Cloudflare
+  -> cloudflared on server
+  -> frontreact container
+```
+
+The public API flow is:
+
+```text
+Browser
+  -> https://api.petitsuivi.me
+  -> Cloudflare
+  -> cloudflared on server
+  -> backend container
+```
+
+### React admin flow
+
+The admin frontend is a static React build.
+
+It sends API requests to the Laravel backend using `REACT_APP_API_URL`.
+
+In production that resolves to the public API domain.
+
+So the normal app request path is:
+
+```text
+Browser
+  -> frontreact
+  -> backend API
+```
+
+### Backend to database flow
+
+Laravel talks to MySQL over the Docker network using:
+
+```text
+mysql:3306
+```
+
+This is why the backend database host must be `mysql`, not `localhost`.
+
+### Backend to AI flow
+
+Laravel talks to the AI proxy over the Docker network using:
+
+```text
+http://copilot:4141
+```
+
+This is controlled by:
+
+```text
+COPILOT_API_URL
+```
+
+Important production note:
+
+- from inside `backend`, `localhost:4141` is wrong
+- `copilot:4141` is correct
+
+This exact issue caused the AI activity suggestion feature to fail until the backend was updated to use the Compose service name.
+
+### phpMyAdmin flow
+
+`phpmyadmin` connects internally to:
+
+```text
+mysql:3306
+```
+
+From your browser, you reach phpMyAdmin through the published host port or through an SSH tunnel.
+
+### Cloudflare Tunnel flow
+
+The Cloudflare Tunnel container does not serve the app itself.
+It forwards public traffic to the local server ports.
+
+Current tunnel targets on the server:
+
+- `petitsuivi.me` -> `http://localhost:5001`
+- `api.petitsuivi.me` -> `http://localhost:8001`
+
+So Cloudflare points to host ports, not Docker service names directly.
+
+## Architecture Summary
+
+```text
+Internet User
+  -> Cloudflare
+  -> cloudflared (server)
+  -> host port 5001 -> frontreact container
+  -> host port 8001 -> backend container
+
+backend container
+  -> mysql:3306
+  -> copilot:4141
+
+phpmyadmin container
+  -> mysql:3306
+
+Admin PC
+  -> Tailscale / SSH tunnel
+  -> server host ports
+```
+
 ## Local Development
 
 ### Requirements
