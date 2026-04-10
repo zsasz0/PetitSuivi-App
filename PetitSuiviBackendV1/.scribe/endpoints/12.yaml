@@ -1,0 +1,82 @@
+name: 'Mobile - Parent Payments'
+description: |-
+
+  APIs for retrieving payment and inscription history for the authenticated parent.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/parents/{cin}/payments'
+    metadata:
+      custom: []
+      groupName: 'Mobile - Parent Payments'
+      groupDescription: |-
+
+        APIs for retrieving payment and inscription history for the authenticated parent.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List Payment History'
+      description: |-
+        Retrieves all payment records for the parent's children, including partial payments,
+        class assignments, meal plans, and inscription status.
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      cin:
+        custom: []
+        name: cin
+        description: "The parent's CIN."
+        required: true
+        example: '12345678'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      cin: '12345678'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "data": [
+              {
+                "inscription_id": 101,
+                "child_id": 45,
+                "child_full_name": "Youssef Mejri",
+                "amount": 1550.00,
+                "payment_method": "monthlyPartial",
+                "meal_plan": "Mon enfant prend le déjeuner et le goûter",
+                "inscription_date": "2025-08-15",
+                "frais_inscription_amount": 150,
+                "inscription_status": { "name": "approved" },
+                "class": { "name": "Moyenne Section B", "year": 2025 },
+                "partial_payments": [
+                  { "value": 400, "date": "2025-10-01" }
+                ]
+              }
+            ]
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

@@ -1,0 +1,76 @@
+name: 'Mobile - Parent Pickup'
+description: |-
+
+  APIs for sending pickup arrival notifications to the child's assigned teachers.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/notifications/pickup
+    metadata:
+      custom: []
+      groupName: 'Mobile - Parent Pickup'
+      groupDescription: |-
+
+        APIs for sending pickup arrival notifications to the child's assigned teachers.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Send Pickup Notification'
+      description: "Creates a pickup notification and links it to all teachers of the child's current class(es)."
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      child_id:
+        custom: []
+        name: child_id
+        description: 'The ID of the child being picked up.'
+        required: true
+        example: 45
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      duration_minutes:
+        custom: []
+        name: duration_minutes
+        description: 'The estimated arrival time in minutes.'
+        required: false
+        example: 15
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      child_id: 45
+      duration_minutes: 15
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 201
+        content: |-
+          {
+            "success": true,
+            "message": "Pickup notification sent to teachers."
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

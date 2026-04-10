@@ -1,0 +1,311 @@
+name: 'Admin - Food Exceptions'
+description: |-
+
+  APIs for viewing AI-detected dietary restrictions and food exceptions
+  for enrolled children, scoped to a selected academic planning year.
+
+  Food exceptions are created automatically by the AI analysis pipeline
+  during inscription approval or when a new food item is added to the
+  catalog. This controller provides read-only access to those records.
+
+  Database relationships:
+    Child               → has many → Childfoodexception    (via ChildID)
+    Childfoodexception  → mapped   → Meals                 (via ChildFoodExceptionMeals pivot)
+    Child               → enrolled → Class                 (via ChildClass pivot)
+    Payment             → links    → Inscription           (via InscriptionID)
+    Medicalform         → links    → Dietarycomment        (via DietarycommentID)
+    Class               → scoped   → Planning              (via PlanningID)
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/admin/food-exceptions
+    metadata:
+      custom: []
+      groupName: 'Admin - Food Exceptions'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Food Exceptions by Planning Year'
+      description: |-
+        Retrieves all children who have at least one AI-detected food exception
+        (forbidden meal) for the specified academic planning year. Each child
+        entry includes their full name, assigned class name, a summary of their
+        dietary comment, the total count of forbidden meals, and the full list
+        of exception records with meal names and restriction reasons.
+
+        The year scoping works through the following join chain:
+          Child → ChildClass → Class (filtered by PlanningID)
+
+        Only children who are both enrolled in a class for the given planning
+        year AND have at least one registered food exception are returned.
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      planning_id:
+        custom: []
+        name: planning_id
+        description: 'The PlanningID to filter exceptions by academic year.'
+        required: true
+        example: 2
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanQueryParameters:
+      planning_id: 2
+    bodyParameters:
+      planning_id:
+        custom: []
+        name: planning_id
+        description: 'The <code>PlanningID</code> of an existing record in the Planning table.'
+        required: false
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      planning_id: 16
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "data": [
+              {
+                "child_id": 15,
+                "child_name": "Youssef Mejri",
+                "class_name": "Petite Section A",
+                "exception_count": 2,
+                "dietary_comment": "Allergique aux arachides. Intolérant au lactose.",
+                "exceptions": [
+                  {
+                    "meal_id": 3,
+                    "meal_name": "Gâteau au Chocolat",
+                    "reason": "Allergie au chocolat et aux arachides"
+                  },
+                  {
+                    "meal_id": 7,
+                    "meal_name": "Yaourt Nature",
+                    "reason": "Intolérance au lactose"
+                  }
+                ]
+              }
+            ]
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 422
+        content: |-
+          {
+            "success": false,
+            "message": "The planning_id field is required."
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 500
+        content: |-
+          {
+            "success": false,
+            "message": "An error occurred while retrieving food exceptions."
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/admin/food-exceptions
+    metadata:
+      custom: []
+      groupName: 'Admin - Food Exceptions'
+      groupDescription: |-
+
+        APIs for viewing AI-detected dietary restrictions and food exceptions
+        for enrolled children, scoped to a selected academic planning year.
+
+        Food exceptions are created automatically by the AI analysis pipeline
+        during inscription approval or when a new food item is added to the
+        catalog. This controller provides read-only access to those records.
+
+        Database relationships:
+          Child               → has many → Childfoodexception    (via ChildID)
+          Childfoodexception  → mapped   → Meals                 (via ChildFoodExceptionMeals pivot)
+          Child               → enrolled → Class                 (via ChildClass pivot)
+          Payment             → links    → Inscription           (via InscriptionID)
+          Medicalform         → links    → Dietarycomment        (via DietarycommentID)
+          Class               → scoped   → Planning              (via PlanningID)
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Add Food Exception'
+      description: 'Manually creates a food exception for a child, linking it to one or more meals.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      child_id:
+        custom: []
+        name: child_id
+        description: 'The ChildID.'
+        required: true
+        example: 15
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      meal_ids:
+        custom: []
+        name: meal_ids
+        description: 'Array of MealsIDs to forbid.'
+        required: true
+        example:
+          - 8
+          - 14
+        type: 'integer[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      reason:
+        custom: []
+        name: reason
+        description: 'Reason for the restriction.'
+        required: true
+        example: 'Allergie aux arachides'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      child_id: 15
+      meal_ids:
+        - 8
+        - 14
+      reason: 'Allergie aux arachides'
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 201
+        content: |-
+          {
+            "success": true,
+            "message": "Food exception added.",
+            "data": { "id": 5 }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - DELETE
+    uri: 'api/admin/food-exceptions/{id}'
+    metadata:
+      custom: []
+      groupName: 'Admin - Food Exceptions'
+      groupDescription: |-
+
+        APIs for viewing AI-detected dietary restrictions and food exceptions
+        for enrolled children, scoped to a selected academic planning year.
+
+        Food exceptions are created automatically by the AI analysis pipeline
+        during inscription approval or when a new food item is added to the
+        catalog. This controller provides read-only access to those records.
+
+        Database relationships:
+          Child               → has many → Childfoodexception    (via ChildID)
+          Childfoodexception  → mapped   → Meals                 (via ChildFoodExceptionMeals pivot)
+          Child               → enrolled → Class                 (via ChildClass pivot)
+          Payment             → links    → Inscription           (via InscriptionID)
+          Medicalform         → links    → Dietarycomment        (via DietarycommentID)
+          Class               → scoped   → Planning              (via PlanningID)
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Remove Food Exception'
+      description: 'Deletes a food exception record and its meal pivot rows.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ChildfoodexceptionID.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 5
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "Food exception removed."
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

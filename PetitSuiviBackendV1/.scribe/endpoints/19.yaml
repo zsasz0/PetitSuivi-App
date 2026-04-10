@@ -1,0 +1,619 @@
+name: 'Admin - Parents'
+description: |-
+
+  API endpoints for managing parent accounts and their associated children.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/admin/parents
+    metadata:
+      custom: []
+      groupName: 'Admin - Parents'
+      groupDescription: |-
+
+        API endpoints for managing parent accounts and their associated children.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get All Parents'
+      description: |-
+        Retrieves a list of all parent accounts, along with their associated children.
+        Note: The underlying models (Account, Person, Parent) have no timestamps and
+        use specific capitalization mapped to these response keys.
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "data": [
+              {
+                "cin": 12345678,
+                "firstName": "John",
+                "lastName": "Doe",
+                "birthdate": "1980-05-15",
+                "phone": "0600000000",
+                "email": "john.doe@example.com",
+                "adresse": "123 Main St",
+                "is_archived": false,
+                "approval_status": "approved",
+                "children": [
+                  {
+                    "firstName": "Jane",
+                    "lastName": "Doe",
+                    "birthdate": "2015-02-10"
+                  }
+                ]
+              }
+            ]
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/admin/parents
+    metadata:
+      custom: []
+      groupName: 'Admin - Parents'
+      groupDescription: |-
+
+        API endpoints for managing parent accounts and their associated children.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create Parent'
+      description: |-
+        Registers a new parent. This requires inserting into the Person supertype,
+        then the Parent subtype, then the Account table, and finally the Child records.
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      cin:
+        custom: []
+        name: cin
+        description: 'The CIN of the parent.'
+        required: true
+        example: 12345678
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      firstName:
+        custom: []
+        name: firstName
+        description: 'First name.'
+        required: true
+        example: John
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      lastName:
+        custom: []
+        name: lastName
+        description: 'Last name.'
+        required: true
+        example: Doe
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      birthdate:
+        custom: []
+        name: birthdate
+        description: 'optional Date of birth.'
+        required: false
+        example: '1980-05-15'
+        type: date
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        deprecated: false
+      phone:
+        custom: []
+        name: phone
+        description: 'optional Phone number.'
+        required: false
+        example: '0600000000'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        deprecated: false
+      email:
+        custom: []
+        name: email
+        description: 'Email address.'
+        required: true
+        example: john.doe@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      adresse:
+        custom: []
+        name: adresse
+        description: 'optional Physical address.'
+        required: false
+        example: '123 Main St'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        deprecated: false
+      password:
+        custom: []
+        name: password
+        description: Password.
+        required: true
+        example: secret123
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      children:
+        custom: []
+        name: children
+        description: 'optional Array of children to register.'
+        required: false
+        example:
+          - []
+        type: 'object[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      'children[].firstName':
+        custom: []
+        name: 'children[].firstName'
+        description: "Child's first name."
+        required: true
+        example: Jane
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'children[].lastName':
+        custom: []
+        name: 'children[].lastName'
+        description: "Child's last name."
+        required: true
+        example: Doe
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'children[].birthdate':
+        custom: []
+        name: 'children[].birthdate'
+        description: "optional Child's birth date."
+        required: false
+        example: '2015-02-10'
+        type: date
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        deprecated: false
+      password_confirmation:
+        custom: []
+        name: password_confirmation
+        description: 'Password confirmation.'
+        required: true
+        example: secret123
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      cin: 12345678
+      firstName: John
+      lastName: Doe
+      birthdate: '1980-05-15'
+      phone: '0600000000'
+      email: john.doe@example.com
+      adresse: '123 Main St'
+      password: secret123
+      children:
+        -
+          firstName: Jane
+          lastName: Doe
+          birthdate: '2015-02-10'
+      password_confirmation: secret123
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 201
+        content: |-
+          {
+            "message": "Parent added successfully."
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PUT
+    uri: 'api/admin/parents/{cin}'
+    metadata:
+      custom: []
+      groupName: 'Admin - Parents'
+      groupDescription: |-
+
+        API endpoints for managing parent accounts and their associated children.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update Parent'
+      description: "Updates an existing parent's biographical and credential information."
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      cin:
+        custom: []
+        name: cin
+        description: 'The CIN of the parent to update.'
+        required: true
+        example: 12345678
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      cin: 12345678
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      firstName:
+        custom: []
+        name: firstName
+        description: 'First name.'
+        required: true
+        example: John
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      lastName:
+        custom: []
+        name: lastName
+        description: 'Last name.'
+        required: true
+        example: Doe
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      birthdate:
+        custom: []
+        name: birthdate
+        description: 'optional Date of birth.'
+        required: false
+        example: '1980-05-15'
+        type: date
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        deprecated: false
+      phone:
+        custom: []
+        name: phone
+        description: 'optional Phone number.'
+        required: false
+        example: '0600000000'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        deprecated: false
+      email:
+        custom: []
+        name: email
+        description: 'Email address.'
+        required: true
+        example: john.doe@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      adresse:
+        custom: []
+        name: adresse
+        description: 'optional Physical address.'
+        required: false
+        example: '123 Main St'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        deprecated: false
+      password:
+        custom: []
+        name: password
+        description: 'optional New password.'
+        required: false
+        example: newsecret123
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        deprecated: false
+      password_confirmation:
+        custom: []
+        name: password_confirmation
+        description: 'optional Password confirmation.'
+        required: false
+        example: newsecret123
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      firstName: John
+      lastName: Doe
+      birthdate: '1980-05-15'
+      phone: '0600000000'
+      email: john.doe@example.com
+      adresse: '123 Main St'
+      password: newsecret123
+      password_confirmation: newsecret123
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "message": "Parent updated successfully."
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - DELETE
+    uri: 'api/admin/parents/{cin}'
+    metadata:
+      custom: []
+      groupName: 'Admin - Parents'
+      groupDescription: |-
+
+        API endpoints for managing parent accounts and their associated children.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete Parent'
+      description: 'Permanently deletes a parent from the database (removing Account, Parent, and Person records).'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      cin:
+        custom: []
+        name: cin
+        description: 'The CIN of the parent to delete.'
+        required: true
+        example: 12345678
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      cin: 12345678
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "message": "Parent deleted successfully."
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PATCH
+    uri: 'api/admin/parents/{cin}/approval-status'
+    metadata:
+      custom: []
+      groupName: 'Admin - Parents'
+      groupDescription: |-
+
+        API endpoints for managing parent accounts and their associated children.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update Approval Status'
+      description: "Updates the 'Approval_status' column of the parent's Account record."
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      cin:
+        custom: []
+        name: cin
+        description: 'The CIN of the parent.'
+        required: true
+        example: 12345678
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      cin: 12345678
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      status:
+        custom: []
+        name: status
+        description: 'The new approval status (pending, approved, rejected).'
+        required: true
+        example: approved
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      status: approved
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "message": "Status updated successfully."
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PATCH
+    uri: 'api/admin/parents/{cin}/toggle-archive'
+    metadata:
+      custom: []
+      groupName: 'Admin - Parents'
+      groupDescription: |-
+
+        API endpoints for managing parent accounts and their associated children.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Toggle Archive Flag'
+      description: "Toggles the 'Is_archived' column of the parent's Account record."
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      cin:
+        custom: []
+        name: cin
+        description: 'The CIN of the parent.'
+        required: true
+        example: 12345678
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      cin: 12345678
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "message": "Archive status toggled successfully."
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

@@ -1,0 +1,589 @@
+name: 'Admin - Payments'
+description: ''
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/admin/payments
+    metadata:
+      custom: []
+      groupName: 'Admin - Payments'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List All Payment Records'
+      description: |-
+        Retrieves every Payment row with its associated Inscription, Child,
+        Class, inscription status, payment method, meal plan, and nested
+        partial payments. The frontend joins this data with /admin/inscriptions
+        to build the master payments ledger DataGrid.
+
+        Each row is enriched server-side with:
+        - child_full_name, inscription_date, amount
+        - inscription_status { id, name } (from InscriptionStatusInscription pivot)
+        - payment_status { id, name } (dynamically computed from partial sums)
+        - payment_method (resolved from Inscription.PaymentmethodID)
+        - base_fee, meal_plan_fee, meal_plan (from Inscription + Mealplan)
+        - frais_inscription_amount, frais_inscription_snapshot (from Inscription)
+        - class { name, year } (from ChildClass → Class)
+        - partial_payments[] (from Partialpayment table)
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "data": [
+              {
+                "inscription_id": 101,
+                "child_id": 45,
+                "child_full_name": "Youssef Mejri",
+                "inscription_date": "2025-08-15",
+                "amount": 1200,
+                "payment_method": "monthlyPartial",
+                "base_fee": 1000,
+                "meal_plan_fee": 200,
+                "meal_plan": "Oui",
+                "frais_inscription_amount": 150,
+                "frais_inscription_snapshot": 150,
+                "inscription_status": { "id": 2, "name": "approved" },
+                "payment_status": { "id": 1, "name": "pending" },
+                "class": { "name": "Moyenne Section B", "year": 2025 },
+                "partial_payments": [
+                  { "id": 300, "value": 400, "date": "2025-10-01", "target_month": "2025-09" }
+                ]
+              }
+            ]
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/admin/payments
+    metadata:
+      custom: []
+      groupName: 'Admin - Payments'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create a Payment Record'
+      description: |-
+        Generates a new main Payment entry. Typically called automatically
+        when an inscription is approved, but can be triggered manually.
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      InscriptionID:
+        custom: []
+        name: InscriptionID
+        description: 'The inscription ID.'
+        required: true
+        example: 101
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      ChildID:
+        custom: []
+        name: ChildID
+        description: 'The child ID.'
+        required: true
+        example: 45
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      Amount:
+        custom: []
+        name: Amount
+        description: 'Total amount due.'
+        required: true
+        example: '1200'
+        type: numeric
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      Date:
+        custom: []
+        name: Date
+        description: 'Payment creation date (YYYY-MM-DD).'
+        required: true
+        example: '2025-09-15'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      InscriptionID: 101
+      ChildID: 45
+      Amount: '1200'
+      Date: '2025-09-15'
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 201
+        content: |-
+          {
+            "success": true,
+            "message": "Payment recorded.",
+            "data": { "PaymentID": 251 }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/admin/payments/{id}'
+    metadata:
+      custom: []
+      groupName: 'Admin - Payments'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Show Payment Details'
+      description: |-
+        Retrieves full details for a single payment including all nested
+        partial payments.
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The PaymentID.'
+        required: true
+        example: 250
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 250
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "data": {
+              "PaymentID": 250,
+              "Amount": 1200,
+              "Date": "2025-09-15",
+              "InscriptionID": 101,
+              "ChildID": 45,
+              "partial_payments": []
+            }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PUT
+    uri: 'api/admin/payments/{id}'
+    metadata:
+      custom: []
+      groupName: 'Admin - Payments'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update a Payment Record'
+      description: 'Updates the total amount on a Payment record (e.g. after fee correction).'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The PaymentID.'
+        required: true
+        example: 250
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 250
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      Amount:
+        custom: []
+        name: Amount
+        description: 'The corrected total amount.'
+        required: false
+        example: '1400'
+        type: numeric
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      Amount: '1400'
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "Payment updated.",
+            "data": { "PaymentID": 250, "Amount": 1400 }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/admin/payments/{inscriptionId}/{childId}/transactions'
+    metadata:
+      custom: []
+      groupName: 'Admin - Payments'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Record a Payment Instalment (Transaction)'
+      description: |-
+        Creates a new Partialpayment row linked to the Payment that matches
+        the given inscription + child combination. The frontend calls this
+        endpoint from both the manual payment form and the monthly schedule
+        checkbox.
+
+        Route: POST /api/admin/payments/{inscriptionId}/{childId}/transactions
+
+        Validation rules:
+        - amount must be > 0
+        - amount must not exceed the remaining balance
+        - date is required and must be a valid date
+        - target_month is optional (YYYY-MM), required for monthly payments
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      inscriptionId:
+        custom: []
+        name: inscriptionId
+        description: 'The InscriptionID.'
+        required: true
+        example: 101
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      childId:
+        custom: []
+        name: childId
+        description: 'The ChildID.'
+        required: true
+        example: 45
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      inscriptionId: 101
+      childId: 45
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      amount:
+        custom: []
+        name: amount
+        description: 'The instalment amount in TND.'
+        required: true
+        example: '150.00'
+        type: numeric
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      date:
+        custom: []
+        name: date
+        description: 'The payment date (YYYY-MM-DD).'
+        required: true
+        example: '2025-10-01'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      target_month:
+        custom: []
+        name: target_month
+        description: 'optional The month this payment covers (YYYY-MM).'
+        required: false
+        example: 2025-09
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      amount: '150.00'
+      date: '2025-10-01'
+      target_month: 2025-09
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 201
+        content: |-
+          {
+            "success": true,
+            "message": "Transaction recorded.",
+            "data": {
+              "PartialpaymentID": 301,
+              "PaymentID": 250,
+              "Value": 150.00,
+              "Date": "2025-10-01",
+              "Targetmonth": "2025-09"
+            }
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 404
+        content: |-
+          {
+            "success": false,
+            "message": "Payment record not found for this inscription/child."
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 422
+        content: |-
+          {
+            "success": false,
+            "message": "Amount exceeds remaining balance."
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/admin/partials
+    metadata:
+      custom: []
+      groupName: 'Admin - Payments'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List All Partial Payments'
+      description: |-
+        Retrieves a global ledger of all partial payment instalments
+        across the entire system, ordered by date descending.
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "data": [
+              {
+                "PartialpaymentID": 300,
+                "PaymentID": 250,
+                "Value": 400,
+                "Date": "2025-10-01",
+                "Targetmonth": "2025-09"
+              }
+            ]
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PATCH
+    uri: 'api/admin/inscriptions/{id}/frais'
+    metadata:
+      custom: []
+      groupName: 'Admin - Payments'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: "Toggle Inscription Fee (Frais d'Inscription)"
+      description: |-
+        Toggles whether the annual administration fee has been collected
+        for a specific inscription. When checked, the Inscriptionfeespaymentamount
+        column is set to the Fraisinscriptionsnapshot value; when unchecked,
+        it is reset to NULL.
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The InscriptionID.'
+        required: true
+        example: 101
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 101
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      checked:
+        custom: []
+        name: checked
+        description: 'Whether the fee is now paid.'
+        required: true
+        example: true
+        type: boolean
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      checked: true
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "Frais inscription updated.",
+            "data": {
+              "frais_inscription_amount": 150
+            }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

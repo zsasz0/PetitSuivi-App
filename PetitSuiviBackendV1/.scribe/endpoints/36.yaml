@@ -1,0 +1,244 @@
+name: 'Teacher — Photo Sharing'
+description: |-
+
+  Endpoints for uploading, listing, and revoking photos shared
+  with specific children's parents.
+
+  Photos are stored with an optional expiration date; expired
+  photos are automatically excluded from parent-facing views.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/teacher/teacher/photos
+    metadata:
+      custom: []
+      groupName: 'Teacher — Photo Sharing'
+      groupDescription: |-
+
+        Endpoints for uploading, listing, and revoking photos shared
+        with specific children's parents.
+
+        Photos are stored with an optional expiration date; expired
+        photos are automatically excluded from parent-facing views.
+      subgroup: ''
+      subgroupDescription: ''
+      title: "List teacher's shared photos."
+      description: |-
+        Returns all photos uploaded by the authenticated teacher, with
+        nested recipient (child) information and expiration status.
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "Photos retrieved.",
+            "data": [
+              {
+                "id": 1,
+                "file_path": "/storage/photos/class_abc.jpg",
+                "created_at": "2026-03-05T10:00:00",
+                "expired": false,
+                "recipients": [
+                  { "child_id": 8, "child_name": "Sami Ben Ali", "downloaded": false }
+                ]
+              }
+            ]
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/teacher/teacher/photos
+    metadata:
+      custom: []
+      groupName: 'Teacher — Photo Sharing'
+      groupDescription: |-
+
+        Endpoints for uploading, listing, and revoking photos shared
+        with specific children's parents.
+
+        Photos are stored with an optional expiration date; expired
+        photos are automatically excluded from parent-facing views.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Upload a class photo.'
+      description: |-
+        Accepts a multipart form upload, stores the photo, and creates
+        Childphotorecipient records for each targeted child.
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      photo:
+        custom: []
+        name: photo
+        description: 'The image file (JPEG/PNG, max 5MB).'
+        required: true
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      child_ids:
+        custom: []
+        name: child_ids
+        description: 'List of ChildIDs to share the photo with.'
+        required: true
+        example:
+          - 8
+          - 9
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      expires_in_days:
+        custom: []
+        name: expires_in_days
+        description: 'optional Days until photo expires.'
+        required: false
+        example: 30
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      child_ids:
+        - 8
+        - 9
+      expires_in_days: 30
+    fileParameters:
+      photo: null
+    responses:
+      -
+        custom: []
+        status: 201
+        content: |-
+          {
+            "success": true,
+            "message": "Class photo uploaded and recipients defined.",
+            "data": {
+              "id": 2,
+              "file_path": "/storage/photos/new_photo.jpg"
+            }
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 422
+        content: |-
+          {
+            "success": false,
+            "message": "Validation failed.",
+            "errors": { "photo": ["The photo field is required."] }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - DELETE
+    uri: 'api/teacher/teacher/photos/{id}'
+    metadata:
+      custom: []
+      groupName: 'Teacher — Photo Sharing'
+      groupDescription: |-
+
+        Endpoints for uploading, listing, and revoking photos shared
+        with specific children's parents.
+
+        Photos are stored with an optional expiration date; expired
+        photos are automatically excluded from parent-facing views.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Revoke (delete) a shared photo.'
+      description: |-
+        Permanently removes the photo from storage and deletes all
+        associated Childphotorecipient records.
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ChildphotoID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "Photo revoked."
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 404
+        content: |-
+          {
+            "success": false,
+            "message": "Photo not found."
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null

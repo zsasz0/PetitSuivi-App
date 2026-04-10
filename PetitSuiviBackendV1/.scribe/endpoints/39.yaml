@@ -1,0 +1,292 @@
+name: 'Teacher — Profile Management'
+description: |-
+
+  Endpoints for teachers to view and update their personal
+  information and manage their account password.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/teacher/teacher/profile/{cin}'
+    metadata:
+      custom: []
+      groupName: 'Teacher — Profile Management'
+      groupDescription: |-
+
+        Endpoints for teachers to view and update their personal
+        information and manage their account password.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get teacher profile.'
+      description: |-
+        Returns the authenticated teacher's personal information
+        including name, email, phone, and address.
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      cin:
+        custom: []
+        name: cin
+        description: "The teacher's CIN."
+        required: true
+        example: '88552233'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      cin: '88552233'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "Profile retrieved.",
+            "data": {
+              "cin": "88552233",
+              "firstName": "Fatma",
+              "lastName": "Mrad",
+              "email": "fatma@example.com",
+              "phone": "12345678",
+              "adresse": "Tunis, Tunisia"
+            }
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 404
+        content: |-
+          {
+            "success": false,
+            "message": "Teacher not found."
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PUT
+    uri: 'api/teacher/teacher/profile/{cin}'
+    metadata:
+      custom: []
+      groupName: 'Teacher — Profile Management'
+      groupDescription: |-
+
+        Endpoints for teachers to view and update their personal
+        information and manage their account password.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update teacher profile.'
+      description: |-
+        Updates personal information fields for the teacher account.
+        Only the provided fields are updated; omitted fields retain
+        their current values.
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      cin:
+        custom: []
+        name: cin
+        description: "The teacher's CIN."
+        required: true
+        example: '88552233'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      cin: '88552233'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      firstName:
+        custom: []
+        name: firstName
+        description: 'First name.'
+        required: true
+        example: Fatma
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      lastName:
+        custom: []
+        name: lastName
+        description: 'Last name.'
+        required: true
+        example: Mrad
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      email:
+        custom: []
+        name: email
+        description: 'Email address.'
+        required: true
+        example: fatma@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      phone:
+        custom: []
+        name: phone
+        description: 'Phone number (8 digits).'
+        required: true
+        example: '12345678'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      adresse:
+        custom: []
+        name: adresse
+        description: 'optional Postal address.'
+        required: false
+        example: 'Tunis, Tunisia'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      firstName: Fatma
+      lastName: Mrad
+      email: fatma@example.com
+      phone: '12345678'
+      adresse: 'Tunis, Tunisia'
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "Profile updated."
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 404
+        content: |-
+          {
+            "success": false,
+            "message": "Teacher not found."
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 422
+        content: |-
+          {
+            "success": false,
+            "message": "Validation failed.",
+            "errors": { "email": ["The email has already been taken."] }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/teacher/teacher/profile/change-password
+    metadata:
+      custom: []
+      groupName: 'Teacher — Profile Management'
+      groupDescription: |-
+
+        Endpoints for teachers to view and update their personal
+        information and manage their account password.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Change teacher password.'
+      description: |-
+        Updates the account password. The new password must meet
+        the following criteria: min 8 chars, 1 uppercase, 1 lowercase,
+        1 digit, and 1 special character.
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      new_password:
+        custom: []
+        name: new_password
+        description: 'The new password (min 8 chars).'
+        required: true
+        example: NewStr0ng!Pass
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      new_password: NewStr0ng!Pass
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "Mot de passe modifié."
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 422
+        content: |-
+          {
+            "success": false,
+            "message": "Validation failed.",
+            "errors": { "new_password": ["The password must be at least 8 characters."] }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null

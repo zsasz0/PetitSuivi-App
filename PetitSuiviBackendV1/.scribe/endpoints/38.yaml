@@ -1,0 +1,246 @@
+name: 'Teacher — Activity Suggestions'
+description: |-
+
+  Endpoints for teachers to list previous activity suggestions
+  and submit new proposals for administrative approval.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/teacher/teacher/activity-suggestions
+    metadata:
+      custom: []
+      groupName: 'Teacher — Activity Suggestions'
+      groupDescription: |-
+
+        Endpoints for teachers to list previous activity suggestions
+        and submit new proposals for administrative approval.
+      subgroup: ''
+      subgroupDescription: ''
+      title: "List teacher's activity suggestions."
+      description: |-
+        Returns all activity suggestions previously submitted by the
+        authenticated teacher, with their approval status and class info.
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "Suggestions retrieved.",
+            "data": [
+              {
+                "id": "42",
+                "title": "Atelier musique",
+                "description": "Session découverte instruments",
+                "date": "2026-04-10",
+                "start_time": "10:00",
+                "end_time": "11:00",
+                "status": "en_cours",
+                "classes": [
+                  { "name": "Moyenne Section B" }
+                ]
+              }
+            ]
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/teacher/teacher/activity-suggestions
+    metadata:
+      custom: []
+      groupName: 'Teacher — Activity Suggestions'
+      groupDescription: |-
+
+        Endpoints for teachers to list previous activity suggestions
+        and submit new proposals for administrative approval.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Submit a new activity suggestion.'
+      description: |-
+        Creates a new activity proposal that will be reviewed by admin.
+        The suggestion is linked to one or more classes.
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      title:
+        custom: []
+        name: title
+        description: 'The activity title.'
+        required: true
+        example: 'Atelier musique'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      description:
+        custom: []
+        name: description
+        description: 'Detailed description.'
+        required: true
+        example: 'Session découverte instruments'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      date:
+        custom: []
+        name: date
+        description: 'ISO date.'
+        required: true
+        example: '2026-04-10'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      start_time:
+        custom: []
+        name: start_time
+        description: 'Start time HH:MM.'
+        required: true
+        example: '10:00'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      end_time:
+        custom: []
+        name: end_time
+        description: 'End time HH:MM.'
+        required: true
+        example: '11:00'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      class_ids:
+        custom: []
+        name: class_ids
+        description: 'List of ClassIDs.'
+        required: true
+        example:
+          - 1
+          - 2
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      title: 'Atelier musique'
+      description: 'Session découverte instruments'
+      date: '2026-04-10'
+      start_time: '10:00'
+      end_time: '11:00'
+      class_ids:
+        - 1
+        - 2
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 201
+        content: |-
+          {
+            "success": true,
+            "message": "Suggestion created."
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 422
+        content: |-
+          {
+            "success": false,
+            "message": "Validation failed.",
+            "errors": { "title": ["The title field is required."] }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/teacher/teacher/activity-suggestions/ai
+    metadata:
+      custom: []
+      groupName: 'Teacher — Activity Suggestions'
+      groupDescription: |-
+
+        Endpoints for teachers to list previous activity suggestions
+        and submit new proposals for administrative approval.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get AI-generated activity suggestions.'
+      description: |-
+        Returns AI-powered recommendations for activities based on
+        the class composition, age group, and curriculum progress.
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "AI Activity suggestions retrieved.",
+            "data": []
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null

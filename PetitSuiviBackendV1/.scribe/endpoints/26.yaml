@@ -1,0 +1,479 @@
+name: 'Admin - Meals'
+description: |-
+
+  APIs for managing the master catalog of food items and their exceptions.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/admin/meals
+    metadata:
+      custom: []
+      groupName: 'Admin - Meals'
+      groupDescription: |-
+
+        APIs for managing the master catalog of food items and their exceptions.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get All Meals'
+      description: 'Retrieves all available food items (lunch and snack) configured in the master catalog.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "Meals retrieved.",
+            "data": [
+              {
+                "id": 1,
+                "name": "Couscous",
+                "category": { "name": "Lunch" }
+              }
+            ]
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/admin/meals
+    metadata:
+      custom: []
+      groupName: 'Admin - Meals'
+      groupDescription: |-
+
+        APIs for managing the master catalog of food items and their exceptions.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Store Meal'
+      description: 'Creates a new meal/food item and optionally maps confirmed exceptions to it.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        custom: []
+        name: name
+        description: 'The name of the meal.'
+        required: true
+        example: Couscous
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      category:
+        custom: []
+        name: category
+        description: 'The category type (lunch or snack).'
+        required: true
+        example: lunch
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      exceptions:
+        custom: []
+        name: exceptions
+        description: 'optional The array of confirmed diet exceptions.'
+        required: false
+        example:
+          - architecto
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      'exceptions[].child_id':
+        custom: []
+        name: 'exceptions[].child_id'
+        description: 'The ID of the child.'
+        required: false
+        example: 15
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'exceptions[].reason':
+        custom: []
+        name: 'exceptions[].reason'
+        description: 'The restriction reason.'
+        required: false
+        example: 'Allergie aux arachides'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      name: Couscous
+      category: lunch
+      exceptions:
+        - architecto
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 201
+        content: |-
+          {
+            "success": true,
+            "message": "Meal created successfully.",
+            "data": {
+                "id": 2,
+                "name": "Couscous",
+                "category": { "name": "Lunch" }
+            }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/admin/meals/by-week/{date}'
+    metadata:
+      custom: []
+      groupName: 'Admin - Meals'
+      groupDescription: |-
+
+        APIs for managing the master catalog of food items and their exceptions.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Meals By Week'
+      description: |-
+        Retrieves the full weekly meal plan grid for the week containing
+        the given date. Returns an array of day objects, each with its
+        date and nested plans → meals structure.
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      date:
+        custom: []
+        name: date
+        description: 'A date within the target week (YYYY-MM-DD).'
+        required: true
+        example: '2026-04-06'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      date: '2026-04-06'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "data": [
+              {
+                "date": "2026-04-06",
+                "plans": [
+                  {
+                    "meals": [
+                      { "name": "Couscous", "category": { "name": "Lunch" } },
+                      { "name": "Yaourt", "category": { "name": "Snack" } }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/admin/meals/check-exceptions
+    metadata:
+      custom: []
+      groupName: 'Admin - Meals'
+      groupDescription: |-
+
+        APIs for managing the master catalog of food items and their exceptions.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Check Exceptions via AI'
+      description: 'Requests the AI Copilot to scan a given meal against known child dietary restrictions.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      meal_name:
+        custom: []
+        name: meal_name
+        description: 'The name of the meal to scan.'
+        required: true
+        example: 'Gâteau au Chocolat'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      ingredients:
+        custom: []
+        name: ingredients
+        description: 'optional The list of extra ingredients.'
+        required: false
+        example:
+          - architecto
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      meal_name: 'Gâteau au Chocolat'
+      ingredients:
+        - architecto
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "exceptions": [
+              {
+                "child_id": 1,
+                "child_name": "Jean Dupont",
+                "reason": "Allergie aux arachides",
+                "parent_phone": "0600000000"
+              }
+            ]
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/admin/meals/save-exceptions
+    metadata:
+      custom: []
+      groupName: 'Admin - Meals'
+      groupDescription: |-
+
+        APIs for managing the master catalog of food items and their exceptions.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Save Exceptions for Meal'
+      description: 'Saves manually scanned/confirmed AI exceptions for an existing meal.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      meal_name:
+        custom: []
+        name: meal_name
+        description: 'The name of the meal.'
+        required: true
+        example: 'Gâteau au Chocolat'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      exceptions:
+        custom: []
+        name: exceptions
+        description: 'The array of exceptions to map.'
+        required: true
+        example:
+          - architecto
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'exceptions[].child_id':
+        custom: []
+        name: 'exceptions[].child_id'
+        description: 'The ID of the child.'
+        required: false
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'exceptions[].reason':
+        custom: []
+        name: 'exceptions[].reason'
+        description: 'The restriction reason.'
+        required: false
+        example: 'Allergie au chocolat'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      meal_name: 'Gâteau au Chocolat'
+      exceptions:
+        - architecto
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "Exceptions saved successfully."
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - DELETE
+    uri: 'api/admin/meals/{id}'
+    metadata:
+      custom: []
+      groupName: 'Admin - Meals'
+      groupDescription: |-
+
+        APIs for managing the master catalog of food items and their exceptions.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete Meal'
+      description: 'Deletes a food item from the system and cascades to exceptions if necessary.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The MealsID to delete.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "Meal deleted."
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

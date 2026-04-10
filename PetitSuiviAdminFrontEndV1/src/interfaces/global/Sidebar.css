@@ -1,0 +1,307 @@
+/* ===== SIDEBAR ===== */
+.sidebar {
+    --sidebar-surface: #10201d;
+    --active-item-fill: #6fd7c4;
+    width: 290px;
+    min-width: 290px;
+    background: #10201d;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    color: white;
+    padding: 16px 14px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    transition: width 0.28s ease, min-width 0.28s ease, padding 0.28s ease, opacity 0.2s ease, background 0.2s ease;
+    min-height: 100vh;
+}
+
+.sidebar.compact {
+    width: 88px;
+    min-width: 88px;
+    padding: 18px 12px;
+    overflow: hidden;
+    align-items: center;
+}
+
+/* Custom Scrollbar */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: #24423c;
+    border-radius: 4px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: #2d544d;
+}
+
+.sidebar-brand {
+    padding-bottom: 16px;
+    margin-bottom: 8px;
+}
+
+.sidebar-brand h2 {
+    color: #ffffff;
+}
+
+.sidebar.compact .compact-brand {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.compact-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.sidebar h2 {
+    margin-bottom: 30px;
+    font-size: 20px;
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
+.menu-section {
+    margin-bottom: 25px;
+}
+
+.menu-section span.section-label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    display: block;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+.menu-item {
+    padding: 10px 12px;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: background 0.22s ease, transform 0.22s ease, color 0.22s ease, box-shadow 0.22s ease;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.92);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    position: relative;
+}
+
+.menu-item:hover {
+    background: rgba(111, 215, 196, 0.12);
+    color: white;
+    transform: translateX(2px);
+}
+
+.menu-icon {
+    width: 18px;
+    height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.menu-item-content {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.dropdown-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+}
+
+.dropdown-btn .arrow {
+    font-size: 12px;
+    transition: transform 0.3s ease;
+}
+
+.dropdown-btn .arrow.open {
+    transform: rotate(180deg);
+}
+
+.submenu {
+    max-height: 0;
+    overflow: hidden;
+    margin-left: 10px;
+    transition: max-height 0.35s ease;
+}
+
+.submenu.open {
+    max-height: 500px;
+}
+
+.submenu-item {
+    padding: 8px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.82);
+    transition: background 0.22s ease, transform 0.22s ease;
+    display: block;
+    text-decoration: none;
+    margin-bottom: 4px;
+    position: relative;
+}
+
+.submenu-item:hover {
+    background: rgba(111, 215, 196, 0.1);
+    color: white;
+    transform: translateX(2px);
+}
+
+/* ===== NAV ACTIVE STATE ===== */
+.menu-item.active,
+.submenu-item.active {
+    background: var(--active-item-fill);
+    color: #0b1f1a;
+    font-weight: 600;
+    box-shadow: none;
+    margin-right: 0;
+    padding-right: 12px;
+    border-radius: 12px;
+}
+
+.menu-item.section-active {
+    color: #0b1f1a;
+    font-weight: 600;
+    background: transparent;
+}
+
+.menu-item a,
+.submenu-item a {
+    color: inherit;
+    text-decoration: none;
+}
+/* ===== LIGHT THEME ===== */
+.sidebar.light {
+    --sidebar-surface: rgba(240, 248, 243, 0.96);
+    --active-item-fill: #6fd7c4;
+    background: rgba(240, 248, 243, 0.96);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: #141414;
+    border-right: 1px solid rgba(172, 213, 193, 0.9);
+}
+
+.sidebar.light h2 {
+    color: #141414;
+}
+
+.sidebar.light .menu-section span.section-label {
+    color: #5f7f73;
+}
+
+.sidebar.light .menu-item {
+    color: #1f2937;
+}
+
+.sidebar.light .menu-item:hover {
+    background: rgba(111, 215, 196, 0.14);
+    color: #111827;
+}
+
+.sidebar.light .submenu-item {
+    color: #4b5563;
+}
+
+.sidebar.light .submenu-item:hover {
+    background: rgba(111, 215, 196, 0.11);
+    color: #111827;
+}
+
+.sidebar.light .menu-item.active,
+.sidebar.light .submenu-item.active {
+    background: var(--active-item-fill);
+    color: #0b1f1a;
+    font-weight: 600;
+}
+
+.compact-icon-link {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #e5e7eb;
+    text-decoration: none;
+    transition: background 0.22s ease, transform 0.22s ease, color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.compact-icon-link:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-1px);
+}
+
+.compact-icon-link.active {
+    background: var(--active-item-fill);
+    color: #0b1f1a;
+    box-shadow: none;
+}
+
+.sidebar.light .compact-icon-link {
+    color: #3d3d3d;
+}
+
+.sidebar.light .compact-icon-link:hover {
+    background: rgba(148, 163, 184, 0.12);
+    color: #141414;
+}
+
+.sidebar.light .compact-icon-link.active {
+    background: var(--active-item-fill);
+    color: #0b1f1a;
+}
+
+.sidebar-panel-footer {
+    margin-top: auto;
+    padding-top: 16px;
+}
+
+.sidebar-footer-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 13px 16px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.94);
+    color: #1e5245;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.sidebar-footer-action:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(17, 24, 39, 0.16);
+}
+
+.sidebar.light::-webkit-scrollbar-thumb {
+    background: #d0d1d5;
+}
+
+.sidebar.light::-webkit-scrollbar-thumb:hover {
+    background: #a1a4ab;
+}

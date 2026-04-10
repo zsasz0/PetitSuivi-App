@@ -1,0 +1,326 @@
+name: 'Teacher — Daily Plan & Activities'
+description: |-
+
+  Endpoints for viewing and managing scheduled daily activities
+  within the teacher's assigned classes.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/teachers/{cin}/classes/{classId}/activities'
+    metadata:
+      custom: []
+      groupName: 'Teacher — Daily Plan & Activities'
+      groupDescription: |-
+
+        Endpoints for viewing and managing scheduled daily activities
+        within the teacher's assigned classes.
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      cin:
+        custom: []
+        name: cin
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      classId:
+        custom: []
+        name: classId
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      cin: architecto
+      classId: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/teacher/teacher/daily-plan
+    metadata:
+      custom: []
+      groupName: 'Teacher — Daily Plan & Activities'
+      groupDescription: |-
+
+        Endpoints for viewing and managing scheduled daily activities
+        within the teacher's assigned classes.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List daily plan activities.'
+      description: |-
+        Returns the scheduled activities for the teacher's class on a given date.
+        If no `date` query parameter is provided, defaults to today.
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      date:
+        custom: []
+        name: date
+        description: 'Optional ISO date (YYYY-MM-DD). Defaults to today.'
+        required: false
+        example: '2026-03-05'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanQueryParameters:
+      date: '2026-03-05'
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "Daily plan retrieved.",
+            "data": [
+              {
+                "id": 10,
+                "plan_day_id": 5,
+                "title": "Atelier peinture",
+                "description": "Session de peinture libre",
+                "date": "2026-03-05",
+                "start_time": "09:00",
+                "end_time": "10:00",
+                "status": "en_cours",
+                "teacher_name": "Fatma Mrad"
+              }
+            ]
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/teacher/teacher/daily-plan/{id}'
+    metadata:
+      custom: []
+      groupName: 'Teacher — Daily Plan & Activities'
+      groupDescription: |-
+
+        Endpoints for viewing and managing scheduled daily activities
+        within the teacher's assigned classes.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Show a specific plan activity.'
+      description: |-
+        Returns full details for a single scheduled activity, including
+        its parent Activity metadata and time slot information.
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The PlandayactivityID.'
+        required: true
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 10
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "Plan activity details.",
+            "data": {
+              "id": 10,
+              "plan_day_id": 5,
+              "title": "Atelier peinture",
+              "description": "Session de peinture libre",
+              "date": "2026-03-05",
+              "start_time": "09:00",
+              "end_time": "10:00",
+              "status": "en_cours"
+            }
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 404
+        content: |-
+          {
+            "success": false,
+            "message": "Activity not found."
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PATCH
+    uri: 'api/teacher/teacher/daily-plan/{id}/status'
+    metadata:
+      custom: []
+      groupName: 'Teacher — Daily Plan & Activities'
+      groupDescription: |-
+
+        Endpoints for viewing and managing scheduled daily activities
+        within the teacher's assigned classes.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update activity execution status.'
+      description: |-
+        Allows the teacher to mark an activity as executed or not_executed.
+        The frontend sends a PATCH with the new status value.
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The PlandayactivityID.'
+        required: true
+        example: 10
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 10
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      status:
+        custom: []
+        name: status
+        description: 'The new status. Allowed: executed, not_executed.'
+        required: true
+        example: executed
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      plan_day_id:
+        custom: []
+        name: plan_day_id
+        description: 'optional The PlandayID for validation.'
+        required: false
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      planning_label:
+        custom: []
+        name: planning_label
+        description: 'optional Current planning label.'
+        required: false
+        example: 2025/2026
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      status: executed
+      plan_day_id: 5
+      planning_label: 2025/2026
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "Status updated."
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 422
+        content: |-
+          {
+            "success": false,
+            "message": "Invalid status value."
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null

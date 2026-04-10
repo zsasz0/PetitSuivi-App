@@ -1,0 +1,2 @@
+- [x] Investigate Class uniqueness constraints
+- [/] Refine uniqueness scoping to avoid false positives

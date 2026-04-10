@@ -1,0 +1,293 @@
+name: 'Mobile - Attendance'
+description: |-
+
+  APIs for managing classroom attendance (presences) within the mobile application.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/classes/{classId}/presences'
+    metadata:
+      custom: []
+      groupName: 'Mobile - Attendance'
+      groupDescription: |-
+
+        APIs for managing classroom attendance (presences) within the mobile application.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List Monthly Presences'
+      description: 'Retrieves the attendance records for a specific class within a specific month and year.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      classId:
+        custom: []
+        name: classId
+        description: 'The ID of the class (ClassID).'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      classId: 1
+    queryParameters:
+      month:
+        custom: []
+        name: month
+        description: 'The month (1-12).'
+        required: true
+        example: 4
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      year:
+        custom: []
+        name: year
+        description: 'The year.'
+        required: true
+        example: 2026
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanQueryParameters:
+      month: 4
+      year: 2026
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "data": [
+              {
+                "id": 100,
+                "date": "2026-04-06",
+                "child_id": 45,
+                "status": {
+                  "name": "present"
+                }
+              }
+            ]
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: 'api/classes/{classId}/presences'
+    metadata:
+      custom: []
+      groupName: 'Mobile - Attendance'
+      groupDescription: |-
+
+        APIs for managing classroom attendance (presences) within the mobile application.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Record Presence'
+      description: 'Creates a new presence record for a child on a specific date.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      classId:
+        custom: []
+        name: classId
+        description: 'The ID of the class (ClassID).'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      classId: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      child_id:
+        custom: []
+        name: child_id
+        description: 'The ID of the child (ChildID).'
+        required: true
+        example: 45
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      date:
+        custom: []
+        name: date
+        description: 'The date of presence (YYYY-MM-DD).'
+        required: true
+        example: '"2026-04-06"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      status:
+        custom: []
+        name: status
+        description: 'The presence status ("present" or "absent").'
+        required: true
+        example: '"present"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      child_id: 45
+      date: '"2026-04-06"'
+      status: '"present"'
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 201
+        content: |-
+          {
+            "data": {
+              "id": 101,
+              "child_id": 45,
+              "date": "2026-04-06",
+              "status": "present"
+            }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PUT
+    uri: 'api/classes/{classId}/presences/{presenceId}'
+    metadata:
+      custom: []
+      groupName: 'Mobile - Attendance'
+      groupDescription: |-
+
+        APIs for managing classroom attendance (presences) within the mobile application.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update Presence'
+      description: 'Updates an existing presence record.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      classId:
+        custom: []
+        name: classId
+        description: 'The ID of the class (ClassID).'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      presenceId:
+        custom: []
+        name: presenceId
+        description: 'The ID of the presence (PresenceID).'
+        required: true
+        example: 100
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      classId: 1
+      presenceId: 100
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      date:
+        custom: []
+        name: date
+        description: 'The date of presence (YYYY-MM-DD).'
+        required: true
+        example: '"2026-04-06"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      status:
+        custom: []
+        name: status
+        description: 'The presence status ("present" or "absent").'
+        required: true
+        example: '"absent"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      date: '"2026-04-06"'
+      status: '"absent"'
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "data": {
+              "id": 100,
+              "date": "2026-04-06",
+              "status": "absent"
+            }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

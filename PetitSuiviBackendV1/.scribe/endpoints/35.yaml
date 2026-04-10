@@ -1,0 +1,384 @@
+name: 'Teacher — Student Evaluations'
+description: |-
+
+  Endpoints for managing competency evaluations. Teachers grade
+  children against criteria for each scheduled activity.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/teacher/teacher/evaluations
+    metadata:
+      custom: []
+      groupName: 'Teacher — Student Evaluations'
+      groupDescription: |-
+
+        Endpoints for managing competency evaluations. Teachers grade
+        children against criteria for each scheduled activity.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List evaluations.'
+      description: |-
+        Returns evaluations for the teacher's class, optionally filtered
+        by child ID, activity ID, or date.
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      child_id:
+        custom: []
+        name: child_id
+        description: 'Optional. Filter by child.'
+        required: false
+        example: 8
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      date:
+        custom: []
+        name: date
+        description: 'Optional. ISO date filter.'
+        required: false
+        example: '2026-03-05'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanQueryParameters:
+      child_id: 8
+      date: '2026-03-05'
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "Class evaluations retrieved.",
+            "data": [
+              {
+                "evaluation_id": 1,
+                "child_id": 8,
+                "activity_id": 3,
+                "criteria_id": 5,
+                "status_label": "Acquise",
+                "comment": "Très bon progrès",
+                "date": "2026-03-05"
+              }
+            ]
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/teacher/teacher/evaluations
+    metadata:
+      custom: []
+      groupName: 'Teacher — Student Evaluations'
+      groupDescription: |-
+
+        Endpoints for managing competency evaluations. Teachers grade
+        children against criteria for each scheduled activity.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Submit a new evaluation.'
+      description: |-
+        Creates a single criterion evaluation entry for a child on
+        a specific activity and date.
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      child_id:
+        custom: []
+        name: child_id
+        description: 'The ChildID.'
+        required: true
+        example: 8
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      activity_id:
+        custom: []
+        name: activity_id
+        description: 'The ActivityID.'
+        required: true
+        example: 3
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      date:
+        custom: []
+        name: date
+        description: 'ISO date.'
+        required: true
+        example: '2026-03-05'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      criteria_id:
+        custom: []
+        name: criteria_id
+        description: 'The CriteriaID being evaluated.'
+        required: true
+        example: 5
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      status_label:
+        custom: []
+        name: status_label
+        description: 'Level label (Non acquise, En cours, Acquise, Dépassée).'
+        required: true
+        example: Acquise
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      teacher_id:
+        custom: []
+        name: teacher_id
+        description: 'The TeacherID (CIN).'
+        required: true
+        example: 88552233
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      comment:
+        custom: []
+        name: comment
+        description: 'optional Teacher comment.'
+        required: false
+        example: 'Très bon progrès'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      child_id: 8
+      activity_id: 3
+      date: '2026-03-05'
+      criteria_id: 5
+      status_label: Acquise
+      teacher_id: 88552233
+      comment: 'Très bon progrès'
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 201
+        content: |-
+          {
+            "success": true,
+            "message": "Evaluation successfully submitted.",
+            "data": null
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 422
+        content: |-
+          {
+            "success": false,
+            "message": "Validation failed.",
+            "errors": {}
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/teacher/teacher/evaluations/{id}'
+    metadata:
+      custom: []
+      groupName: 'Teacher — Student Evaluations'
+      groupDescription: |-
+
+        Endpoints for managing competency evaluations. Teachers grade
+        children against criteria for each scheduled activity.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Show evaluation details.'
+      description: 'Returns the full details for a specific evaluation entry.'
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The EvaluationID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "Evaluation details.",
+            "data": {
+              "evaluation_id": 1,
+              "child_id": 8,
+              "activity_id": 3,
+              "status_label": "Acquise",
+              "comment": "Très bon progrès"
+            }
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 404
+        content: |-
+          {
+            "success": false,
+            "message": "Evaluation not found."
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PUT
+      - PATCH
+    uri: 'api/teacher/teacher/evaluations/{id}'
+    metadata:
+      custom: []
+      groupName: 'Teacher — Student Evaluations'
+      groupDescription: |-
+
+        Endpoints for managing competency evaluations. Teachers grade
+        children against criteria for each scheduled activity.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update an evaluation.'
+      description: 'Modifies the status_label and/or comment for an existing evaluation.'
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The EvaluationID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      status_label:
+        custom: []
+        name: status_label
+        description: 'optional New level.'
+        required: false
+        example: Dépassée
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      comment:
+        custom: []
+        name: comment
+        description: 'optional Updated comment.'
+        required: false
+        example: 'Excellente progression'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      status_label: Dépassée
+      comment: 'Excellente progression'
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "Evaluation updated.",
+            "data": null
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null

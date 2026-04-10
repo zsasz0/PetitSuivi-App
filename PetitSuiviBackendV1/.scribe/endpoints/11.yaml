@@ -1,0 +1,197 @@
+name: 'Mobile - Parent Profile'
+description: |-
+
+  APIs for viewing and updating the authenticated parent's personal information.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/parents/{cin}/profile'
+    metadata:
+      custom: []
+      groupName: 'Mobile - Parent Profile'
+      groupDescription: |-
+
+        APIs for viewing and updating the authenticated parent's personal information.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'View Parent Profile'
+      description: "Retrieves the parent's personal information by CIN."
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      cin:
+        custom: []
+        name: cin
+        description: "The parent's CIN."
+        required: true
+        example: '12345678'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      cin: '12345678'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "data": {
+              "cin": "12345678",
+              "firstName": "Ahmed",
+              "lastName": "Mejri",
+              "email": "ahmed@example.com",
+              "phone": "12345678",
+              "adresse": "Tunis, Tunisia"
+            }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PUT
+    uri: 'api/parents/{cin}/profile'
+    metadata:
+      custom: []
+      groupName: 'Mobile - Parent Profile'
+      groupDescription: |-
+
+        APIs for viewing and updating the authenticated parent's personal information.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update Parent Profile'
+      description: "Updates the parent's personal information."
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      cin:
+        custom: []
+        name: cin
+        description: "The parent's CIN."
+        required: true
+        example: '12345678'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      cin: '12345678'
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      firstName:
+        custom: []
+        name: firstName
+        description: 'First name.'
+        required: true
+        example: '"Ahmed"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      lastName:
+        custom: []
+        name: lastName
+        description: 'Last name.'
+        required: true
+        example: '"Mejri"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      email:
+        custom: []
+        name: email
+        description: 'Email address.'
+        required: true
+        example: '"ahmed@example.com"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      phone:
+        custom: []
+        name: phone
+        description: 'Phone number.'
+        required: true
+        example: '"12345678"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      adresse:
+        custom: []
+        name: adresse
+        description: Address.
+        required: true
+        example: '"Tunis, Tunisia"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      firstName: '"Ahmed"'
+      lastName: '"Mejri"'
+      email: '"ahmed@example.com"'
+      phone: '"12345678"'
+      adresse: '"Tunis, Tunisia"'
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "Profile updated successfully.",
+            "data": {
+              "firstName": "Ahmed",
+              "lastName": "Mejri",
+              "email": "ahmed@example.com",
+              "phone": "12345678",
+              "adresse": "Tunis, Tunisia"
+            }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

@@ -1,0 +1,19 @@
+# React .dockerignore
+.git
+.gitignore
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+docker-compose*.yml
+Dockerfile
+*.md
+node_modules/
+build/
+coverage/
+.idea/
+.vscode/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

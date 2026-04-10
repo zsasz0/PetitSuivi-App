@@ -1,0 +1,534 @@
+name: 'Admin - Classes'
+description: |-
+
+  APIs for retrieving class types.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/admin/class-types
+    metadata:
+      custom: []
+      groupName: 'Admin - Classes'
+      groupDescription: |-
+
+        APIs for retrieving class types.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List Class Types'
+      description: |-
+        Retrieves all class types available in the system (e.g. Preschool, Kindergarten).
+        Used by the frontend to resolve the type_id when creating a new class.
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "data": [
+              {
+                "id": 1,
+                "name": "Kindergarten"
+              },
+              {
+                "id": 2,
+                "name": "Preschool"
+              }
+            ]
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/admin/classes
+    metadata:
+      custom: []
+      groupName: 'Admin - Classes'
+      groupDescription: |-
+
+        APIs for managing classes (Preschool & Kindergarten).
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List Classes'
+      description: |-
+        Retrieves all classes with their type, assigned teachers (via TeacherClass pivot),
+        and enrolled students (via ChildClass pivot). The frontend filters by type name
+        (preschool / kindergarten) client-side.
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "data": [
+              {
+                "id": 1,
+                "name": "Preschool Section A",
+                "year": 2025,
+                "capacity": 20,
+                "is_archived": false,
+                "type": { "id": 2, "name": "Preschool" },
+                "teachers": [
+                  { "id": "11112222", "cin": "11112222", "firstName": "Mohamed", "lastName": "Test" }
+                ],
+                "students": [
+                  { "id": 1, "firstName": "Alice", "lastName": "Smith", "birthdate": "2020-01-01", "parent_id": "P987" }
+                ]
+              }
+            ]
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/admin/classes
+    metadata:
+      custom: []
+      groupName: 'Admin - Classes'
+      groupDescription: |-
+
+        APIs for managing classes (Preschool & Kindergarten).
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create Class'
+      description: |-
+        Creates a new class and assigns teachers via the TeacherClass pivot table.
+        The frontend sends a type_id to differentiate Preschool vs Kindergarten.
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        custom: []
+        name: name
+        description: 'The name of the class.'
+        required: true
+        example: 'Petite Section A'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      year:
+        custom: []
+        name: year
+        description: 'The starting academic year.'
+        required: true
+        example: 2025
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      capacity:
+        custom: []
+        name: capacity
+        description: 'The maximum capacity.'
+        required: false
+        example: 20
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        deprecated: false
+      type_id:
+        custom: []
+        name: type_id
+        description: 'The ClasstypeID (1=Kindergarten, 2=Preschool).'
+        required: true
+        example: 2
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      teacher_ids:
+        custom: []
+        name: teacher_ids
+        description: 'Array of teacher CINs to assign.'
+        required: false
+        example:
+          - '11112222'
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      name: 'Petite Section A'
+      year: 2025
+      capacity: 20
+      type_id: 2
+      teacher_ids:
+        - '11112222'
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 201
+        content: |-
+          {
+            "success": true,
+            "message": "Class created.",
+            "data": null
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/admin/classes/{id}'
+    metadata:
+      custom: []
+      groupName: 'Admin - Classes'
+      groupDescription: |-
+
+        APIs for managing classes (Preschool & Kindergarten).
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get Class Details'
+      description: 'Retrieves details for a specific class by its ClassID.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ClassID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "data": {
+              "id": 1,
+              "name": "Preschool Section A",
+              "year": 2025,
+              "capacity": 20
+            }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PUT
+    uri: 'api/admin/classes/{id}'
+    metadata:
+      custom: []
+      groupName: 'Admin - Classes'
+      groupDescription: |-
+
+        APIs for managing classes (Preschool & Kindergarten).
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update Class'
+      description: 'Updates class details and syncs assigned teachers in the TeacherClass pivot.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ClassID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        custom: []
+        name: name
+        description: 'The new class name.'
+        required: false
+        example: 'Petite Section B'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      year:
+        custom: []
+        name: year
+        description: 'The starting academic year.'
+        required: false
+        example: 2025
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        deprecated: false
+      capacity:
+        custom: []
+        name: capacity
+        description: 'The capacity.'
+        required: false
+        example: 25
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        deprecated: false
+      teacher_ids:
+        custom: []
+        name: teacher_ids
+        description: 'Array of teacher CINs to sync.'
+        required: false
+        example:
+          - '11112222'
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      name: 'Petite Section B'
+      year: 2025
+      capacity: 25
+      teacher_ids:
+        - '11112222'
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "Class updated.",
+            "data": null
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PATCH
+    uri: 'api/admin/classes/{id}/toggle-archive'
+    metadata:
+      custom: []
+      groupName: 'Admin - Classes'
+      groupDescription: |-
+
+        APIs for managing classes (Preschool & Kindergarten).
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Toggle Archive Class'
+      description: 'Toggles the Isarchived status of a class (0 ↔ 1).'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ClassID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "Class archive status toggled.",
+            "data": null
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - DELETE
+    uri: 'api/admin/classes/{id}'
+    metadata:
+      custom: []
+      groupName: 'Admin - Classes'
+      groupDescription: |-
+
+        APIs for managing classes (Preschool & Kindergarten).
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete Class'
+      description: 'Permanently deletes a class and its TeacherClass and ChildClass associations.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ClassID.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "Class removed.",
+            "data": null
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

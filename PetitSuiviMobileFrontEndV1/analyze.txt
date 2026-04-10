@@ -1,0 +1,108 @@
+Resolving dependencies...
+Downloading packages...
+  characters 1.4.0 (1.4.1 available)
+  font_awesome_flutter 10.12.0 (11.0.0 available)
+  hooks 1.0.1 (1.0.2 available)
+  image_picker_android 0.8.13+13 (0.8.13+14 available)
+  matcher 0.12.17 (0.12.19 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  meta 1.17.0 (1.18.2 available)
+  native_toolchain_c 0.17.4 (0.17.6 available)
+  test_api 0.7.7 (0.7.11 available)
+  vector_math 2.2.0 (2.3.0 available)
+  win32 5.15.0 (6.0.0 available)
+Got dependencies!
+11 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Analyzing newv...                                               
+
+warning • Unused import: 'dart:convert' • debug_child.dart:1:8 • unused_import
+warning • Unused import: 'package:http/http.dart' • debug_child.dart:2:8 • unused_import
+warning • Unused import: 'dart:io' • debug_child.dart:3:8 • unused_import
+warning • The value of the local variable 'cin' isn't used • debug_child.dart:6:9 • unused_local_variable
+   info • Constructors for public widgets should have a named 'key' parameter • lib/help_screen.dart:6:7 • use_key_in_widget_constructors
+   info • Invalid use of a private type in a public API • lib/help_screen.dart:8:3 • library_private_types_in_public_api
+warning • The value of the field '_surfaceDark' isn't used • lib/help_screen.dart:14:22 • unused_field
+   info • Use interpolation to compose strings and values • lib/main.dart:156:18 • prefer_interpolation_to_compose_strings
+   info • Use interpolation to compose strings and values • lib/services/evaluation_service.dart:9:7 • prefer_interpolation_to_compose_strings
+   info • Use the null-aware marker '?' rather than a null check via an 'if' • lib/services/evaluation_service.dart:95:13 • use_null_aware_elements
+   info • Use interpolation to compose strings and values • lib/services/notification_service.dart:43:26 • prefer_interpolation_to_compose_strings
+warning • Unused import: 'package:flutter_secure_storage/flutter_secure_storage.dart' • lib/services/photo_service.dart:4:8 • unused_import
+   info • Use interpolation to compose strings and values • lib/services/photo_service.dart:9:7 • prefer_interpolation_to_compose_strings
+   info • Use interpolation to compose strings and values • lib/services/pickup_notification_service.dart:6:7 • prefer_interpolation_to_compose_strings
+warning • The value of the field '_isSubmitting' isn't used • lib/views/auth/register/parent_register_page.dart:23:8 • unused_field
+   info • The private field _children could be 'final' • lib/views/auth/register/parent_register_page.dart:36:30 • prefer_final_fields
+   info • Statements in an if should be enclosed in a block • lib/views/auth/register/widgets/child_card_registration.dart:120:13 • curly_braces_in_flow_control_structures
+   info • Statements in an if should be enclosed in a block • lib/views/auth/register/widgets/child_registration_form.dart:148:13 • curly_braces_in_flow_control_structures
+   info • Parameter 'key' could be a super parameter • lib/views/home/components/drawer_user_controller.dart:24:9 • use_super_parameters
+   info • Invalid use of a private type in a public API • lib/views/home/components/drawer_user_controller.dart:50:3 • library_private_types_in_public_api
+   info • Empty catch block • lib/views/home/components/drawer_user_controller.dart:76:27 • empty_catches
+   info • The import of 'dart:ui' is unnecessary because all of the used elements are also provided by the import of 'package:flutter/material.dart' • lib/views/home/components/home_drawer.dart:2:8 • unnecessary_import
+   info • The constant name 'ParentProfile' isn't a lowerCamelCase identifier • lib/views/home/components/home_drawer.dart:16:3 • constant_identifier_names
+   info • The constant name 'Children' isn't a lowerCamelCase identifier • lib/views/home/components/home_drawer.dart:17:3 • constant_identifier_names
+   info • The constant name 'Payments' isn't a lowerCamelCase identifier • lib/views/home/components/home_drawer.dart:18:3 • constant_identifier_names
+   info • The constant name 'ParentPhotos' isn't a lowerCamelCase identifier • lib/views/home/components/home_drawer.dart:19:3 • constant_identifier_names
+   info • The constant name 'TeacherDashboard' isn't a lowerCamelCase identifier • lib/views/home/components/home_drawer.dart:20:3 • constant_identifier_names
+   info • The constant name 'ManageClasses' isn't a lowerCamelCase identifier • lib/views/home/components/home_drawer.dart:21:3 • constant_identifier_names
+   info • The constant name 'AnnualActivities' isn't a lowerCamelCase identifier • lib/views/home/components/home_drawer.dart:22:3 • constant_identifier_names
+   info • The constant name 'Notifications' isn't a lowerCamelCase identifier • lib/views/home/components/home_drawer.dart:23:3 • constant_identifier_names
+   info • The constant name 'TeacherProfile' isn't a lowerCamelCase identifier • lib/views/home/components/home_drawer.dart:24:3 • constant_identifier_names
+   info • The constant name 'TeacherPhotos' isn't a lowerCamelCase identifier • lib/views/home/components/home_drawer.dart:25:3 • constant_identifier_names
+   info • The constant name 'Help' isn't a lowerCamelCase identifier • lib/views/home/components/home_drawer.dart:26:3 • constant_identifier_names
+   info • Invalid use of a private type in a public API • lib/views/home/components/home_drawer.dart:44:3 • library_private_types_in_public_api
+warning • The value of the field '_indigoAccent' isn't used • lib/views/home/components/home_drawer.dart:59:22 • unused_field
+   info • Unnecessary use of 'toList' in a spread • lib/views/home/components/home_drawer.dart:450:14 • unnecessary_to_list_in_spreads
+warning • The value of the local variable 'indigoAccent' isn't used • lib/views/parent/child_tracking/child_details_page.dart:168:17 • unused_local_variable
+   info • Statements in an if should be enclosed in a block • lib/views/parent/child_tracking/child_selection_page.dart:124:9 • curly_braces_in_flow_control_structures
+warning • Unused import: 'package:newv/models/teacher_models.dart' • lib/views/parent/child_tracking/competences/competences_tab.dart:3:8 • unused_import
+   info • Don't invoke 'print' in production code • lib/views/parent/child_tracking/competences/competences_tab.dart:87:7 • avoid_print
+warning • The value of the field '_baseDark' isn't used • lib/views/parent/child_tracking/presence/presence_tab.dart:34:22 • unused_field
+warning • The value of the field '_indigoAccent' isn't used • lib/views/parent/child_tracking/presence/presence_tab.dart:36:22 • unused_field
+   info • Statements in an if should be enclosed in a block • lib/views/parent/child_tracking/presence/presence_tab.dart:111:9 • curly_braces_in_flow_control_structures
+   info • The private field _inscriptionTypes could be 'final' • lib/views/parent/child_tracking/re_registration_page.dart:52:16 • prefer_final_fields
+   info • The private field _mealPlanOptions could be 'final' • lib/views/parent/child_tracking/re_registration_page.dart:56:16 • prefer_final_fields
+   info • The private field _paymentMethods could be 'final' • lib/views/parent/child_tracking/re_registration_page.dart:68:16 • prefer_final_fields
+   info • Statements in an if should be enclosed in a block • lib/views/parent/child_tracking/re_registration_page.dart:230:10 • curly_braces_in_flow_control_structures
+warning • The value of the local variable 'l10n' isn't used • lib/views/parent/child_tracking/re_registration_page.dart:272:11 • unused_local_variable
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre • lib/views/parent/child_tracking/re_registration_page.dart:529:7 • deprecated_member_use
+warning • The value of the field '_baseDark' isn't used • lib/views/parent/child_tracking/suivi/suivi_tab.dart:26:22 • unused_field
+warning • The value of the field '_indigoAccent' isn't used • lib/views/parent/payments/payments_page.dart:32:22 • unused_field
+   info • Statements in an if should be enclosed in a block • lib/views/parent/payments/payments_page.dart:69:9 • curly_braces_in_flow_control_structures
+   info • Statements in an if should be enclosed in a block • lib/views/parent/profile/parent_profile_edit_page.dart:308:9 • curly_braces_in_flow_control_structures
+warning • Unused import: 'package:newv/l10n/app_localizations.dart' • lib/views/parent/profile/parent_profile_page.dart:11:8 • unused_import
+   info • Statements in an if should be enclosed in a block • lib/views/parent/profile/parent_profile_page.dart:150:13 • curly_braces_in_flow_control_structures
+   info • Unnecessary constructor invocation • lib/views/parent/profile/parent_profile_page.dart:184:33 • prefer_collection_literals
+   info • Statements in an if should be enclosed in a block • lib/views/parent/profile/parent_profile_page.dart:235:9 • curly_braces_in_flow_control_structures
+   info • Statements in an if should be enclosed in a block • lib/views/parent/profile/parent_profile_page.dart:346:9 • curly_braces_in_flow_control_structures
+   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check • lib/views/parent/profile/parent_profile_page.dart:1161:39 • use_build_context_synchronously
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre • lib/views/parent/profile/parent_profile_page.dart:1241:7 • deprecated_member_use
+   info • Don't use 'BuildContext's across async gaps • lib/views/teacher/activities/activities_calendar_page.dart:524:21 • use_build_context_synchronously
+warning • Unused import: 'package:newv/app_theme.dart' • lib/views/teacher/activities/attendance_page.dart:2:8 • unused_import
+   info • The private field _classes could be 'final' • lib/views/teacher/activities/attendance_page.dart:19:19 • prefer_final_fields
+   info • The private field _attendanceRecords could be 'final' • lib/views/teacher/activities/attendance_page.dart:20:26 • prefer_final_fields
+   info • The member 'build' overrides an inherited member but isn't annotated with '@override' • lib/views/teacher/activities/attendance_page.dart:131:10 • annotate_overrides
+   info • Statements in an if should be enclosed in a block • lib/views/teacher/activities/suggest_activities_page.dart:139:9 • curly_braces_in_flow_control_structures
+   info • Statements in an if should be enclosed in a block • lib/views/teacher/activities/suggest_activities_page.dart:144:9 • curly_braces_in_flow_control_structures
+   info • Statements in an if should be enclosed in a block • lib/views/teacher/activities/suggest_activities_page.dart:394:7 • curly_braces_in_flow_control_structures
+   info • Statements in an if should be enclosed in a block • lib/views/teacher/activities/suggest_activities_page.dart:485:9 • curly_braces_in_flow_control_structures
+warning • Duplicate import • lib/views/teacher/children/teacher_child_profile_page.dart:10:8 • duplicate_import
+warning • Duplicate import • lib/views/teacher/children/teacher_child_profile_page.dart:11:8 • duplicate_import
+warning • Duplicate import • lib/views/teacher/children/teacher_child_profile_page.dart:12:8 • duplicate_import
+warning • Duplicate import • lib/views/teacher/children/teacher_child_profile_page.dart:13:8 • duplicate_import
+warning • The value of the field '_idsLoaded' isn't used • lib/views/teacher/children/teacher_child_profile_page.dart:56:8 • unused_field
+warning • The value of the field '_loadingSignalements' isn't used • lib/views/teacher/children/teacher_child_profile_page.dart:60:8 • unused_field
+   info • Statements in an if should be enclosed in a block • lib/views/teacher/classes/manage_classes_page.dart:70:9 • curly_braces_in_flow_control_structures
+   info • The import of 'dart:ui' is unnecessary because all of the used elements are also provided by the import of 'package:flutter/material.dart' • lib/views/teacher/home/teacher_dashboard_page.dart:1:8 • unnecessary_import
+   info • Parameter 'key' could be a super parameter • lib/views/teacher/home/teacher_dashboard_page.dart:12:9 • use_super_parameters
+   info • Parameter 'key' could be a super parameter • lib/views/teacher/notifications/teacher_notifications_page.dart:31:9 • use_super_parameters
+   info • Invalid use of a private type in a public API • lib/views/teacher/notifications/teacher_notifications_page.dart:34:3 • library_private_types_in_public_api
+warning • Dead code • lib/views/teacher/notifications/teacher_notifications_page.dart:323:49 • dead_code
+warning • This cast always throws an exception because the expression always evaluates to 'null' • lib/views/teacher/notifications/teacher_notifications_page.dart:324:51 • cast_from_null_always_fails
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre • lib/views/teacher/photos/teacher_photo_sharing_page.dart:321:21 • deprecated_member_use
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre • lib/views/teacher/photos/teacher_photo_sharing_page.dart:487:25 • deprecated_member_use
+warning • Unused import: 'package:newv/models/teacher_models.dart' • lib/views/teacher/profile/teacher_profile_page.dart:5:8 • unused_import
+warning • Unused import: 'package:image_picker/image_picker.dart' • lib/views/teacher/profile/teacher_profile_page.dart:10:8 • unused_import
+   info • Statements in an if should be enclosed in a block • lib/views/teacher/profile/teacher_profile_page.dart:411:7 • curly_braces_in_flow_control_structures
+   info • Statements in an if should be enclosed in a block • lib/views/teacher/profile/teacher_profile_page.dart:574:9 • curly_braces_in_flow_control_structures
+
+88 issues found. (ran in 1.5s)

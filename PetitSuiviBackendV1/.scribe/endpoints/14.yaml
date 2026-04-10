@@ -1,0 +1,127 @@
+name: 'Mobile - Parent Photos'
+description: |-
+
+  APIs for viewing and downloading photos shared by teachers for a specific child.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/children/{childId}/photos'
+    metadata:
+      custom: []
+      groupName: 'Mobile - Parent Photos'
+      groupDescription: |-
+
+        APIs for viewing and downloading photos shared by teachers for a specific child.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List Child Photos'
+      description: 'Retrieves all non-expired photos shared for a specific child via the Childphotorecipient pivot.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      childId:
+        custom: []
+        name: childId
+        description: 'The ID of the child (ChildID).'
+        required: true
+        example: 45
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      childId: 45
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "data": [
+              {
+                "id": 1,
+                "file_path": "/storage/photos/class_abc.jpg",
+                "expires_at": "2026-05-01",
+                "downloaded": false,
+                "created_at": null
+              }
+            ]
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/photos/{photoId}/download'
+    metadata:
+      custom: []
+      groupName: 'Mobile - Parent Photos'
+      groupDescription: |-
+
+        APIs for viewing and downloading photos shared by teachers for a specific child.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Download Photo'
+      description: 'Streams a photo file to the parent and records the download timestamp.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      photoId:
+        custom: []
+        name: photoId
+        description: 'The ID of the photo (ChildphotoID).'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      photoId: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '(binary file stream)'
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

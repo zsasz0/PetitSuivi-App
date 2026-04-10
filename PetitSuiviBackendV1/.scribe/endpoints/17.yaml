@@ -1,0 +1,64 @@
+name: 'Mobile - Parent Security'
+description: |-
+
+  APIs for security options such as changing passwords.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/password/change
+    metadata:
+      custom: []
+      groupName: 'Mobile - Parent Security'
+      groupDescription: |-
+
+        APIs for security options such as changing passwords.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Change Password'
+      description: 'Updates the password of the authenticated parent.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      new_password:
+        custom: []
+        name: new_password
+        description: 'The new secure password.'
+        required: true
+        example: '"P@ssw0rd123!"'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      new_password: '"P@ssw0rd123!"'
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "Password changed successfully."
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

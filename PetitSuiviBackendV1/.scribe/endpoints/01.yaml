@@ -1,0 +1,517 @@
+name: 'Mobile - Auth'
+description: ''
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/register
+    metadata:
+      custom: []
+      groupName: 'Mobile - Auth'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Parent Registration'
+      description: 'Registers a new parent account along with their children and initial inscriptions.'
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      cin:
+        custom: []
+        name: cin
+        description: "The parent's CIN."
+        required: true
+        example: 12345678
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      firstName:
+        custom: []
+        name: firstName
+        description: "The parent's first name."
+        required: true
+        example: Sami
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      lastName:
+        custom: []
+        name: lastName
+        description: "The parent's last name."
+        required: true
+        example: 'Ben Ali'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      email:
+        custom: []
+        name: email
+        description: "The parent's email."
+        required: true
+        example: parent@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      password:
+        custom: []
+        name: password
+        description: 'The password.'
+        required: true
+        example: secret
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      birthdate:
+        custom: []
+        name: birthdate
+        description: "nullable The parent's birthdate."
+        required: false
+        example: '1980-01-01'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      phone:
+        custom: []
+        name: phone
+        description: "The parent's phone number."
+        required: true
+        example: '99887766'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      adresse:
+        custom: []
+        name: adresse
+        description: "The parent's address."
+        required: true
+        example: Tunis
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      password_confirmation:
+        custom: []
+        name: password_confirmation
+        description: 'Password confirmation.'
+        required: true
+        example: secret
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      role:
+        custom: []
+        name: role
+        description: 'The role (must be "parent").'
+        required: true
+        example: parent
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      children:
+        custom: []
+        name: children
+        description: 'The list of children to add.'
+        required: true
+        example:
+          - []
+        type: 'object[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'children[].firstName':
+        custom: []
+        name: 'children[].firstName'
+        description: "Child's first name."
+        required: true
+        example: Youssef
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'children[].lastName':
+        custom: []
+        name: 'children[].lastName'
+        description: "Child's last name."
+        required: true
+        example: 'Ben Ali'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'children[].birthdate':
+        custom: []
+        name: 'children[].birthdate'
+        description: "nullable Child's birthdate."
+        required: false
+        example: '2020-05-15'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'children[].medicalRecordForm':
+        custom: []
+        name: 'children[].medicalRecordForm'
+        description: 'nullable The extensive medical record data.'
+        required: false
+        example: []
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'children[].inscriptions':
+        custom: []
+        name: 'children[].inscriptions'
+        description: 'The list of inscriptions for the child.'
+        required: true
+        example:
+          - []
+        type: 'object[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'children[].inscriptions[].insc_date':
+        custom: []
+        name: 'children[].inscriptions[].insc_date'
+        description: 'Inscription date in ISO8601.'
+        required: true
+        example: '2025-01-01'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'children[].inscriptions[].status':
+        custom: []
+        name: 'children[].inscriptions[].status'
+        description: 'Status, normally "pending".'
+        required: true
+        example: pending
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'children[].inscriptions[].type':
+        custom: []
+        name: 'children[].inscriptions[].type'
+        description: 'Inscription type (e.g., Préscolaire).'
+        required: true
+        example: 'Préscolaire (التحضيري)'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'children[].inscriptions[].payment_method':
+        custom: []
+        name: 'children[].inscriptions[].payment_method'
+        description: 'Payment method.'
+        required: true
+        example: monthlyPartial
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'children[].inscriptions[].meal_plan':
+        custom: []
+        name: 'children[].inscriptions[].meal_plan'
+        description: 'nullable Chosen meal plan.'
+        required: false
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'children[].inscriptions[].total_amount':
+        custom: []
+        name: 'children[].inscriptions[].total_amount'
+        description: 'Calculated total fee amount.'
+        required: true
+        example: 1200.0
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      cin: 12345678
+      firstName: Sami
+      lastName: 'Ben Ali'
+      email: parent@example.com
+      password: secret
+      birthdate: '1980-01-01'
+      phone: '99887766'
+      adresse: Tunis
+      password_confirmation: secret
+      role: parent
+      children:
+        -
+          firstName: Youssef
+          lastName: 'Ben Ali'
+          birthdate: '2020-05-15'
+          medicalRecordForm: []
+          inscriptions:
+            -
+              insc_date: '2025-01-01'
+              status: pending
+              type: 'Préscolaire (التحضيري)'
+              payment_method: monthlyPartial
+              meal_plan: architecto
+              total_amount: 1200.0
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "Inscription réussie."
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/login/teacher
+    metadata:
+      custom: []
+      groupName: 'Mobile - Auth'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Teacher Login'
+      description: |-
+        Authenticates a teacher using email and password, returning a secure
+        authentication token along with user details.
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      email:
+        custom: []
+        name: email
+        description: "The teacher's email."
+        required: true
+        example: teacher@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      password:
+        custom: []
+        name: password
+        description: "The teacher's password."
+        required: true
+        example: secret
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      email: teacher@example.com
+      password: secret
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "Connexion réussie",
+            "user": {
+              "AccountID": 102,
+              "email": "teacher@example.com",
+              "cin": 12345678,
+              "firstName": "Ahmed",
+              "lastName": "Ben Ali",
+              "phone": "22334455",
+              "address": "Tunis",
+              "birthdate": "1990-01-01",
+              "inscriptionDate": "2025-01-01",
+              "role": {
+                "name": "teacher"
+              }
+            },
+            "token": "token_string_here"
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 401
+        content: |-
+          {
+            "success": false,
+            "message": "Les identifiants ne correspondent à aucun compte dans notre système."
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 403
+        content: |-
+          {
+            "success": false,
+            "message": "Votre compte est archivé. Veuillez contacter l'administration."
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/login/parent
+    metadata:
+      custom: []
+      groupName: 'Mobile - Auth'
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Parent Login'
+      description: |-
+        Authenticates a parent using email and password, returning a secure
+        authentication token along with user details.
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      email:
+        custom: []
+        name: email
+        description: "The parent's email."
+        required: true
+        example: parent@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      password:
+        custom: []
+        name: password
+        description: "The parent's password."
+        required: true
+        example: secret
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      email: parent@example.com
+      password: secret
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "Connexion réussie",
+            "user": {
+              "AccountID": 205,
+              "email": "parent@example.com",
+              "cin": 87654321,
+              "firstName": "Sami",
+              "lastName": "Ben Ali",
+              "phone": "99887766",
+              "address": "Tunis",
+              "birthdate": "1990-01-01",
+              "inscriptionDate": "2025-01-01",
+              "role": {
+                "name": "parent"
+              }
+            },
+            "token": "token_string_here"
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 401
+        content: |-
+          {
+            "success": false,
+            "message": "Les identifiants ne correspondent à aucun compte."
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 403
+        content: |-
+          {
+            "success": false,
+            "message": "Votre compte nécessite l'approbation de l'administration.",
+            "requires_admin_approval": true
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null

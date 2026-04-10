@@ -1,0 +1,154 @@
+name: 'Admin - Parameters'
+description: |-
+
+  APIs for managing global system parameters (e.g., fee amounts, feature toggles like AI or inscriptions).
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/admin/parameters
+    metadata:
+      custom: []
+      groupName: 'Admin - Parameters'
+      groupDescription: |-
+
+        APIs for managing global system parameters (e.g., fee amounts, feature toggles like AI or inscriptions).
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Get All Parameters'
+      description: 'Retrieves the list of all currently configured parameters.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "System parameters retrieved.",
+            "data": [
+              {
+                "id": 1,
+                "name": "ai_enabled",
+                "value": "true"
+              },
+              {
+                "id": 2,
+                "name": "inscriptions_open",
+                "value": "1"
+              }
+            ]
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PUT
+    uri: api/admin/parameters
+    metadata:
+      custom: []
+      groupName: 'Admin - Parameters'
+      groupDescription: |-
+
+        APIs for managing global system parameters (e.g., fee amounts, feature toggles like AI or inscriptions).
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Bulk Update Parameters'
+      description: |-
+        Updates multiple parameters in a single request. Extensively used by the frontend
+        when saving the "Général Paramètres" panel or toggling special switches (AI/Inscriptions).
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {YOUR_AUTH_KEY}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      parameters:
+        custom: []
+        name: parameters
+        description: 'The list of parameters to update.'
+        required: true
+        example:
+          -
+            id: 1
+            value: 'false'
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'parameters[].id':
+        custom: []
+        name: 'parameters[].id'
+        description: 'The ID of the parameter.'
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'parameters[].value':
+        custom: []
+        name: 'parameters[].value'
+        description: 'The new value.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+    cleanBodyParameters:
+      parameters:
+        -
+          id: 1
+          value: 'false'
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "success": true,
+            "message": "System parameters updated successfully.",
+            "data": null
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null
