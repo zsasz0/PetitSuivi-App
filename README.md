@@ -250,6 +250,56 @@ The runner service on the server is:
 actions.runner.zsasz0-PetitSuivi-App.petitsuivi-app.service
 ```
 
+## Server Auto Start
+
+The production server is configured to come back automatically after reboot.
+
+### Docker stack systemd service
+
+Systemd service file in the repo:
+
+```text
+deploy/systemd/petitsuivi-app.service
+```
+
+Installed on the server as:
+
+```text
+/etc/systemd/system/petitsuivi-app.service
+```
+
+This service starts the Docker stack from:
+
+```text
+/home/test/PetitSuivi-App
+```
+
+It runs:
+
+```bash
+docker compose up -d --remove-orphans
+```
+
+### Auto-start components after reboot
+
+These are enabled on the server:
+
+- `docker`
+- `petitsuivi-app.service`
+- `actions.runner.zsasz0-PetitSuivi-App.petitsuivi-app.service`
+
+The containers also use Docker restart policies:
+
+- `unless-stopped`
+
+That means after a server reboot:
+
+1. Docker starts
+2. `petitsuivi-app.service` starts the PetitSuivi stack
+3. Cloudflare tunnel comes back
+4. the GitHub Actions runner comes back
+5. CI/CD auto-deploy continues to work
+
 ### What auto-deploy does
 
 On push to `main`, the workflow:
