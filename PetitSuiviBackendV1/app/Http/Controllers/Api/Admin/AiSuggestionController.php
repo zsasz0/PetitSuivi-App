@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class AiSuggestionController extends Controller
 {
@@ -29,11 +30,12 @@ class AiSuggestionController extends Controller
         ]);
 
         $prompt = "You are an AI pedagogical assistant. Propose a maximum of {$request->safeMax} criteria from the following list:\n\n{$request->criteriaLines}\n\nFor the activity titled: \"{$request->title}\" with description: \"{$request->description}\". Returns only a JSON array of the recommended integer criteria IDs without markdown wrappers.";
+        $copilotUrl = rtrim((string) config('services.copilot.url', 'http://localhost:4141'), '/') . '/v1/chat/completions';
 
         try {
             $response = Http::timeout(60)
                 ->acceptJson()
-                ->post('http://localhost:4141/v1/chat/completions', [
+                ->post($copilotUrl, [
                     'model' => 'gpt-4.1',
                     'messages' => [
                         [
@@ -60,10 +62,16 @@ class AiSuggestionController extends Controller
             ], 500);
 
         } catch (\Exception $e) {
+            Log::error('AI suggestion proxy request failed', [
+                'url' => $copilotUrl,
+                'message' => $e->getMessage(),
+                'exception' => get_class($e),
+            ]);
+
             return response()->json([
                 'success' => false,
                 'output' => '[]',
-                'message' => 'Could not connect to AI proxy.'
+                'message' => 'Could not connect to AI proxy: ' . $e->getMessage(),
             ], 500);
         }
     }

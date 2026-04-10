@@ -362,10 +362,12 @@ class ReportAnalysisController extends Controller
             . "Voici les données:\n\n"
             . $request->input('childrenText');
 
+        $copilotUrl = rtrim((string) config('services.copilot.url', 'http://localhost:4141'), '/') . '/v1/chat/completions';
+
         try {
             $response = Http::timeout(60)
                 ->acceptJson()
-                ->post('http://localhost:4141/v1/chat/completions', [
+                ->post($copilotUrl, [
                     'model' => 'gpt-4.1',
                     'messages' => [
                         [

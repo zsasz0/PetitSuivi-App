@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'copilot' => [
+        'url' => env('COPILOT_API_URL', 'http://localhost:4141'),
+    ],
+
 ];

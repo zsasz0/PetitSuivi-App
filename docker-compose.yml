@@ -37,6 +37,7 @@ services:
       DB_DATABASE: ${MYSQL_DATABASE:-petitsuivi}
       DB_USERNAME: ${MYSQL_USER:-petitsuivi}
       DB_PASSWORD: ${MYSQL_PASSWORD:-petitsuivi}
+      COPILOT_API_URL: ${COPILOT_API_URL:-http://copilot:4141}
       SESSION_DRIVER: file
       CACHE_STORE: file
       QUEUE_CONNECTION: sync

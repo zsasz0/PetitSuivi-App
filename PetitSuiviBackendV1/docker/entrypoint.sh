@@ -45,6 +45,14 @@ if [ -n "$CACHE_STORE" ]; then
   fi
 fi
 
+if [ -n "$COPILOT_API_URL" ]; then
+  if grep -q '^COPILOT_API_URL=' .env; then
+    sed -i "s|^COPILOT_API_URL=.*|COPILOT_API_URL=${COPILOT_API_URL}|" .env
+  else
+    printf '\nCOPILOT_API_URL=%s\n' "$COPILOT_API_URL" >> .env
+  fi
+fi
+
 php artisan optimize:clear
 
 if ! grep -q '^APP_KEY=base64:' .env; then

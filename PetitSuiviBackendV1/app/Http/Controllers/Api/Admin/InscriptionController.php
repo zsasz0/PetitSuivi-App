@@ -1185,10 +1185,12 @@ class InscriptionController extends Controller
             'content' => $userPrompt,
         ];
 
+        $copilotUrl = rtrim((string) config('services.copilot.url', 'http://localhost:4141'), '/') . '/v1/chat/completions';
+
         try {
             $response = Http::timeout(60)
                 ->acceptJson()
-                ->post('http://localhost:4141/v1/chat/completions', [
+                ->post($copilotUrl, [
                     'model' => $validated['model'] ?? 'gpt-4.1',
                     'messages' => $messages,
                 ]);
@@ -1225,9 +1227,11 @@ class InscriptionController extends Controller
 
     private function callCopilotProxy(string $prompt): string
     {
+        $copilotUrl = rtrim((string) config('services.copilot.url', 'http://localhost:4141'), '/') . '/v1/chat/completions';
+
         $response = Http::timeout(60)
             ->acceptJson()
-            ->post('http://localhost:4141/v1/chat/completions', [
+            ->post($copilotUrl, [
                 'model' => 'gpt-4.1',
                 'messages' => [
                     [
