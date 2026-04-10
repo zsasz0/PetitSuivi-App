@@ -16,7 +16,7 @@ cd "$TARGET_DIR"
 
 git fetch origin main
 git checkout main
-git pull --ff-only origin main
+git reset --hard origin/main
 
 if [ ${#SERVICES[@]} -eq 0 ]; then
     SERVICES=(mysql backend frontreact copilot phpmyadmin)
