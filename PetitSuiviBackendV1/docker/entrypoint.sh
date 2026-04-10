@@ -29,6 +29,22 @@ if [ -n "$DB_PASSWORD" ]; then
   sed -i "s/^# DB_PASSWORD=.*/DB_PASSWORD=${DB_PASSWORD}/; s/^DB_PASSWORD=.*/DB_PASSWORD=${DB_PASSWORD}/" .env
 fi
 
+if [ -n "$SESSION_DRIVER" ]; then
+  if grep -q '^SESSION_DRIVER=' .env; then
+    sed -i "s/^SESSION_DRIVER=.*/SESSION_DRIVER=${SESSION_DRIVER}/" .env
+  else
+    printf '\nSESSION_DRIVER=%s\n' "$SESSION_DRIVER" >> .env
+  fi
+fi
+
+if [ -n "$CACHE_STORE" ]; then
+  if grep -q '^CACHE_STORE=' .env; then
+    sed -i "s/^CACHE_STORE=.*/CACHE_STORE=${CACHE_STORE}/" .env
+  else
+    printf '\nCACHE_STORE=%s\n' "$CACHE_STORE" >> .env
+  fi
+fi
+
 php artisan optimize:clear
 
 if ! grep -q '^APP_KEY=base64:' .env; then

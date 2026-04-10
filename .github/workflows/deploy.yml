@@ -1,0 +1,95 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: petitsuivi-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on:
+      - self-hosted
+      - linux
+      - x64
+      - petitsuivi-app
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Select services to rebuild
+        id: changes
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          BEFORE="${{ github.event.before }}"
+          AFTER="${{ github.sha }}"
+
+          add_service() {
+            local service="$1"
+            if [[ " ${SERVICES[*]} " != *" ${service} "* ]]; then
+              SERVICES+=("$service")
+            fi
+          }
+
+          SERVICES=()
+
+          if [[ -z "$BEFORE" || "$BEFORE" =~ ^0+$ ]]; then
+            SERVICES=(mysql backend frontreact copilot phpmyadmin)
+          else
+            while IFS= read -r file; do
+              case "$file" in
+                PetitSuiviBackendV1/*)
+                  add_service backend
+                  ;;
+                PetitSuiviAdminFrontEndV1/*)
+                  add_service frontreact
+                  ;;
+                copilot-api/*)
+                  add_service copilot
+                  ;;
+                docker-compose.yml|switch_env.sh|scripts/*|.github/workflows/*)
+                  add_service mysql
+                  add_service backend
+                  add_service frontreact
+                  add_service copilot
+                  add_service phpmyadmin
+                  ;;
+              esac
+            done < <(git diff --name-only "$BEFORE" "$AFTER")
+          fi
+
+          if [[ ${#SERVICES[@]} -eq 0 ]]; then
+            echo "services=" >> "$GITHUB_OUTPUT"
+            echo "No deployable service changes detected."
+          else
+            echo "services=${SERVICES[*]}" >> "$GITHUB_OUTPUT"
+            echo "Selected services: ${SERVICES[*]}"
+          fi
+
+      - name: Deploy updated services
+        if: steps.changes.outputs.services != ''
+        shell: bash
+        run: |
+          bash scripts/deploy.sh /home/test/PetitSuivi-App ${{ steps.changes.outputs.services }}
+
+      - name: Verify public endpoints
+        if: steps.changes.outputs.services != ''
+        shell: bash
+        run: |
+          curl -fsS https://petitsuivi.me >/dev/null
+          curl -fsS https://api.petitsuivi.me/ >/dev/null
+          curl -fsS -X OPTIONS https://api.petitsuivi.me/api/login \
+            -H 'Origin: https://petitsuivi.me' \
+            -H 'Access-Control-Request-Method: POST' >/dev/null
