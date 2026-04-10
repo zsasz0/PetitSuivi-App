@@ -427,7 +427,7 @@ const Dashboard = () => {
   return (
     <Box m="16px" pb="28px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="TABLEAU DE BORD" subtitle="Bienvenue dans votre tableau de bord1 — Toutes les années scolaires" />
+        <Header title="TABLEAU DE BORD" subtitle="Bienvenue dans votre tableau de bord — Toutes les années scolaires" />
       </Box>
 
       {/* Year-End Alert Banner */}
