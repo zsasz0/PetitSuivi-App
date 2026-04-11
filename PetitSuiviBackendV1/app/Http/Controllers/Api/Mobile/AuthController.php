@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api\Mobile;
 
 use App\Http\Controllers\Controller;
 use App\Models\Account;
+use App\Support\AccountEmailUniqueness;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
@@ -267,7 +269,7 @@ class AuthController extends Controller
             'cin' => 'required',
             'firstName' => 'required',
             'lastName' => 'required',
-            'email' => 'required|email',
+            'email' => ['required', 'email', 'max:255', AccountEmailUniqueness::validationRule()],
             'password' => 'required',
         ]);
 
@@ -287,7 +289,7 @@ class AuthController extends Controller
                 'Firstname' => $request->firstName,
                 'Lastname' => $request->lastName,
                 'Birthdate' => $request->birthdate,
-                'Email' => $request->email,
+                'Email' => AccountEmailUniqueness::trim($request->email),
                 'Phone' => $request->phone,
                 'Adresse' => $request->adresse,
                 'Password' => Hash::make($request->password),
@@ -362,7 +364,22 @@ class AuthController extends Controller
                 'success' => true,
                 'message' => 'Inscription réussie.'
             ]);
+        } catch (QueryException $e) {
+            DB::rollBack();
 
+            if (AccountEmailUniqueness::isDuplicateTriggerException($e)) {
+                return response()->json([
+                    'message' => 'The given data was invalid.',
+                    'errors' => [
+                        'email' => [AccountEmailUniqueness::DUPLICATE_EMAIL_MESSAGE],
+                    ],
+                ], 422);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de l\'inscription: ' . $e->getMessage()
+            ], 500);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([

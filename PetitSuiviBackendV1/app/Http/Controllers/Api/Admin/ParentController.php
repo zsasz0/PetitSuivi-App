@@ -4,16 +4,18 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Mail\ParentApprovedMail;
+use App\Support\AccountEmailUniqueness;
 use Illuminate\Http\Request;
 use App\Models\Person;
 use App\Models\Account;
 use App\Models\Child;
+use App\Models\Parent as ParentModel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Validation\Rule;
+use Illuminate\Database\QueryException;
 
 /**
  * @group Admin - Parents
@@ -127,7 +129,7 @@ class ParentController extends Controller
             'lastName' => 'required|string|max:255',
             'birthdate' => 'nullable|date',
             'phone' => 'nullable',
-            'email' => 'required|email|max:255|unique:Account,Email',
+            'email' => ['required', 'email', 'max:255', AccountEmailUniqueness::validationRule()],
             'adresse' => 'nullable|string',
             'password' => 'required|string|min:6|confirmed',
             'children' => 'nullable|array',
@@ -154,7 +156,7 @@ class ParentController extends Controller
             $account->Lastname = $request->lastName;
             $account->Birthdate = $request->birthdate;
             $account->Phone = $request->phone;
-            $account->Email = $request->email;
+            $account->Email = AccountEmailUniqueness::trim($request->email);
             $account->Adresse = $request->adresse;
             $account->Password = Hash::make($request->password);
             $account->RoleID = 3;
@@ -180,7 +182,22 @@ class ParentController extends Controller
             return response()->json([
                 'message' => 'Parent added successfully.'
             ], 201);
-            
+        } catch (QueryException $e) {
+            DB::rollBack();
+
+            if (AccountEmailUniqueness::isDuplicateTriggerException($e)) {
+                return response()->json([
+                    'message' => 'The given data was invalid.',
+                    'errors' => [
+                        'email' => [AccountEmailUniqueness::DUPLICATE_EMAIL_MESSAGE],
+                    ],
+                ], 422);
+            }
+
+            return response()->json([
+                'message' => 'Failed to create parent.',
+                'error' => $e->getMessage()
+            ], 500);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -223,7 +240,7 @@ class ParentController extends Controller
             'lastName' => 'required|string|max:255',
             'birthdate' => 'nullable|date',
             'phone' => 'nullable',
-            'email' => ['required', 'email', 'max:255', Rule::unique('Account', 'Email')->ignore($account->AccountID, 'AccountID')],
+            'email' => ['required', 'email', 'max:255', AccountEmailUniqueness::validationRule($account->AccountID)],
             'adresse' => 'nullable|string',
             'password' => 'nullable|string|min:6|confirmed',
         ]);
@@ -232,14 +249,27 @@ class ParentController extends Controller
         $account->Lastname = $request->lastName;
         $account->Birthdate = $request->birthdate;
         $account->Phone = $request->phone;
-        $account->Email = $request->email;
+        $account->Email = AccountEmailUniqueness::trim($request->email);
         $account->Adresse = $request->adresse;
         
         if ($request->filled('password')) {
             $account->Password = Hash::make($request->password);
         }
-        
-        $account->save();
+
+        try {
+            $account->save();
+        } catch (QueryException $e) {
+            if (AccountEmailUniqueness::isDuplicateTriggerException($e)) {
+                return response()->json([
+                    'message' => 'The given data was invalid.',
+                    'errors' => [
+                        'email' => [AccountEmailUniqueness::DUPLICATE_EMAIL_MESSAGE],
+                    ],
+                ], 422);
+            }
+
+            throw $e;
+        }
 
         return response()->json([
             'message' => 'Parent updated successfully.'

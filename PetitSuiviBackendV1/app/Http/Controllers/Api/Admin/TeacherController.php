@@ -7,8 +7,10 @@ use App\Mail\TeacherCredentialsMail;
 use App\Models\Account;
 use App\Models\Person;
 use App\Models\Teacher;
+use App\Support\AccountEmailUniqueness;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -99,7 +101,7 @@ class TeacherController extends Controller
             'cin' => 'required|integer|unique:Account,Cin',
             'firstName' => 'required|string|max:255',
             'lastName' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:Account,Email',
+            'email' => ['required', 'email', 'max:255', AccountEmailUniqueness::validationRule()],
             'adresse' => 'required|string|max:255',
             'password' => 'required|string|min:6|confirmed',
         ]);
@@ -117,7 +119,7 @@ class TeacherController extends Controller
                 'Cin' => $request->cin,
                 'Firstname' => $request->firstName,
                 'Lastname' => $request->lastName,
-                'Email' => $request->email,
+                'Email' => AccountEmailUniqueness::trim($request->email),
                 'Phone' => $request->phone,
                 'Birthdate' => $request->birthdate,
                 'Adresse' => $request->adresse,
@@ -145,6 +147,19 @@ class TeacherController extends Controller
             }
 
             return response()->json(['message' => 'Enseignant ajouté avec succès'], 201);
+        } catch (QueryException $e) {
+            DB::rollBack();
+
+            if (AccountEmailUniqueness::isDuplicateTriggerException($e)) {
+                return response()->json([
+                    'message' => 'The given data was invalid.',
+                    'errors' => [
+                        'email' => [AccountEmailUniqueness::DUPLICATE_EMAIL_MESSAGE],
+                    ],
+                ], 422);
+            }
+
+            return response()->json(['message' => 'Erreur lors de la création', 'error' => $e->getMessage()], 500);
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json(['message' => 'Erreur lors de la création', 'error' => $e->getMessage()], 500);
@@ -181,14 +196,14 @@ class TeacherController extends Controller
         $request->validate([
             'firstName' => 'required|string|max:255',
             'lastName' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:Account,Email,' . $account->AccountID . ',AccountID',
+            'email' => ['required', 'email', 'max:255', AccountEmailUniqueness::validationRule($account->AccountID)],
             'password' => 'nullable|string|min:6|confirmed',
         ]);
 
         $updateData = [
             'Firstname' => $request->firstName,
             'Lastname' => $request->lastName,
-            'Email' => $request->email,
+            'Email' => AccountEmailUniqueness::trim($request->email),
             'Phone' => $request->phone,
             'Birthdate' => $request->birthdate,
             'Adresse' => $request->adresse,
@@ -198,7 +213,20 @@ class TeacherController extends Controller
             $updateData['Password'] = Hash::make($request->password);
         }
 
-        $account->update($updateData);
+        try {
+            $account->update($updateData);
+        } catch (QueryException $e) {
+            if (AccountEmailUniqueness::isDuplicateTriggerException($e)) {
+                return response()->json([
+                    'message' => 'The given data was invalid.',
+                    'errors' => [
+                        'email' => [AccountEmailUniqueness::DUPLICATE_EMAIL_MESSAGE],
+                    ],
+                ], 422);
+            }
+
+            throw $e;
+        }
 
         if ($request->boolean('send_credentials') && $request->filled('password') && !empty($account->Email)) {
             try {

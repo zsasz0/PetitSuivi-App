@@ -29,6 +29,7 @@ class GlassTextField extends StatelessWidget {
   final bool isPassword;
   final TextInputType keyboardType;
   final int maxLines;
+  final String? errorText;
 
   const GlassTextField({
     super.key,
@@ -38,6 +39,7 @@ class GlassTextField extends StatelessWidget {
     this.isPassword = false,
     this.keyboardType = TextInputType.text,
     this.maxLines = 1,
+    this.errorText,
   });
 
   @override
@@ -73,6 +75,7 @@ class GlassTextField extends StatelessWidget {
                 ),
                 prefixIcon: Icon(icon, color: _mutedText),
                 border: InputBorder.none,
+                errorText: errorText,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 20,
                   vertical: 18,

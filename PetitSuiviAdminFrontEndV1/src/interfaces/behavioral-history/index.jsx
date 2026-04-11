@@ -3,7 +3,6 @@ import {
   CircularProgress,
   Collapse,
   FormControl,
-  IconButton,
   InputAdornment,
   MenuItem,
   Pagination,
@@ -11,7 +10,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import SearchIcon from "@mui/icons-material/Search";
 import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
 import Groups2OutlinedIcon from "@mui/icons-material/Groups2Outlined";
@@ -181,17 +179,6 @@ const BehavioralHistory = ({ showHeader = true }) => {
     setPage(1);
   }, [searchTerm]);
 
-  const handleDeleteHistory = async (id) => {
-    if (!window.confirm("Supprimer cette entrée d'historique ?")) return;
-
-    try {
-      await api.delete(`/admin/reports/analysis-history/${id}`);
-      setAnalysisHistory((previous) => previous.filter((entry) => entry.id !== id));
-    } catch (error) {
-      alert(`Erreur: ${error?.response?.data?.message || error.message}`);
-    }
-  };
-
   const filteredHistory = useMemo(() => {
     if (!searchTerm) return analysisHistory;
 
@@ -309,16 +296,6 @@ const BehavioralHistory = ({ showHeader = true }) => {
                         <Box sx={styles.countPill(entry.analyzed_signalement_ids?.length || 0)}>
                           {entry.analyzed_signalement_ids?.length || 0} élément(s)
                         </Box>
-                        <IconButton
-                          size="small"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            handleDeleteHistory(entry.id);
-                          }}
-                          sx={styles.deleteButton}
-                        >
-                          <DeleteOutlineIcon fontSize="small" />
-                        </IconButton>
                         <ExpandMoreRoundedIcon
                           sx={{
                             color: colors.grey[300],
@@ -577,14 +554,6 @@ function getStyles(colors, isDark) {
       backgroundColor: mutedHeader,
       border: `1px solid ${border}`,
     }),
-    deleteButton: {
-      color: colors.redAccent[400],
-      border: `1px solid ${isDark ? "rgba(248, 113, 113, 0.16)" : "rgba(248, 113, 113, 0.18)"}`,
-      backgroundColor: isDark ? "rgba(127, 29, 29, 0.14)" : "rgba(254, 226, 226, 0.72)",
-      "&:hover": {
-        backgroundColor: isDark ? "rgba(127, 29, 29, 0.22)" : "rgba(254, 226, 226, 0.92)",
-      },
-    },
     expandedPanel: {
       p: "16px",
       borderTop: `1px solid ${border}`,

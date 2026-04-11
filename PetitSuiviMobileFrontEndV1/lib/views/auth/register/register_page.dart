@@ -109,6 +109,7 @@ class _RegisterPageState extends State<RegisterPage>
 
   bool _isLoading = false;
   List<String> _paymentMethods = _defaultPaymentMethods;
+  String? _emailErrorText;
 
   @override
   void dispose() {
@@ -128,6 +129,28 @@ class _RegisterPageState extends State<RegisterPage>
     super.initState();
     _loadMethods();
     _addChild(); // Start with one child form
+    _emailController.addListener(_clearEmailError);
+  }
+
+  void _clearEmailError() {
+    if (!mounted || _emailErrorText == null) return;
+    setState(() => _emailErrorText = null);
+  }
+
+  String? _extractEmailError(Map<String, dynamic> body) {
+    final errors = body['errors'];
+    if (errors is! Map<String, dynamic>) return null;
+
+    final emailErrors = errors['email'];
+    if (emailErrors is List && emailErrors.isNotEmpty) {
+      return emailErrors.first.toString();
+    }
+
+    if (emailErrors is String && emailErrors.isNotEmpty) {
+      return emailErrors;
+    }
+
+    return null;
   }
 
   // used to load payment methods from the server
@@ -258,6 +281,7 @@ class _RegisterPageState extends State<RegisterPage>
                                 _confirmPasswordController,
                             birthDate: _birthDate,
                             onSelectDate: _selectDate,
+                            emailErrorText: _emailErrorText,
                           )
                         : ChildrenInfoStep(
                             // show children info step
@@ -296,8 +320,10 @@ class _RegisterPageState extends State<RegisterPage>
                         confirmPassword: _confirmPasswordController.text,
                       );
                       if (error != null) {
+                        setState(() => _emailErrorText = null);
                         RegisterUtils.showError(context, error);
                       } else {
+                        setState(() => _emailErrorText = null);
                         setState(() => _currentStep += 1);
                       }
                     } else {
@@ -395,14 +421,16 @@ class _RegisterPageState extends State<RegisterPage>
         body: jsonEncode(payload),
       );
 
-      if (!mounted)
-        return; // check if the widget is still mounted before processing the response
+      if (!mounted) {
+        return;
+      } // check if the widget is still mounted before processing the response
       // decode the response body to geet the message or error
       final body = response.body.isNotEmpty
           ? jsonDecode(response.body) as Map<String, dynamic>
           : <String, dynamic>{}; // decode the response body
       // check if the response is successful
       if (response.statusCode >= 200 && response.statusCode < 300) {
+        setState(() => _emailErrorText = null);
         // check if the response is successful
         Navigator.pushAndRemoveUntil(
           context,
@@ -410,6 +438,16 @@ class _RegisterPageState extends State<RegisterPage>
           (route) => false,
         );
       } else {
+        final emailError = _extractEmailError(body);
+        if (emailError != null) {
+          setState(() {
+            _emailErrorText = emailError;
+            _currentStep = 0;
+          });
+          RegisterUtils.showError(context, emailError);
+          return;
+        }
+
         RegisterUtils.showError(
           context,
           body['message']?.toString() ?? 'Échec de l\'inscription.',

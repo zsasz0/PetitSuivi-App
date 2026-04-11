@@ -656,6 +656,25 @@ const Teachers = () => {
         setIsDeleteDialogOpen(true);
     };
 
+    const applyTeacherApiErrors = (validationErrors, setFieldErrors, setGlobalError, fallbackMessage) => {
+        if (validationErrors?.email?.[0]) {
+            setFieldErrors((previous) => ({ ...previous, email: validationErrors.email[0] }));
+            setGlobalError(validationErrors.email[0]);
+            return;
+        }
+
+        if (validationErrors) {
+            const firstKey = Object.keys(validationErrors)[0];
+            const firstMessage = validationErrors[firstKey]?.[0];
+            if (firstMessage) {
+                setGlobalError(firstMessage);
+                return;
+            }
+        }
+
+        setGlobalError(fallbackMessage);
+    };
+
     const handleEditSubmit = async (e) => {
         e.preventDefault();
         setFormError(""); setEditFormErrors({});
@@ -679,7 +698,7 @@ const Teachers = () => {
             setIsEditDialogOpen(false); setSelectedTeacher(null); fetchTeachers();
         } catch (error) {
             const validationErrors = error.response?.data?.errors;
-            setFormError(validationErrors ? validationErrors[Object.keys(validationErrors)[0]][0] : (error.response?.data?.message || "Erreur lors de la modification."));
+            applyTeacherApiErrors(validationErrors, setEditFormErrors, setFormError, error.response?.data?.message || "Erreur lors de la modification.");
         }
     };
 
@@ -706,7 +725,7 @@ const Teachers = () => {
             setIsAddDialogOpen(false);
         } catch (error) {
             const validationErrors = error.response?.data?.errors;
-            setAddFormError(validationErrors ? validationErrors[Object.keys(validationErrors)[0]][0] : (error.response?.data?.message || "Erreur lors de l'ajout."));
+            applyTeacherApiErrors(validationErrors, setAddFormErrors, setAddFormError, error.response?.data?.message || "Erreur lors de l'ajout.");
         } finally {
             setAddSaving(false);
         }

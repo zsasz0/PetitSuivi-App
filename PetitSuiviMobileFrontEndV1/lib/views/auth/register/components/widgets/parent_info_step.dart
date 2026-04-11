@@ -8,7 +8,7 @@ import 'package:newv/theme_colors.dart';
 
 /// Step 1 of the registration wizard containing parent information.
 ///
-/// This stateless widget renders input fields for the parent to enter 
+/// This stateless widget renders input fields for the parent to enter
 /// their personal info like Name, CIN, Email, and Phone number. This data
 /// is passed back to the `RegisterPage` where it is formatted for the API request.
 
@@ -31,6 +31,7 @@ class ParentInfoStep extends StatelessWidget {
   final TextEditingController confirmPasswordController;
   final String birthDate;
   final VoidCallback onSelectDate;
+  final String? emailErrorText;
 
   const ParentInfoStep({
     super.key,
@@ -44,6 +45,7 @@ class ParentInfoStep extends StatelessWidget {
     required this.confirmPasswordController,
     required this.birthDate,
     required this.onSelectDate,
+    this.emailErrorText,
   });
 
   @override
@@ -133,6 +135,7 @@ class ParentInfoStep extends StatelessWidget {
           label: 'Email',
           icon: Icons.email_outlined,
           keyboardType: TextInputType.emailAddress,
+          errorText: emailErrorText,
         ),
         GlassTextField(
           controller: addressController,
