@@ -116,6 +116,20 @@ class AuthController extends Controller
         ]);
     }
 
+    public function checkRegistrationEmail(Request $request): JsonResponse
+    {
+        $request->validate([
+            'email' => ['required', 'email', 'max:255'],
+        ]);
+
+        $exists = AccountEmailUniqueness::exists($request->email);
+
+        return response()->json([
+            'available' => !$exists,
+            'message' => $exists ? AccountEmailUniqueness::DUPLICATE_EMAIL_MESSAGE : null,
+        ]);
+    }
+
     /**
      * Parent Login
      *

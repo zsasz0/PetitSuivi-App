@@ -304,7 +304,7 @@ class _RegisterPageState extends State<RegisterPage>
                   },
                   // if step is 0 and user clicks next validate parent info and move to children info
                   // if step is 1 and user clicks next validate children info and move to register
-                  onNext: () {
+                  onNext: () async {
                     if (_currentStep == 0) {
                       // validate parent info
                       //validateParentStep function is in register_validators.dart return string error if validation fail or null if validation pass
@@ -323,7 +323,11 @@ class _RegisterPageState extends State<RegisterPage>
                         setState(() => _emailErrorText = null);
                         RegisterUtils.showError(context, error);
                       } else {
-                        setState(() => _emailErrorText = null);
+                        final canContinue = await _checkEmailBeforeNextStep();
+                        if (!canContinue || !mounted) {
+                          return;
+                        }
+
                         setState(() => _currentStep += 1);
                       }
                     } else {
@@ -462,6 +466,57 @@ class _RegisterPageState extends State<RegisterPage>
           () => _isLoading = false,
         ); // set loading to false after the request is completed in order to hide the loading indicator
       }
+    }
+  }
+
+  Future<bool> _checkEmailBeforeNextStep() async {
+    final uri = Uri.parse('$_apiBaseUrl/api/register/check-email');
+
+    try {
+      final response = await http.post(
+        uri,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({'email': _emailController.text.trim()}),
+      );
+
+      if (!mounted) {
+        return false;
+      }
+
+      final body = response.body.isNotEmpty
+          ? jsonDecode(response.body) as Map<String, dynamic>
+          : <String, dynamic>{};
+
+      final emailError = _extractEmailError(body);
+      final available = body['available'] == true;
+
+      if (response.statusCode >= 200 &&
+          response.statusCode < 300 &&
+          available) {
+        setState(() => _emailErrorText = null);
+        return true;
+      }
+
+      final message =
+          emailError ??
+          body['message']?.toString() ??
+          'Cet email est deja utilise.';
+      setState(() => _emailErrorText = message);
+      RegisterUtils.showError(context, message);
+      return false;
+    } catch (_) {
+      if (!mounted) {
+        return false;
+      }
+
+      RegisterUtils.showError(
+        context,
+        'Impossible de verifier l\'email pour le moment.',
+      );
+      return false;
     }
   }
 }

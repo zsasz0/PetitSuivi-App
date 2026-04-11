@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Auth\AuthController;
 // Public Authentication
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [\App\Http\Controllers\Api\Mobile\AuthController::class, 'register']);
+Route::post('/register/check-email', [\App\Http\Controllers\Api\Mobile\AuthController::class, 'checkRegistrationEmail']);
 
 // Mobile Auth
 Route::post('/login/teacher', [\App\Http\Controllers\Api\Mobile\AuthController::class, 'teacherLogin']);
