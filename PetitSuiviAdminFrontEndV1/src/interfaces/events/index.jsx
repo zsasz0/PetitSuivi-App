@@ -543,6 +543,7 @@ const EventFormDialog = ({
                       value={selectedChildren}
                       onChange={(_, value) => {
                         if (value.some((opt) => opt.id === "ALL")) {
+                          // Expand the synthetic "ALL" option into every real child ID so the backend only receives valid ChildIDs.
                           setSelectedChildren(children.filter((child) => child.id !== "ALL"));
                         } else {
                           setSelectedChildren(value);
