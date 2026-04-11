@@ -599,6 +599,8 @@ class InscriptionController extends Controller
             'health_comment'  => 'nullable|string|max:5000',
         ]);
 
+        // Medical comments are child-level data in this app: later re-inscriptions keep the
+        // original medical record context, so comment edits must stay in sync across all forms.
         // Find ALL medical forms for this child
         $medForms = DB::table('Medicalform')
             ->join('Inscription', 'Inscription.InscriptionID', '=', 'Medicalform.InscriptionID')
@@ -867,6 +869,8 @@ class InscriptionController extends Controller
         $exceptions = $request->input('exceptions', []);
 
         DB::transaction(function () use ($childId, $exceptions) {
+            // Food exceptions also belong to the child, not to an individual school-year
+            // inscription. Replacing them by ChildID preserves one long-lived exception set.
             // Get existing exception IDs for this child to clean up pivot
             $existingIds = DB::table('Childfoodexception')
                 ->where('ChildID', $childId)
