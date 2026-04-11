@@ -183,6 +183,23 @@ const formatMonthLabel = (year, month) => {
   });
 };
 
+const getTargetMonthKey = (targetMonth) => {
+  if (targetMonth === null || targetMonth === undefined || targetMonth === "") {
+    return null;
+  }
+
+  if (typeof targetMonth === "string" && /^\d{4}-\d{2}$/.test(targetMonth)) {
+    return targetMonth;
+  }
+
+  const monthNumber = Number(targetMonth);
+  if (Number.isNaN(monthNumber) || monthNumber < 1 || monthNumber > 12) {
+    return null;
+  }
+
+  return String(monthNumber).padStart(2, "0");
+};
+
 /**
  * getMonthsInRange
  * Generates array of month options between two dates.
@@ -1085,6 +1102,18 @@ const Payments = () => {
     }
 
     const txs = historyRow.transactions || [];
+    const transactionsByMonth = new Map();
+
+    txs.forEach((tx) => {
+      const targetMonthKey = getTargetMonthKey(tx?.target_month);
+      if (!targetMonthKey) return;
+
+      transactionsByMonth.set(targetMonthKey, tx);
+    });
+
+    const firstUnpaidIndex = monthsList.findIndex((month) => {
+      return !transactionsByMonth.has(month.value) && !transactionsByMonth.has(month.value.slice(5));
+    });
 
     return (
       <Box display="flex" flexDirection="column" gap="8px" mt="15px">
@@ -1097,9 +1126,9 @@ const Payments = () => {
           Échéancier Mensuel ({formatCurrency(monthlyAmount)} / mois)
         </Typography>
         {monthsList.map((m, i) => {
-          const isPaid = i < txs.length;
-          const isNext = i === txs.length;
-          const txForMonth = isPaid ? txs[i] : null;
+          const txForMonth = transactionsByMonth.get(m.value) || transactionsByMonth.get(m.value.slice(5)) || null;
+          const isPaid = Boolean(txForMonth);
+          const isNext = !isPaid && (firstUnpaidIndex === -1 ? false : i === firstUnpaidIndex);
 
           return (
             <Box
