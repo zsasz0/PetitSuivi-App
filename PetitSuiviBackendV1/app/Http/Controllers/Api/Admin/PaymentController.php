@@ -184,11 +184,15 @@ class PaymentController extends Controller
 
             // Partial payments as flat array
             $ppList = $partials->get($payId, collect())->map(function ($pp) {
+                $targetMonth = $pp->Targetmonth !== null
+                    ? str_pad((string) ((int) $pp->Targetmonth), 2, '0', STR_PAD_LEFT)
+                    : null;
+
                 return [
                     'id'           => $pp->PartialpaymentID,
                     'value'        => (float) $pp->Value,
                     'date'         => $pp->Date,
-                    'target_month' => $pp->Targetmonth,
+                    'target_month' => $targetMonth,
                 ];
             })->values()->toArray();
 

@@ -153,6 +153,7 @@ class PartialPaymentController extends Controller
                 'PaymentID'        => $payment->PaymentID,
                 'Value'            => round($amount, 2),
                 'Date'             => $validated['date'],
+                'target_month'     => $targetMonthInt !== null ? str_pad((string) $targetMonthInt, 2, '0', STR_PAD_LEFT) : null,
                 'Targetmonth'      => $targetMonthInt,
             ],
         ], 201);
