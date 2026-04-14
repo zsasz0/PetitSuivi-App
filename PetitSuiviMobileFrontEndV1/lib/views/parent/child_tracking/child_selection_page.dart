@@ -25,6 +25,19 @@ import 'package:newv/theme_colors.dart';
 //   - POST /api/notifications/pickup (Via PickupNotificationService)
 // Dependencies: AuthSession, PickupNotificationService, ChildDetailsPage, ReRegistrationPage.
 
+String? resolveCurrentClassName(Object? rawClasses) {
+  if (rawClasses is! List || rawClasses.isEmpty) {
+    return null;
+  }
+
+  final currentClass = rawClasses.first;
+  if (currentClass is! Map) {
+    return null;
+  }
+
+  return currentClass['name']?.toString();
+}
+
 /// A page that lists all children associated with the logged-in parent.
 class ChildSelectionPage extends StatefulWidget {
   const ChildSelectionPage({super.key});
@@ -1084,13 +1097,6 @@ class _ChildSelectionPageState extends State<ChildSelectionPage> {
   }
 
   String? _getCurrentClassName(Child child) {
-    final classes = child.extraData['classes'];
-    if (classes is List && classes.isNotEmpty) {
-      final latestClass = classes.last;
-      if (latestClass is Map && latestClass.containsKey('name')) {
-        return latestClass['name']?.toString();
-      }
-    }
-    return null;
+    return resolveCurrentClassName(child.extraData['classes']);
   }
 }
