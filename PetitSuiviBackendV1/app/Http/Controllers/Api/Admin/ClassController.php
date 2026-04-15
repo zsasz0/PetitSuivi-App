@@ -477,6 +477,14 @@ class ClassController extends Controller
         try {
             DB::beginTransaction();
 
+            // Delete Plandayactivity records for all Plandays belonging to this class
+            $plandayIds = DB::table('Planday')->where('ClassID', $id)->pluck('PlandayID');
+            if ($plandayIds->isNotEmpty()) {
+                DB::table('Plandayactivity')->whereIn('PlandayID', $plandayIds)->delete();
+            }
+            // Delete Planday records for this class
+            DB::table('Planday')->where('ClassID', $id)->delete();
+
             DB::table('TeacherClass')->where('ClassID', $id)->delete();
             DB::table('ChildClass')->where('ClassID', $id)->delete();
             DB::table('Class')->where('ClassID', $id)->delete();

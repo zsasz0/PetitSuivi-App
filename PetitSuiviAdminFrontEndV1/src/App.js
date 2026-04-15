@@ -22,26 +22,25 @@ import Dashboard from "./interfaces/dashboard";
 
 // Theme & Styling
 import { Box, CssBaseline, ThemeProvider, useTheme } from "@mui/material";
-import { ColorModeContext, useMode, tokens } from "./theme";
+import { ColorModeContext, useMode } from "./theme";
 
 // Application Interfaces (Pages)
-import Teachers from "./interfaces/teachers";
-import Parents from "./interfaces/parents";
-import Preschool from "./interfaces/classes/preschool";
-import Kindergarten from "./interfaces/classes/kindergarten";
+import { Parent as Parents, Teacher as Teachers } from "./interfaces/ParentAndTeacher";
+import { PreschoolClasses as Preschool } from "./interfaces/classes";
+import { KindergartenClasses as Kindergarten } from "./interfaces/classes";
 import Inscriptions from "./interfaces/inscriptions";
 import Payments from "./interfaces/payments";
 import Activities from "./interfaces/activities";
-import FoodItems from "./interfaces/food-items";
-import FoodExceptions from "./interfaces/food-exceptions";
-import ReportsTabsPage from "./interfaces/reports/ReportsTabsPage";
-import PaymentReports from "./interfaces/payment-reports";
+import FoodItems from "./interfaces/food/ManageMeals";
+import FoodExceptions from "./interfaces/food/manageFoodExceptions";
+import ReportsTabsPage from "./interfaces/reports";
+import PaymentReports from "./interfaces/reports/paymentReports";
 import Parameters from "./interfaces/parameters";
 import Events from "./interfaces/events";
-import MealsPlanning from "./interfaces/meals";
+import MealsPlanning from "./interfaces/food/schedule";
 
 // Authentication
-import Login from "./interfaces/login/Login";
+import Login from "./interfaces/login";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import appIcon from "./assets/appImage.png";
 
@@ -73,7 +72,6 @@ const ProtectedRoute = ({ children }) => {
  */
 const AppLayout = ({ isSidebar, setIsSidebar }) => {
   const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
   const isDark = theme.palette.mode === "dark";
 
   return (

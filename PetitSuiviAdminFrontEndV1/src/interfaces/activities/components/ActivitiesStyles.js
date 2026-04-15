@@ -1,0 +1,351 @@
+import { getAdminPrimaryButtonSx, getAdminSecondaryButtonSx } from "../../../utils/adminActionButtons";
+
+export const getStyles = (colors, isDark) => {
+  const surface = isDark ? "rgba(15, 23, 32, 0.88)" : "rgba(255, 255, 255, 0.82)";
+  const surfaceAlt = isDark ? "rgba(19, 28, 39, 0.92)" : "#f8fafc";
+  const border = isDark ? "rgba(148, 163, 184, 0.16)" : "rgba(148, 163, 184, 0.28)";
+  const headerBg = isDark ? "rgba(148, 163, 184, 0.08)" : "#eef2f7";
+
+  return {
+    toolbarShell: {
+      mb: "18px",
+      px: { xs: "14px", md: "18px" },
+      py: { xs: "14px", md: "16px" },
+      borderRadius: "18px",
+      background: surface,
+      border: `1px solid ${border}`,
+      display: "flex",
+      alignItems: { xs: "stretch", md: "center" },
+      justifyContent: "flex-start",
+      gap: "14px",
+      flexDirection: { xs: "column", md: "row" },
+      boxShadow: isDark ? "0 16px 30px rgba(2, 6, 23, 0.24)" : "0 14px 28px rgba(148, 163, 184, 0.16)",
+    },
+    toolbarGroup: {
+      display: "flex",
+      alignItems: { xs: "stretch", sm: "center" },
+      gap: "12px",
+      flexDirection: { xs: "column", sm: "row" },
+    },
+    toolbarLabel: {
+      fontSize: "0.82rem",
+      fontWeight: 700,
+      color: colors.grey[300],
+      whiteSpace: "nowrap",
+    },
+    selectControl: {
+      minWidth: 210,
+      "& .MuiOutlinedInput-root": {
+        borderRadius: "12px",
+        backgroundColor: surfaceAlt,
+      },
+    },
+    tabsWrap: {
+      borderBottom: `1px solid ${border}`,
+      mb: "20px",
+      px: { xs: 0, md: 1 },
+    },
+    tabsSx: {
+      minHeight: 46,
+      "& .MuiTab-root": {
+        color: colors.grey[300],
+        fontSize: "0.95rem",
+        textTransform: "none",
+        fontWeight: 600,
+        opacity: 1,
+        minHeight: 46,
+        px: 0,
+        mr: 3,
+      },
+      "& .Mui-selected": {
+        color: `${colors.greenAccent[400]} !important`,
+        fontWeight: 800,
+      },
+      "& .MuiTabs-indicator": {
+        backgroundColor: colors.greenAccent[500],
+        height: "4px",
+        borderRadius: "999px",
+      },
+    },
+    summaryGrid: {
+      display: "grid",
+      gridTemplateColumns: { xs: "1fr", md: "repeat(3, minmax(0, 1fr))" },
+      gap: "14px",
+      mb: "18px",
+    },
+    summaryCard: (accent) => ({
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: "14px",
+      px: "18px",
+      py: "16px",
+      borderRadius: "18px",
+      background: surface,
+      border: `1px solid ${border}`,
+      boxShadow: isDark ? "0 18px 34px rgba(2, 6, 23, 0.26)" : "0 16px 32px rgba(148, 163, 184, 0.16)",
+      borderLeft: `4px solid ${accent}`,
+    }),
+    summaryLabel: {
+      fontSize: "0.78rem",
+      letterSpacing: "0.04em",
+      textTransform: "uppercase",
+      color: colors.grey[400],
+      mb: "4px",
+    },
+    summaryValue: {
+      fontSize: "1.45rem",
+      lineHeight: 1,
+      fontWeight: 800,
+      color: colors.grey[100],
+    },
+    summaryIconWrap: (accent) => ({
+      width: 42,
+      height: 42,
+      borderRadius: "14px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: `${accent}12`,
+      border: `1px solid ${accent}28`,
+      color: accent,
+      flexShrink: 0,
+    }),
+    sectionCard: {
+      borderRadius: "22px",
+      background: surface,
+      border: `1px solid ${border}`,
+      boxShadow: isDark ? "0 18px 34px rgba(2, 6, 23, 0.28)" : "0 16px 32px rgba(148, 163, 184, 0.16)",
+      overflow: "hidden",
+    },
+    sectionHeader: {
+      px: { xs: "16px", md: "22px" },
+      py: { xs: "16px", md: "18px" },
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: { xs: "flex-start", md: "center" },
+      gap: "14px",
+      flexDirection: { xs: "column", md: "row" },
+      borderBottom: `1px solid ${border}`,
+    },
+    sectionTitle: {
+      fontSize: "1.04rem",
+      fontWeight: 800,
+      color: colors.grey[100],
+    },
+    sectionSubtitle: {
+      mt: "4px",
+      fontSize: "0.84rem",
+      color: colors.grey[400],
+      lineHeight: 1.6,
+    },
+    sectionActionButton: {
+      minHeight: 40,
+      px: "16px",
+      ...getAdminPrimaryButtonSx(),
+    },
+    datagridSx: {
+      borderRadius: "22px",
+      overflow: "hidden",
+      border: `1px solid ${border}`,
+      backgroundColor: surface,
+      "& .MuiDataGrid-root": { border: "none", backgroundColor: "transparent" },
+      "& .MuiDataGrid-main": { borderRadius: 0 },
+      "& .MuiDataGrid-cell": {
+        borderBottom: `1px solid ${border}`,
+        color: colors.grey[100],
+        py: "16px",
+        alignItems: "center",
+      },
+      "& .MuiDataGrid-columnHeaders": {
+        backgroundColor: headerBg,
+        borderBottom: `1px solid ${border}`,
+      },
+      "& .MuiDataGrid-columnHeader": {
+        color: colors.grey[300],
+        fontSize: "0.78rem",
+        fontWeight: 800,
+        textTransform: "uppercase",
+        letterSpacing: "0.05em",
+      },
+      "& .MuiDataGrid-columnSeparator": { color: border },
+      "& .MuiDataGrid-virtualScroller": { backgroundColor: surface },
+      "& .MuiDataGrid-row": {
+        transition: "background-color 0.2s ease",
+        "&:hover": {
+          backgroundColor: isDark ? "rgba(30, 41, 59, 0.58) !important" : "rgba(241, 245, 249, 0.92) !important",
+        },
+      },
+      "& .MuiDataGrid-footerContainer": {
+        borderTop: `1px solid ${border}`,
+        backgroundColor: surfaceAlt,
+      },
+      "& .MuiTablePagination-root, & .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows": {
+        color: colors.grey[300],
+      },
+      "& .MuiIconButton-root": { color: colors.grey[300] },
+      "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+        color: `${colors.grey[100]} !important`,
+      },
+      "& .name-column--cell": { color: colors.grey[100] },
+    },
+    subtleIconButton: {
+      width: 32,
+      height: 32,
+      borderRadius: "10px",
+      border: `1px solid ${border}`,
+      backgroundColor: surfaceAlt,
+      color: colors.grey[200],
+      "&:hover": {
+        backgroundColor: isDark ? "rgba(30, 41, 59, 0.82)" : "#eef2f7",
+      },
+    },
+    dangerIconButton: {
+      width: 32,
+      height: 32,
+      borderRadius: "10px",
+      border: `1px solid ${isDark ? "rgba(248, 113, 113, 0.16)" : "rgba(248, 113, 113, 0.18)"}`,
+      backgroundColor: isDark ? "rgba(127, 29, 29, 0.14)" : "rgba(254, 226, 226, 0.72)",
+      color: colors.redAccent[400],
+      "&:hover": {
+        backgroundColor: isDark ? "rgba(127, 29, 29, 0.22)" : "rgba(254, 226, 226, 0.92)",
+      },
+    },
+    criteriaTagChip: {
+      backgroundColor: isDark ? "rgba(20, 184, 166, 0.14)" : "rgba(13, 148, 136, 0.10)",
+      color: colors.greenAccent[400],
+      border: `1px solid ${isDark ? "rgba(45, 212, 191, 0.16)" : "rgba(13, 148, 136, 0.16)"}`,
+      fontWeight: 700,
+    },
+    criteriaCountChip: {
+      backgroundColor: headerBg,
+      color: colors.grey[300],
+      border: `1px solid ${border}`,
+      fontWeight: 700,
+    },
+    formCard: {
+      mt: "20px",
+      borderRadius: "22px",
+      background: surface,
+      border: `1px solid ${border}`,
+      boxShadow: isDark ? "0 18px 34px rgba(2, 6, 23, 0.28)" : "0 16px 32px rgba(148, 163, 184, 0.16)",
+      p: { xs: "18px", md: "22px" },
+    },
+    filledInputSx: {
+      "& .MuiFilledInput-root, & .MuiOutlinedInput-root": {
+        borderRadius: "14px",
+        backgroundColor: surfaceAlt,
+      },
+      "& .MuiInputBase-input, & .MuiSelect-select": {
+        color: isDark ? colors.grey[100] : "#0f172a",
+      },
+      "& .MuiInputLabel-root": {
+        color: colors.grey[400],
+        fontWeight: 600,
+        px: "6px",
+        backgroundColor: surfaceAlt,
+        borderRadius: "999px",
+      },
+      "& .MuiInputLabel-root.Mui-focused": {
+        color: isDark ? "#94a3b8" : "#475569",
+        backgroundColor: surfaceAlt,
+      },
+      "& .MuiInputLabel-root.MuiInputLabel-shrink": {
+        color: isDark ? colors.grey[300] : "#475569",
+        backgroundColor: surfaceAlt,
+      },
+      "& .MuiOutlinedInput-notchedOutline": {
+        borderColor: colors.primary[600],
+      },
+      "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+        borderColor: colors.grey[400],
+      },
+      "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+        borderColor: isDark ? "#94a3b8" : "#475569",
+        borderWidth: "1px",
+      },
+    },
+    helperPanel: {
+      display: "flex",
+      alignItems: "center",
+      gap: "12px",
+      mt: "8px",
+      p: "12px 14px",
+      borderRadius: "14px",
+      backgroundColor: surfaceAlt,
+      border: `1px solid ${border}`,
+      flexWrap: "wrap",
+    },
+    helperLabel: {
+      fontSize: "0.78rem",
+      fontWeight: 700,
+      color: colors.grey[300],
+      whiteSpace: "nowrap",
+    },
+    primaryButton: {
+      minHeight: 40,
+      px: "18px",
+      ...getAdminPrimaryButtonSx(),
+    },
+    secondaryButton: {
+      minHeight: 40,
+      px: "16px",
+      ...getAdminSecondaryButtonSx(),
+    },
+    monthNavCard: {
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: "14px",
+      px: "16px",
+      py: "10px",
+      borderRadius: "999px",
+      background: surface,
+      border: `1px solid ${border}`,
+      boxShadow: isDark ? "0 12px 24px rgba(2, 6, 23, 0.20)" : "0 10px 20px rgba(148, 163, 184, 0.12)",
+    },
+    monthNavButton: {
+      minWidth: 36,
+      width: 36,
+      height: 36,
+      borderRadius: "999px",
+      color: colors.grey[100],
+      border: `1px solid ${border}`,
+      backgroundColor: surfaceAlt,
+    },
+    calendarGrid: {
+      display: "grid",
+      gridTemplateColumns: { xs: "1fr", md: "repeat(2, minmax(0, 1fr))", xl: "repeat(3, minmax(0, 1fr))" },
+      gap: "16px",
+      mb: "20px",
+    },
+    monthCard: (isInPlanning, isCurrentMonth) => ({
+      backgroundColor: isInPlanning ? surface : isDark ? "rgba(30, 41, 59, 0.48)" : "rgba(241, 245, 249, 0.88)",
+      opacity: isInPlanning ? 1 : 0.68,
+      borderRadius: "18px",
+      overflow: "hidden",
+      boxShadow: isDark ? "0 14px 26px rgba(2, 6, 23, 0.20)" : "0 12px 24px rgba(148, 163, 184, 0.14)",
+      border: isCurrentMonth ? `1px solid ${colors.greenAccent[500]}` : `1px solid ${border}`,
+    }),
+    monthHeader: (isInPlanning) => ({
+      cursor: isInPlanning ? "pointer" : "default",
+      transition: "background-color 0.2s ease",
+      "&:hover": {
+        backgroundColor: isInPlanning ? (isDark ? "rgba(30, 41, 59, 0.64)" : "rgba(241, 245, 249, 0.92)") : "inherit",
+      },
+    }),
+    dialogPaper: {
+      backgroundColor: colors.primary[400],
+      color: colors.grey[100],
+      borderRadius: "12px",
+    },
+    dialogTitle: {
+      fontWeight: "bold",
+      borderBottom: `1px solid ${colors.primary[500]}`,
+    },
+    dialogActions: {
+      p: 2,
+      borderTop: `1px solid ${colors.primary[500]}`,
+    },
+  };
+};

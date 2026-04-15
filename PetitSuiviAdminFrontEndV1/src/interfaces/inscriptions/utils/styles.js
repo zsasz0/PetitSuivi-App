@@ -1,0 +1,252 @@
+/**
+ * Base styling rules.
+ * @param {object} colors The theme colors mapping
+ * @param {boolean} isDark Whether the current theme is dark
+ * @returns {object} Object map defining styles
+ */
+export const getStyles = (colors, isDark) => ({
+    statsGrid: {
+        display: "grid",
+        gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", xl: "repeat(5, 1fr)" },
+        gap: "14px",
+        mb: "20px",
+    },
+    statCard: {
+        backgroundColor: colors.primary[400],
+        display: "flex",
+        alignItems: "center",
+        gap: "14px",
+        p: "16px 18px",
+        borderRadius: "14px",
+        border: `1px solid ${colors.primary[500]}`,
+        boxShadow: "0px 10px 24px rgba(0, 0, 0, 0.08)",
+    },
+    statIcon: {
+        width: 48,
+        height: 48,
+        borderRadius: "14px",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexShrink: 0,
+    },
+    gridContainer: {
+        "& .MuiDataGrid-root": {
+            border: `1px solid ${colors.primary[500]}`,
+            borderRadius: "16px",
+            overflow: "hidden",
+            backgroundColor: colors.primary[400],
+        },
+        "& .MuiDataGrid-cell": {
+            borderBottom: `1px solid ${colors.primary[500]}`,
+            display: "flex",
+            alignItems: "center",
+        },
+        "& .name-column--cell": { color: colors.greenAccent[300] },
+        "& .MuiDataGrid-columnHeaders": {
+            backgroundColor: isDark ? "#334155" : "#eef2f7",
+            borderBottom: `1px solid ${colors.primary[500]}`,
+            color: isDark ? colors.grey[100] : "#0f172a",
+        },
+        "& .MuiDataGrid-columnHeaderTitle": { fontWeight: 700 },
+        "& .MuiDataGrid-virtualScroller": { backgroundColor: colors.primary[400] },
+        "& .MuiDataGrid-footerContainer": {
+            borderTop: `1px solid ${colors.primary[500]}`,
+            backgroundColor: isDark ? "#334155" : "#eef2f7",
+            color: isDark ? colors.grey[100] : "#0f172a",
+        },
+        "& .MuiDataGrid-toolbarContainer": {
+            padding: "12px 14px",
+            borderBottom: `1px solid ${colors.primary[500]}`,
+            gap: "8px",
+            backgroundColor: isDark ? "rgba(51, 65, 85, 0.24)" : "rgba(238, 242, 247, 0.88)",
+        },
+        "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+            color: `${isDark ? colors.grey[100] : "#0f172a"} !important`,
+        },
+        "& .MuiDataGrid-cell:focus, & .MuiDataGrid-columnHeader:focus": { outline: "none" },
+        "& .MuiDataGrid-row:last-of-type .MuiDataGrid-cell": { borderBottom: "none" },
+    },
+    dialogPaper: {
+        backgroundColor: colors.primary[400],
+        color: colors.grey[100],
+        borderRadius: "16px",
+        boxShadow: "0 18px 36px rgba(15,23,42,0.22)",
+    },
+    dialogTitle: {
+        fontWeight: 700,
+        fontSize: "1.15rem",
+        borderBottom: `1px solid ${colors.primary[500]}`,
+    },
+    dialogActions: {
+        p: 2,
+        borderTop: `1px solid ${colors.primary[500]}`,
+    },
+    detailCard: {
+        backgroundColor: isDark ? colors.primary[500] : "rgba(255,255,255,0.98)",
+        border: `1px solid ${isDark ? colors.primary[600] : "rgba(148,163,184,0.22)"}`,
+        borderRadius: "16px",
+        padding: "18px",
+        boxShadow: isDark ? "0 12px 28px rgba(0,0,0,0.12)" : "0 14px 32px rgba(15,23,42,0.08)",
+        minHeight: "100%",
+    },
+    stackedCard: {
+        backgroundColor: isDark ? colors.primary[500] : "rgba(255,255,255,0.98)",
+        border: `1px solid ${isDark ? colors.primary[600] : "rgba(148, 163, 184, 0.22)"}`,
+        borderRadius: "18px",
+        padding: "18px",
+        boxShadow: isDark ? "0 12px 28px rgba(0,0,0,0.12)" : "0 14px 32px rgba(15,23,42,0.08)",
+    },
+    topProfileCard: {
+        background: isDark ? "linear-gradient(135deg, rgba(71,85,105,0.45), rgba(30,41,59,0.78))" : "linear-gradient(135deg, rgba(255,255,255,0.98), rgba(241,245,249,0.98))",
+        border: `1px solid ${isDark ? "rgba(148,163,184,0.2)" : "rgba(203,213,225,0.95)"}`,
+        borderRadius: "20px",
+        padding: "22px",
+        boxShadow: isDark ? "0 20px 40px rgba(2,6,23,0.24)" : "0 18px 40px rgba(15,23,42,0.10)",
+    },
+    metaGrid: {
+        display: "grid",
+        gridTemplateColumns: { xs: "1fr", sm: "repeat(2, minmax(0, 1fr))", xl: "repeat(3, minmax(0, 1fr))" },
+        gap: "12px",
+    },
+    metaItem: {
+        borderRadius: "14px",
+        padding: "12px 14px",
+        backgroundColor: isDark ? "rgba(255,255,255,0.03)" : "rgba(248,250,252,0.9)",
+        border: `1px solid ${isDark ? "rgba(148,163,184,0.14)" : "rgba(226,232,240,0.95)"}`,
+        minHeight: "78px",
+    },
+    floatingField: {
+        "& .MuiOutlinedInput-root": {
+            borderRadius: "12px",
+            backgroundColor: isDark ? colors.primary[400] : "#f8fafc",
+        },
+        "& .MuiInputLabel-root": {
+            color: colors.grey[300],
+            fontWeight: 600,
+        },
+        "& .MuiInputLabel-root.Mui-focused": {
+            color: isDark ? "#94a3b8" : "#475569",
+        },
+        "& .MuiOutlinedInput-notchedOutline": { borderColor: colors.primary[600] },
+        "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": { borderColor: colors.grey[400] },
+        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: isDark ? "#94a3b8" : "#475569",
+            borderWidth: "1px",
+        },
+    },
+    compactMenuPaper: {
+        backgroundColor: colors.primary[400],
+        color: colors.grey[100],
+        borderRadius: "14px",
+        border: `1px solid ${colors.primary[500]}`,
+        boxShadow: "0 16px 32px rgba(15,23,42,0.18)",
+    },
+    neutralButton: {
+        backgroundColor: isDark ? "#475569" : "#334155",
+        color: "#fff",
+        textTransform: "none",
+        fontWeight: 700,
+        boxShadow: "none",
+        "&:hover": { backgroundColor: isDark ? "#64748b" : "#475569", boxShadow: "none" },
+    },
+    approveButton: {
+        backgroundColor: isDark ? colors.greenAccent[500] : "#16a34a",
+        color: "#fff",
+        textTransform: "none",
+        fontWeight: 700,
+        boxShadow: "none",
+        "&:hover": { backgroundColor: isDark ? colors.greenAccent[400] : "#15803d", boxShadow: "none" },
+    },
+    mutedButton: {
+        borderColor: isDark ? "rgba(148,163,184,0.3)" : "rgba(148,163,184,0.35)",
+        color: colors.grey[100],
+        textTransform: "none",
+        fontWeight: 700,
+    },
+    statusPill: (status) => {
+        const palette = {
+            approved: {
+                backgroundColor: isDark ? "rgba(34,197,94,0.18)" : "rgba(22,163,74,0.12)",
+                color: isDark ? colors.greenAccent[300] : "#166534",
+                borderColor: isDark ? "rgba(34,197,94,0.22)" : "rgba(22,163,74,0.18)",
+            },
+            rejected: {
+                backgroundColor: isDark ? "rgba(239,68,68,0.18)" : "rgba(220,38,38,0.12)",
+                color: isDark ? colors.redAccent[300] : "#991b1b",
+                borderColor: isDark ? "rgba(239,68,68,0.22)" : "rgba(220,38,38,0.18)",
+            },
+            pending: {
+                backgroundColor: isDark ? "rgba(245,158,11,0.16)" : "rgba(245,158,11,0.12)",
+                color: isDark ? "#fbbf24" : "#92400e",
+                borderColor: isDark ? "rgba(245,158,11,0.22)" : "rgba(245,158,11,0.18)",
+            },
+        };
+        return {
+            px: "10px",
+            py: "6px",
+            borderRadius: "999px",
+            border: "1px solid",
+            fontWeight: 700,
+            fontSize: "0.75rem",
+            lineHeight: 1,
+            display: "inline-flex",
+            alignItems: "center",
+            ...palette[status],
+        };
+    },
+    assignBadge: {
+        px: "10px",
+        py: "6px",
+        borderRadius: "999px",
+        backgroundColor: isDark ? "rgba(148,163,184,0.16)" : "rgba(226,232,240,0.9)",
+        color: isDark ? colors.grey[200] : "#475569",
+        border: `1px solid ${isDark ? "rgba(148,163,184,0.24)" : "rgba(148,163,184,0.24)"}`,
+        fontWeight: 700,
+        fontSize: "0.75rem",
+        textTransform: "none",
+        boxShadow: "none",
+        "&:hover": {
+            backgroundColor: isDark ? "rgba(148,163,184,0.22)" : "rgba(203,213,225,0.9)",
+            boxShadow: "none",
+        },
+    },
+    medicalPreview: {
+        maxHeight: "58vh",
+        overflow: "auto",
+        borderRadius: "14px",
+        border: `1px solid ${colors.primary[500]}`,
+        backgroundColor: isDark ? colors.primary[400] : "#ffffff",
+        p: 1.5,
+    },
+    lockedPanel: {
+        minHeight: "340px",
+        borderRadius: "14px",
+        border: `1px dashed ${isDark ? "rgba(148,163,184,0.32)" : "rgba(148,163,184,0.42)"}`,
+        backgroundColor: isDark ? "rgba(255,255,255,0.02)" : "rgba(248,250,252,0.8)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        opacity: 0.72,
+        p: 3,
+        textAlign: "center",
+    },
+    aiBlock: {
+        borderRadius: "14px",
+        border: `1px solid ${colors.primary[500]}`,
+        backgroundColor: isDark ? colors.primary[400] : "#f8fafc",
+        p: 2,
+    },
+    infoBadge: {
+        px: "10px",
+        py: "6px",
+        borderRadius: "999px",
+        backgroundColor: isDark ? "rgba(148,163,184,0.14)" : "rgba(226,232,240,0.8)",
+        color: colors.grey[100],
+        fontWeight: 700,
+        fontSize: "0.75rem",
+        lineHeight: 1,
+        display: "inline-flex",
+        alignItems: "center",
+    },
+});
