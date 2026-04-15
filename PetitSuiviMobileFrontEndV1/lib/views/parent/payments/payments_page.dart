@@ -41,9 +41,6 @@ class _PaymentsPageState extends State<PaymentsPage> {
   static Color get _tealAccent => ThemeManager.instance.isLightMode
       ? const Color(0xFF009688)
       : const Color(0xFF4CCEAC);
-  static Color get _indigoAccent => ThemeManager.instance.isLightMode
-      ? const Color(0xFF3F51B5)
-      : const Color(0xFF6870FA);
   static Color get _lightText => ThemeManager.instance.isLightMode
       ? const Color(0xFF212529)
       : const Color(0xFFF2F0F0);
@@ -83,8 +80,9 @@ class _PaymentsPageState extends State<PaymentsPage> {
       if (UnauthorizedHandler.handle(
         context: context,
         statusCode: response.statusCode,
-      ))
+      )) {
         return;
+      }
       final body = response.body.isNotEmpty
           ? jsonDecode(response.body) as Map<String, dynamic>
           : <String, dynamic>{};

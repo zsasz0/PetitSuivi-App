@@ -46,7 +46,7 @@
 /// ## Dependencies
 /// [AuthSession], [TeacherTheme], [ThemeColors], [UnauthorizedHandler],
 /// [ApiConstants], [ThemeManager], [LoginPage].
-library teacher_profile_page;
+library;
 
 import 'dart:convert';
 
@@ -474,8 +474,9 @@ class _TeacherProfilePageState extends State<TeacherProfilePage> {
   int _calculateYearsOfTeachingFromInscriptionDate(
     String? inscriptionDateString,
   ) {
-    if (inscriptionDateString == null || inscriptionDateString.isEmpty)
+    if (inscriptionDateString == null || inscriptionDateString.isEmpty) {
       return 0;
+    }
     try {
       final startDate = DateTime.parse(inscriptionDateString);
       final today = DateTime.now();
@@ -709,8 +710,9 @@ class _TeacherProfilePageState extends State<TeacherProfilePage> {
       if (UnauthorizedHandler.handle(
         context: context,
         statusCode: response.statusCode,
-      ))
+      )) {
         return false;
+      }
 
       final body = response.body.isNotEmpty
           ? jsonDecode(response.body) as Map<String, dynamic>
@@ -745,238 +747,7 @@ class _TeacherProfilePageState extends State<TeacherProfilePage> {
     }
   }
 
-  Future<void> _showEditProfileDialog(BuildContext context) async {
-    final session = context.read<AuthSession>();
-    String firstName = session.firstName ?? '';
-    String lastName = session.lastName ?? '';
-    String email = session.email ?? '';
-    String phone = session.phone ?? '';
-    String address = session.address ?? '';
-    bool isSaving = false;
+  
 
-    await showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (dialogCtx) {
-        return StatefulBuilder(
-          builder: (context, setStateDialog) {
-            return AlertDialog(
-              backgroundColor: TeacherTheme.cardDark,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              title: Text(
-                'Modifier le profil',
-                style: TextStyle(
-                  color: TeacherTheme.lightText,
-                  fontFamily: TeacherTheme.fontName,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _buildDialogTextField(
-                      'Prénom',
-                      firstName,
-                      Icons.person,
-                      (v) => firstName = v,
-                    ),
-                    const SizedBox(height: 12),
-                    _buildDialogTextField(
-                      'Nom',
-                      lastName,
-                      Icons.person,
-                      (v) => lastName = v,
-                    ),
-                    const SizedBox(height: 12),
-                    _buildDialogTextField(
-                      'Email',
-                      email,
-                      Icons.email,
-                      (v) => email = v,
-                      TextInputType.emailAddress,
-                    ),
-                    const SizedBox(height: 12),
-                    _buildDialogTextField(
-                      'Téléphone',
-                      phone,
-                      Icons.phone,
-                      (v) => phone = v,
-                      TextInputType.phone,
-                    ),
-                    const SizedBox(height: 12),
-                    _buildDialogTextField(
-                      'Adresse',
-                      address,
-                      Icons.location_on,
-                      (v) => address = v,
-                    ),
-                  ],
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: isSaving ? null : () => Navigator.pop(dialogCtx),
-                  child: Text(
-                    'Annuler',
-                    style: TextStyle(color: TeacherTheme.mutedText),
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: isSaving
-                      ? null
-                      : () async {
-                          final missing = <String>[];
-                          if (firstName.trim().isEmpty) missing.add('Prénom');
-                          if (lastName.trim().isEmpty) missing.add('Nom');
-                          if (email.trim().isEmpty) missing.add('Email');
-                          if (phone.trim().isEmpty) missing.add('Téléphone');
-                          if (address.trim().isEmpty) missing.add('Adresse');
-                          if (missing.isNotEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Champ(s) manquant(s) : ${missing.join(', ')}',
-                                ),
-                                backgroundColor: Colors.orange,
-                              ),
-                            );
-                            return;
-                          }
 
-                          setStateDialog(() => isSaving = true);
-                          final updated = await _updateTeacherProfile(
-                            context: context,
-                            firstName: firstName.trim(),
-                            lastName: lastName.trim(),
-                            email: email.trim(),
-                            phone: phone.trim(),
-                            address: address.trim(),
-                          );
-                          if (!context.mounted) return;
-                          if (updated) {
-                            Navigator.pop(dialogCtx);
-                            setState(() {});
-                          } else {
-                            setStateDialog(() => isSaving = false);
-                          }
-                        },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: TeacherTheme.tealAccent,
-                    foregroundColor: TeacherTheme.baseDark,
-                  ),
-                  child: isSaving
-                      ? SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            color: TeacherTheme.baseDark,
-                            strokeWidth: 2,
-                          ),
-                        )
-                      : const Text('Enregistrer'),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildDialogTextField(
-    String label,
-    String initialValue,
-    IconData icon,
-    ValueChanged<String> onChanged, [
-    TextInputType type = TextInputType.text,
-  ]) {
-    return TextFormField(
-      initialValue: initialValue,
-      onChanged: onChanged,
-      keyboardType: type,
-      style: TextStyle(color: TeacherTheme.lightText),
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: TextStyle(color: TeacherTheme.mutedText),
-        prefixIcon: Icon(icon, color: TeacherTheme.mutedText, size: 20),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: ThemeColors.glassBorder),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: TeacherTheme.tealAccent),
-        ),
-      ),
-    );
-  }
-
-  Future<bool> _updateTeacherProfile({
-    required BuildContext context,
-    required String firstName,
-    required String lastName,
-    required String email,
-    required String phone,
-    required String address,
-  }) async {
-    final session = context.read<AuthSession>();
-    final token = session.token;
-    final cin = session.cin;
-
-    if (token == null || token.isEmpty || cin == null) return false;
-
-    final uri = Uri.parse('$_apiBaseUrl/api/teachers/$cin/profile');
-    try {
-      final response = await http.put(
-        uri,
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-        body: jsonEncode({
-          'firstName': firstName,
-          'lastName': lastName,
-          'email': email,
-          'phone': phone,
-          'adresse': address,
-        }),
-      );
-
-      if (!context.mounted) return false;
-      if (UnauthorizedHandler.handle(
-        context: context,
-        statusCode: response.statusCode,
-      )) {
-        return false;
-      }
-
-      if (response.statusCode >= 200 && response.statusCode < 300) {
-        session.updateProfileData(
-          firstName: firstName,
-          lastName: lastName,
-          email: email,
-          phone: phone,
-          address: address,
-        );
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('Profil mis à jour.')));
-        return true;
-      }
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Erreur lors de la mise à jour.')),
-      );
-      return false;
-    } catch (_) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Erreur réseau.')));
-      return false;
-    }
-  }
 }

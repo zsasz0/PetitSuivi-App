@@ -1,7 +1,6 @@
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:newv/app_theme.dart';
-import 'package:newv/models/teacher_models.dart' as mock;
 import 'package:newv/services/evaluation_service.dart';
 import 'package:newv/theme_manager.dart';
 import 'package:newv/theme_colors.dart';
@@ -124,8 +123,7 @@ class _ChildTrackingCompetencesTabState
         _historyCurrentPage = 1;
         _isLoading = false;
       });
-    } catch (e, stack) {
-      print('EVAL ERROR: $e\n$stack');
+    } catch (e) {
       if (!mounted) return;
       setState(() {
         _error = 'Oups! Erreur de chargement des évaluations. ($e)';

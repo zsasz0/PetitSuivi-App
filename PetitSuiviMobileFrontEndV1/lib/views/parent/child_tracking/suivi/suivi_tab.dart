@@ -30,9 +30,6 @@ class _ChildTrackingSuiviTabState extends State<ChildTrackingSuiviTab> {
   static const String _apiBaseUrl = ApiConstants.baseUrl;
 
   // Modern Theme Colors
-  static Color get _baseDark => ThemeManager.instance.isLightMode
-      ? const Color(0xFFF0F2F5)
-      : const Color(0xFF141B2D);
   static Color get _tealAccent => ThemeManager.instance.isLightMode
       ? const Color(0xFF009688)
       : const Color(0xFF4CCEAC);

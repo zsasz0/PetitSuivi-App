@@ -94,7 +94,7 @@ class EvaluationService {
           {
             'criteria_id': criteriaId,
             'status_label': statusLabel,
-            if (comment != null) 'comment': comment,
+            'comment': ?comment,
           },
         ],
       }),

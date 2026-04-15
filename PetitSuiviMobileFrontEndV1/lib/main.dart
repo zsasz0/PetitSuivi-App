@@ -1,10 +1,9 @@
-/**
- * @file main.dart
- * @brief The entry point and root configuration for the SmartKids application.
- * @details This file initializes the Flutter engine, sets up persistent state providers,
- * establishes the global visual theme, and manages the initial application navigation 
- * flow through the AnimatedSplashScreen.
- */
+/// @file main.dart
+/// @brief The entry point and root configuration for the SmartKids application.
+/// @details This file initializes the Flutter engine, sets up persistent state providers,
+/// establishes the global visual theme, and manages the initial application navigation 
+/// flow through the AnimatedSplashScreen.
+library;
 import 'dart:io';
 import 'package:newv/app_theme.dart';
 import 'package:newv/views/splash/animated_splash_screen.dart';

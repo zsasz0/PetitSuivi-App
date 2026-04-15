@@ -35,14 +35,6 @@ class ChildProfileViewPage extends StatelessWidget {
   static Color get _mutedText => ThemeManager.instance.isLightMode
       ? const Color(0xFF6C757D)
       : const Color(0xFFA1A4AB);
-
-  static Color get _orangeAccent => ThemeManager.instance.isLightMode
-      ? Colors.orange.shade700
-      : Colors.orangeAccent;
-  static Color get _redAccent => ThemeManager.instance.isLightMode
-      ? Colors.red.shade700
-      : Colors.redAccent;
-
   @override
   Widget build(BuildContext context) {
     context.watch<ThemeManager>();

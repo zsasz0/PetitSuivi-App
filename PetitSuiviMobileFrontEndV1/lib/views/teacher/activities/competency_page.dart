@@ -34,6 +34,7 @@
 ///
 /// ## Dependencies
 /// [EvaluationService], [Signalement], [TeacherTheme], [AppTheme], [ThemeManager].
+library;
 
 import 'package:flutter/material.dart';
 import 'package:newv/app_theme.dart';

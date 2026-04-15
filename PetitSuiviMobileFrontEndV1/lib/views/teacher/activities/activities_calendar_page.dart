@@ -62,6 +62,7 @@
 ///
 /// ## Dependencies
 /// [AuthSession], [TeacherTheme], [ApiConstants], [UnauthorizedHandler], [ClassRoom].
+library;
 
 import 'dart:convert';
 
@@ -604,6 +605,7 @@ class _ActivitiesCalendarPageState extends State<ActivitiesCalendarPage> {
     );
 
     if (confirmed != true) return;
+    if (!mounted) return;
     final session = context.read<AuthSession>();
     final classId = int.tryParse(_selectedClass?.id ?? '');
     if (session.token == null || session.cin == null || classId == null) {

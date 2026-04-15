@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 /// A stateful controller that manages the drawer state and main screen layout.
 class DrawerUserController extends StatefulWidget {
   const DrawerUserController({
-    Key? key,
+    super.key,
     this.drawerWidth = 250,
     this.onDrawerCall,
     this.screenView,
@@ -23,7 +23,7 @@ class DrawerUserController extends StatefulWidget {
     this.userRole,
     this.bottomNavigationBar,
     this.drawerButtonVisibility,
-  }) : super(key: key);
+  });
 
   final double drawerWidth;
   final Function(DrawerIndex)? onDrawerCall;
@@ -37,7 +37,7 @@ class DrawerUserController extends StatefulWidget {
   final ValueNotifier<bool>? drawerButtonVisibility;
 
   @override
-  _DrawerUserControllerState createState() => _DrawerUserControllerState();
+  State<DrawerUserController> createState() => _DrawerUserControllerState();
 }
 
 class _DrawerUserControllerState extends State<DrawerUserController> {
@@ -61,14 +61,14 @@ class _DrawerUserControllerState extends State<DrawerUserController> {
         width: widget.drawerWidth,
         child: Drawer(
           child: HomeDrawer(
-            screenIndex: widget.screenIndex ?? DrawerIndex.Children,
+            screenIndex: widget.screenIndex ?? DrawerIndex.children,
             userRole: widget.userRole,
             iconAnimationController: null,
             callBackIndex: (DrawerIndex indexType) {
               Navigator.pop(context); // close drawer
               try {
                 widget.onDrawerCall!(indexType);
-              } catch (e) {}
+              } catch (_) {}
             },
           ),
         ),

@@ -46,7 +46,8 @@
 /// ## Dependencies
 /// [PhotoService], [AuthSession], [TeacherTheme], [ThemeColors],
 /// [ApiConstants], [ThemeManager], [ImagePicker].
-library teacher_photo_sharing_page;
+library;
+
 
 import 'dart:convert';
 import 'dart:io';
@@ -415,7 +416,7 @@ class _TeacherPhotoSharingPageState extends State<TeacherPhotoSharingPage> {
               _sectionCard(
                 title: '1) Classe',
                 child: DropdownButtonFormField<String>(
-                  value: _selectedClassId,
+                  initialValue: _selectedClassId,
                   dropdownColor: TeacherTheme.cardDark,
                   style: TextStyle(
                     color: TeacherTheme.lightText,
@@ -575,7 +576,7 @@ class _TeacherPhotoSharingPageState extends State<TeacherPhotoSharingPage> {
                     ),
                     const SizedBox(height: 16),
                     DropdownButtonFormField<int>(
-                      value: _selectedExpirationDays,
+                      initialValue: _selectedExpirationDays,
                       dropdownColor: TeacherTheme.cardDark,
                       style: TextStyle(
                         color: TeacherTheme.lightText,

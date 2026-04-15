@@ -48,7 +48,7 @@
 ///
 /// ## Dependencies
 /// [AuthSession], [ApiConstants], [UnauthorizedHandler], [AppTheme], [ThemeManager].
-library suggest_activities_page;
+library;
 
 import 'dart:convert';
 
@@ -184,13 +184,15 @@ class _SuggestActivitiesPageState extends State<SuggestActivitiesPage> {
       if (UnauthorizedHandler.handle(
         context: context,
         statusCode: classesResponse.statusCode,
-      ))
+      )) {
         return;
+      }
       if (UnauthorizedHandler.handle(
         context: context,
         statusCode: suggestionsResponse.statusCode,
-      ))
+      )) {
         return;
+      }
 
       final classesPayload = classesResponse.body.isNotEmpty
           ? jsonDecode(classesResponse.body)
@@ -439,8 +441,9 @@ class _SuggestActivitiesPageState extends State<SuggestActivitiesPage> {
     final endMinutes = _parseTimeToMinutes(endTime);
     if (startMinutes == null ||
         endMinutes == null ||
-        endMinutes <= startMinutes)
+        endMinutes <= startMinutes) {
       return null;
+    }
 
     final diff = endMinutes - startMinutes;
     final hours = diff ~/ 60;
@@ -530,8 +533,9 @@ class _SuggestActivitiesPageState extends State<SuggestActivitiesPage> {
       if (UnauthorizedHandler.handle(
         context: context,
         statusCode: response.statusCode,
-      ))
+      )) {
         return false;
+      }
 
       final decodedBody = response.body.isNotEmpty
           ? jsonDecode(response.body)

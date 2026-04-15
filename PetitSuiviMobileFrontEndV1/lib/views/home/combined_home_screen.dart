@@ -75,9 +75,9 @@ class _CombinedHomeScreenState extends State<CombinedHomeScreen> {
     _drawerButtonVisibility = ValueNotifier(true);
     _navObserver = DrawerNavObserver(_drawerButtonVisibility);
     if (widget.userRole == 1) {
-      drawerIndex = DrawerIndex.TeacherDashboard;
+      drawerIndex = DrawerIndex.teacherDashboard;
     } else {
-      drawerIndex = DrawerIndex.Children;
+      drawerIndex = DrawerIndex.children;
     }
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -198,31 +198,31 @@ class _CombinedHomeScreenState extends State<CombinedHomeScreen> {
     if (widget.userRole == 1) {
       switch (index) {
         case 1:
-          return DrawerIndex.AnnualActivities;
+          return DrawerIndex.annualActivities;
         case 2:
-          return DrawerIndex.TeacherPhotos;
+          return DrawerIndex.teacherPhotos;
         case 3:
-          return DrawerIndex.Notifications;
+          return DrawerIndex.notifications;
         case 4:
-          return DrawerIndex.TeacherProfile;
+          return DrawerIndex.teacherProfile;
         case 0:
         default:
-          return DrawerIndex.TeacherDashboard;
+          return DrawerIndex.teacherDashboard;
       }
     }
 
     switch (index) {
       case 1:
-        return DrawerIndex.Notifications;
+        return DrawerIndex.notifications;
       case 2:
-        return DrawerIndex.Payments;
+        return DrawerIndex.payments;
       case 3:
-        return DrawerIndex.ParentPhotos;
+        return DrawerIndex.parentPhotos;
       case 4:
-        return DrawerIndex.ParentProfile;
+        return DrawerIndex.parentProfile;
       case 0:
       default:
-        return DrawerIndex.Children;
+        return DrawerIndex.children;
     }
   }
 
@@ -322,37 +322,37 @@ class _CombinedHomeScreenState extends State<CombinedHomeScreen> {
       if (widget.userRole == 1) {
         switch (index) {
           case 0:
-            drawerIndex = DrawerIndex.TeacherDashboard;
+            drawerIndex = DrawerIndex.teacherDashboard;
             break;
           case 1:
-            drawerIndex = DrawerIndex.AnnualActivities;
+            drawerIndex = DrawerIndex.annualActivities;
             break;
           case 2:
-            drawerIndex = DrawerIndex.TeacherPhotos;
+            drawerIndex = DrawerIndex.teacherPhotos;
             break;
           case 3:
-            drawerIndex = DrawerIndex.Notifications;
+            drawerIndex = DrawerIndex.notifications;
             break;
           case 4:
-            drawerIndex = DrawerIndex.TeacherProfile;
+            drawerIndex = DrawerIndex.teacherProfile;
             break;
         }
       } else {
         switch (index) {
           case 0:
-            drawerIndex = DrawerIndex.Children;
+            drawerIndex = DrawerIndex.children;
             break;
           case 1:
-            drawerIndex = DrawerIndex.Notifications;
+            drawerIndex = DrawerIndex.notifications;
             break;
           case 2:
-            drawerIndex = DrawerIndex.Payments;
+            drawerIndex = DrawerIndex.payments;
             break;
           case 3:
-            drawerIndex = DrawerIndex.ParentPhotos;
+            drawerIndex = DrawerIndex.parentPhotos;
             break;
           case 4:
-            drawerIndex = DrawerIndex.ParentProfile;
+            drawerIndex = DrawerIndex.parentProfile;
             break;
         }
       }
@@ -376,19 +376,19 @@ class _CombinedHomeScreenState extends State<CombinedHomeScreen> {
       if (widget.userRole == 1) {
         switch (tabIndex) {
           case 0:
-            drawerIndex = DrawerIndex.TeacherDashboard;
+            drawerIndex = DrawerIndex.teacherDashboard;
             break;
           case 1:
-            drawerIndex = DrawerIndex.AnnualActivities;
+            drawerIndex = DrawerIndex.annualActivities;
             break;
           case 2:
-            drawerIndex = DrawerIndex.TeacherPhotos;
+            drawerIndex = DrawerIndex.teacherPhotos;
             break;
           case 3:
-            drawerIndex = DrawerIndex.Notifications;
+            drawerIndex = DrawerIndex.notifications;
             break;
           case 4:
-            drawerIndex = DrawerIndex.TeacherProfile;
+            drawerIndex = DrawerIndex.teacherProfile;
             break;
         }
       }
@@ -404,19 +404,19 @@ class _CombinedHomeScreenState extends State<CombinedHomeScreen> {
         if (widget.userRole == 1) {
           // Teacher Logic
           switch (drawerIndex) {
-            case DrawerIndex.TeacherDashboard:
+            case DrawerIndex.teacherDashboard:
               _bottomSelectedIndex = 0;
               break;
-            case DrawerIndex.AnnualActivities:
+            case DrawerIndex.annualActivities:
               _bottomSelectedIndex = 1;
               break;
-            case DrawerIndex.TeacherPhotos:
+            case DrawerIndex.teacherPhotos:
               _bottomSelectedIndex = 2;
               break;
-            case DrawerIndex.Notifications:
+            case DrawerIndex.notifications:
               _bottomSelectedIndex = 3;
               break;
-            case DrawerIndex.TeacherProfile:
+            case DrawerIndex.teacherProfile:
               _bottomSelectedIndex = 4;
               break;
             default:
@@ -425,19 +425,19 @@ class _CombinedHomeScreenState extends State<CombinedHomeScreen> {
         } else {
           // Parent Logic
           switch (drawerIndex) {
-            case DrawerIndex.Children:
+            case DrawerIndex.children:
               _bottomSelectedIndex = 0;
               break;
-            case DrawerIndex.Notifications:
+            case DrawerIndex.notifications:
               _bottomSelectedIndex = 1;
               break;
-            case DrawerIndex.Payments:
+            case DrawerIndex.payments:
               _bottomSelectedIndex = 2;
               break;
-            case DrawerIndex.ParentPhotos:
+            case DrawerIndex.parentPhotos:
               _bottomSelectedIndex = 3;
               break;
-            case DrawerIndex.ParentProfile:
+            case DrawerIndex.parentProfile:
               _bottomSelectedIndex = 4;
               break;
             default:
@@ -448,11 +448,11 @@ class _CombinedHomeScreenState extends State<CombinedHomeScreen> {
       });
       _persistShellState();
       // Handle special screens that are NOT in bottom tabs (like Help, Manage Classes)
-      if (drawerIndex == DrawerIndex.Help) {
+      if (drawerIndex == DrawerIndex.help) {
         _navigatorKey.currentState?.push(
           MaterialPageRoute(builder: (context) => HelpScreen()),
         );
-      } else if (drawerIndex == DrawerIndex.ManageClasses) {
+      } else if (drawerIndex == DrawerIndex.manageClasses) {
         _navigatorKey.currentState?.push(
           MaterialPageRoute(builder: (context) => const ManageClassesPage()),
         );

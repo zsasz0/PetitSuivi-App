@@ -67,7 +67,6 @@ class _TeacherChildProfilePageState extends State<TeacherChildProfilePage> {
 
   // Today's signalements for alert banner
   List<Signalement> _todaySignalements = [];
-  bool _loadingSignalements = false;
 
   // AI Summaries
   String? _dietaryComment;
@@ -149,7 +148,6 @@ class _TeacherChildProfilePageState extends State<TeacherChildProfilePage> {
   Future<void> _loadTodaySignalements() async {
     final childId = int.tryParse(widget.child.id);
     if (childId == null) return;
-    setState(() => _loadingSignalements = true);
     try {
       final response = await http.get(
         Uri.parse('$_apiBaseUrl/api/children/$childId/signalements'),
@@ -179,17 +177,14 @@ class _TeacherChildProfilePageState extends State<TeacherChildProfilePage> {
               .toList();
           setState(() {
             _todaySignalements = today;
-            _loadingSignalements = false;
           });
         } else {
-          setState(() => _loadingSignalements = false);
         }
       } else {
-        setState(() => _loadingSignalements = false);
       }
     } catch (e) {
       debugPrint('[ChildProfile] Failed to load signalements: $e');
-      if (mounted) setState(() => _loadingSignalements = false);
+      if (mounted){}
     }
   }
 

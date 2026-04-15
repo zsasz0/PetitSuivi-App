@@ -27,6 +27,7 @@
 ///
 /// ## Dependencies
 /// [TeacherTheme], [AppTheme], [ClassRoom], [AttendanceRecord], [ThemeManager].
+library;
 
 import 'package:flutter/material.dart';
 import 'package:newv/app_theme.dart';
@@ -48,8 +49,8 @@ class _AttendancePageState extends State<AttendancePage> {
   // childId -> isPresent for the current session
   Map<String, bool> _attendance = {};
 
-  List<ClassRoom> _classes = [];
-  List<AttendanceRecord> _attendanceRecords = [];
+  final List<ClassRoom> _classes = [];
+  final List<AttendanceRecord> _attendanceRecords = [];
 
   @override
   void initState() {
@@ -160,6 +161,7 @@ class _AttendancePageState extends State<AttendancePage> {
   int get _presentCount => _attendance.values.where((v) => v).length;
   int get _absentCount => _attendance.values.where((v) => !v).length;
 
+  @override
   Widget build(BuildContext context) {
     context.watch<ThemeManager>();
     return Scaffold(

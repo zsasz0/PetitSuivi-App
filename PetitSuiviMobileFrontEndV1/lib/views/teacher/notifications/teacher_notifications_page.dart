@@ -44,9 +44,8 @@
 /// ## Dependencies
 /// [PickupNotificationService], [NotificationService], [AuthSession],
 /// [TeacherTheme], [ThemeManager], [EventDetailPage].
-library teacher_notifications_page;
+library;
 
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:newv/models/auth_session.dart';
@@ -80,10 +79,10 @@ class CombinedNotification {
 
 /// A scrollable list of notifications with real-time refresh and action handling (reading, confirming).
 class TeacherNotificationsPage extends StatefulWidget {
-  const TeacherNotificationsPage({Key? key}) : super(key: key);
+  const TeacherNotificationsPage({super.key});
 
   @override
-  _TeacherNotificationsPageState createState() =>
+  State<TeacherNotificationsPage> createState() =>
       _TeacherNotificationsPageState();
 }
 
@@ -441,10 +440,6 @@ class _TeacherNotificationsPageState extends State<TeacherNotificationsPage> {
                           parsedData = Map<String, dynamic>.from(
                             rawData as Map,
                           );
-                        } else if (rawData is String) {
-                          try {
-                            parsedData = jsonDecode(rawData as String);
-                          } catch (_) {}
                         }
 
                         Navigator.push(

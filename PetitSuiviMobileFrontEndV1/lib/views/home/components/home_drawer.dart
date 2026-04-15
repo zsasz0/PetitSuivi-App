@@ -1,6 +1,5 @@
 import 'package:newv/utils/api_constants.dart';
 import 'dart:convert';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -23,17 +22,17 @@ import 'package:newv/theme_colors.dart';
 
 /// An index enum for all possible screens accessible via the drawer.
 enum DrawerIndex {
-  ParentProfile,
-  Children,
-  Payments,
-  ParentPhotos,
-  TeacherDashboard,
-  ManageClasses,
-  AnnualActivities,
-  Notifications,
-  TeacherProfile,
-  TeacherPhotos,
-  Help,
+  parentProfile,
+  children,
+  payments,
+  parentPhotos,
+  teacherDashboard,
+  manageClasses,
+  annualActivities,
+  notifications,
+  teacherProfile,
+  teacherPhotos,
+  help,
 }
 
 /// A stateful drawer that builds its menu items based on the user's role and data.
@@ -52,7 +51,7 @@ class HomeDrawer extends StatefulWidget {
   final int? userRole;
 
   @override
-  _HomeDrawerState createState() => _HomeDrawerState();
+  State<HomeDrawer> createState() => _HomeDrawerState();
 }
 
 class _HomeDrawerState extends State<HomeDrawer> {
@@ -68,15 +67,12 @@ class _HomeDrawerState extends State<HomeDrawer> {
   static Color get _tealAccent => ThemeManager.instance.isLightMode
       ? const Color(0xFF009688)
       : const Color(0xFF4CCEAC);
-  static Color get _indigoAccent => ThemeManager.instance.isLightMode
-      ? const Color(0xFF3F51B5)
-      : const Color(0xFF6870FA);
-  static Color get _lightText => ThemeManager.instance.isLightMode
-      ? const Color(0xFF212529)
-      : const Color(0xFFF2F0F0);
   static Color get _mutedText => ThemeManager.instance.isLightMode
       ? const Color(0xFF6C757D)
       : const Color(0xFFA1A4AB);
+  static Color get _lightText => ThemeManager.instance.isLightMode
+      ? const Color(0xFF212529)
+      : const Color(0xFFF2F0F0);
 
   @override
   void initState() {
@@ -96,21 +92,21 @@ class _HomeDrawerState extends State<HomeDrawer> {
       // Teacher (Keeping original color logic, but we can darken it too if needed)
       drawerList!.add(
         DrawerList(
-          index: DrawerIndex.TeacherDashboard,
+          index: DrawerIndex.teacherDashboard,
           labelName: 'Accueil',
           icon: const Icon(Icons.home),
         ),
       );
       drawerList!.add(
         DrawerList(
-          index: DrawerIndex.TeacherProfile,
+          index: DrawerIndex.teacherProfile,
           labelName: 'Mon profil',
           icon: const Icon(Icons.person),
         ),
       );
       drawerList!.add(
         DrawerList(
-          index: DrawerIndex.ManageClasses,
+          index: DrawerIndex.manageClasses,
           labelName: 'Gérer les classes',
           icon: const Icon(Icons.class_),
         ),
@@ -118,21 +114,21 @@ class _HomeDrawerState extends State<HomeDrawer> {
 
       drawerList!.add(
         DrawerList(
-          index: DrawerIndex.AnnualActivities,
+          index: DrawerIndex.annualActivities,
           labelName: 'Activités Annuelles',
           icon: const Icon(Icons.calendar_today),
         ),
       );
       drawerList!.add(
         DrawerList(
-          index: DrawerIndex.Notifications,
+          index: DrawerIndex.notifications,
           labelName: 'Notifications',
           icon: const Icon(Icons.notifications),
         ),
       );
       drawerList!.add(
         DrawerList(
-          index: DrawerIndex.TeacherPhotos,
+          index: DrawerIndex.teacherPhotos,
           labelName: 'Photos Parents',
           icon: const Icon(Icons.photo_camera_outlined),
         ),
@@ -141,14 +137,14 @@ class _HomeDrawerState extends State<HomeDrawer> {
       // Parent (2) or others
       drawerList!.add(
         DrawerList(
-          index: DrawerIndex.ParentProfile,
+          index: DrawerIndex.parentProfile,
           labelName: 'Mon profil',
           icon: const Icon(Icons.person_outline_rounded),
         ),
       );
       drawerList!.add(
         DrawerList(
-          index: DrawerIndex.Children,
+          index: DrawerIndex.children,
           labelName: 'Mes enfants',
           icon: const Icon(Icons.child_care_rounded),
           subList: _parentChildren,
@@ -156,21 +152,21 @@ class _HomeDrawerState extends State<HomeDrawer> {
       );
       drawerList!.add(
         DrawerList(
-          index: DrawerIndex.Payments,
+          index: DrawerIndex.payments,
           labelName: 'Paiements',
           icon: const Icon(Icons.payment_rounded),
         ),
       );
       drawerList!.add(
         DrawerList(
-          index: DrawerIndex.ParentPhotos,
+          index: DrawerIndex.parentPhotos,
           labelName: 'Photos',
           icon: const Icon(Icons.photo_library_outlined),
         ),
       );
       drawerList!.add(
         DrawerList(
-          index: DrawerIndex.Notifications,
+          index: DrawerIndex.notifications,
           labelName: 'Notifications',
           icon: const Icon(Icons.notifications_none_rounded),
         ),
@@ -180,7 +176,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
     // Common items
     drawerList!.addAll([
       DrawerList(
-        index: DrawerIndex.Help,
+        index: DrawerIndex.help,
         labelName: 'Aide & Contact',
         isAssetsImage: true,
         imageName: 'assets/images/supportIcon.png',
@@ -333,7 +329,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                 onChanged: (val) {
                   theme.toggleTheme();
                 },
-                activeColor: _tealAccent,
+                activeThumbColor: _tealAccent,
               );
             },
           ),
@@ -484,7 +480,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
         inkwell(listData, isParent),
         ...listData.subList!
             .map((child) => _buildChildItem(child, isParent))
-            .toList(),
+            ,
       ],
     );
   }

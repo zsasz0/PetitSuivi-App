@@ -82,7 +82,7 @@ class _ChildDetailsPageState extends State<ChildDetailsPage>
   Future<void> _persistCurrentRouteState() async {
     if (_childId == null) return;
     await context.read<AuthSession>().saveParentChildRoute(
-      childId: _childId!,
+      childId: _childId,
       tabIndex: _tabController.index,
     );
   }
@@ -141,8 +141,9 @@ class _ChildDetailsPageState extends State<ChildDetailsPage>
         if (latest is Map) {
           final startStr = latest['planning_start']?.toString();
           final endStr = latest['planning_end']?.toString();
-          if (startStr != null)
+          if (startStr != null) {
             _activePlanningStart = DateTime.tryParse(startStr);
+          }
           if (endStr != null) _activePlanningEnd = DateTime.tryParse(endStr);
           _focusedDay = _clampFocusedDayToPlanning(_focusedDay);
           return;
@@ -302,9 +303,6 @@ class _ChildDetailsPageState extends State<ChildDetailsPage>
     final Color tealAccent = isLight
         ? const Color(0xFF009688)
         : const Color(0xFF4CCEAC);
-    final Color indigoAccent = isLight
-        ? const Color(0xFF3F51B5)
-        : const Color(0xFF6870FA);
     final Color lightText = isLight
         ? const Color(0xFF212529)
         : const Color(0xFFF2F0F0);

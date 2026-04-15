@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:newv/app_theme.dart';
-import 'package:newv/l10n/app_localizations.dart';
 import 'package:newv/models/auth_session.dart';
 import 'package:newv/utils/unauthorized_handler.dart';
 import 'package:flutter/material.dart';
@@ -68,11 +67,11 @@ class _ReRegistrationPageState extends State<ReRegistrationPage> {
   // ── Pricing & options (loaded from API) ──
   double _baseFee = 1200.0;
 
-  List<String> _inscriptionTypes = [
+  final List<String> _inscriptionTypes = [
     'Préscolaire (التحضيري)',
     'Maternelle (التمهيدي)',
   ];
-  List<String> _mealPlanOptions = [
+  final List<String> _mealPlanOptions = [
     'Mon enfant prend le déjeuner et le goûter',
     'Mon enfant prend seulement le déjeuner',
     'Mon enfant prend seulement le goûter',
@@ -85,7 +84,7 @@ class _ReRegistrationPageState extends State<ReRegistrationPage> {
     'Mon enfant ne mange pas à l\'école (le parent le récupère puis le ramène)':
         0.0,
   };
-  List<String> _paymentMethods = ['oneShot', 'monthlyPartial'];
+  final List<String> _paymentMethods = ['oneShot', 'monthlyPartial'];
   bool _loadingPricing = true;
 
   @override
@@ -245,8 +244,9 @@ class _ReRegistrationPageState extends State<ReRegistrationPage> {
       if (UnauthorizedHandler.handle(
         context: context,
         statusCode: response.statusCode,
-      ))
+      )) {
         return;
+      }
 
       final body = response.body.isNotEmpty
           ? jsonDecode(response.body) as Map<String, dynamic>
@@ -289,7 +289,6 @@ class _ReRegistrationPageState extends State<ReRegistrationPage> {
   @override
   Widget build(BuildContext context) {
     context.watch<ThemeManager>();
-    final l10n = AppLocalizations.of(context)!;
 
     return Container(
       color: _baseDark,
@@ -581,7 +580,7 @@ class _ReRegistrationPageState extends State<ReRegistrationPage> {
   }) {
     return DropdownButtonFormField<String>(
       isExpanded: true,
-      value: value,
+      initialValue: value,
       dropdownColor: _baseDark.withValues(alpha: 0.95),
       icon: Icon(Icons.arrow_drop_down, color: _mutedText),
       style: TextStyle(color: _lightText),

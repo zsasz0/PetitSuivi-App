@@ -320,8 +320,9 @@ class _ParentProfileEditPageState extends State<ParentProfileEditPage> {
       if (UnauthorizedHandler.handle(
         context: context,
         statusCode: response.statusCode,
-      ))
+      )) {
         return;
+      }
 
       final body = response.body.isNotEmpty
           ? jsonDecode(response.body) as Map<String, dynamic>

@@ -13,7 +13,6 @@ import 'package:newv/utils/unauthorized_handler.dart';
 
 import 'package:newv/views/auth/register/components/utils/child_registration_utils.dart';
 
-import './parent_profile_edit_page.dart';
 import './child_profile_view_page.dart';
 import 'package:newv/theme_manager.dart';
 import 'package:newv/theme_colors.dart';
@@ -66,9 +65,7 @@ class _ParentProfilePageState extends State<ParentProfilePage> {
       ? const Color(0xFF6C757D)
       : const Color(0xFFA1A4AB);
 
-  static Color get _orangeAccent => ThemeManager.instance.isLightMode
-      ? Colors.orange.shade700
-      : Colors.orangeAccent;
+
   static Color get _redAccent => ThemeManager.instance.isLightMode
       ? Colors.red.shade700
       : Colors.redAccent;
@@ -176,8 +173,9 @@ class _ParentProfilePageState extends State<ParentProfilePage> {
         if (!mounted) return;
         setState(() {
           if (baseFee != null) _baseFee = baseFee;
-          if (mealFees.isNotEmpty)
+          if (mealFees.isNotEmpty) {
             _mealPlanFees = {..._mealPlanFees, ...mealFees};
+          }
           _loadingPricing = false;
         });
       } else {
@@ -211,10 +209,10 @@ class _ParentProfilePageState extends State<ParentProfilePage> {
             ) // Only allow yearly and monthly
             .toList();
         if (methods.isNotEmpty) {
-          final mergedMethods = <String>[
+          final mergedMethods = <String>{
             ..._defaultPaymentMethods,
             ...methods,
-          ].toSet().toList();
+          }.toList();
           setState(() => _paymentMethods = mergedMethods);
         }
       }
@@ -235,8 +233,7 @@ class _ParentProfilePageState extends State<ParentProfilePage> {
 
   /// this function is used to load the children of the parent
   Future<void> _loadChildren() async {
-    if (!mounted) return;
-
+    if (!context.mounted) return;
     final session = context.read<AuthSession>();
     final token = session.token;
     final parentCin = session.cin;
@@ -262,8 +259,9 @@ class _ParentProfilePageState extends State<ParentProfilePage> {
       if (UnauthorizedHandler.handle(
         context: context,
         statusCode: response.statusCode,
-      ))
+      )) {
         return;
+      }
 
       final body = response.body.isNotEmpty
           ? jsonDecode(response.body) as Map<String, dynamic>
@@ -355,8 +353,9 @@ class _ParentProfilePageState extends State<ParentProfilePage> {
       if (UnauthorizedHandler.handle(
         context: context,
         statusCode: response.statusCode,
-      ))
+      )) {
         return false;
+      }
 
       final body = response.body.isNotEmpty
           ? jsonDecode(response.body) as Map<String, dynamic>
@@ -1270,8 +1269,9 @@ class _ParentProfilePageState extends State<ParentProfilePage> {
                                       'fatherLivesWithFamily',
                                       'motherLivesWithFamily',
                                     ]) {
-                                      if (!existingChecks.containsKey(key))
+                                      if (!existingChecks.containsKey(key)) {
                                         existingChecks[key] = true;
+                                      }
                                     }
                                     existingData['checks'] = existingChecks;
 
@@ -1292,52 +1292,62 @@ class _ParentProfilePageState extends State<ParentProfilePage> {
                                     if ((existingSingle['social_lives_with'] ??
                                             '')
                                         .toString()
-                                        .isEmpty)
+                                        .isEmpty) {
                                       existingSingle['social_lives_with'] =
                                           'كلا الوالدين';
+                                    }
                                     if ((existingSingle['social_family_relation'] ??
                                             '')
                                         .toString()
-                                        .isEmpty)
+                                        .isEmpty) {
                                       existingSingle['social_family_relation'] =
                                           'عادية';
+                                    }
                                     if ((existingSingle['social_eating'] ?? '')
                                         .toString()
-                                        .isEmpty)
+                                        .isEmpty) {
                                       existingSingle['social_eating'] = 'جيد';
+                                    }
                                     if ((existingSingle['social_sleep'] ?? '')
                                         .toString()
-                                        .isEmpty)
+                                        .isEmpty) {
                                       existingSingle['social_sleep'] = 'جيد';
+                                    }
                                     if ((existingSingle['social_time_space'] ??
                                             '')
                                         .toString()
-                                        .isEmpty)
+                                        .isEmpty) {
                                       existingSingle['social_time_space'] =
                                           'طبيعي';
+                                    }
                                     if ((existingSingle['motherPregnancyHealth'] ??
                                             '')
                                         .toString()
-                                        .isEmpty)
+                                        .isEmpty) {
                                       existingSingle['motherPregnancyHealth'] =
                                           'عادية';
+                                    }
                                     if ((existingSingle['birthPlace'] ?? '')
                                         .toString()
-                                        .isEmpty)
+                                        .isEmpty) {
                                       existingSingle['birthPlace'] = 'المستشفى';
+                                    }
                                     if ((existingSingle['birthTiming'] ?? '')
                                         .toString()
-                                        .isEmpty)
+                                        .isEmpty) {
                                       existingSingle['birthTiming'] =
                                           'في أوانها';
+                                    }
                                     if ((existingSingle['deliveryType'] ?? '')
                                         .toString()
-                                        .isEmpty)
+                                        .isEmpty) {
                                       existingSingle['deliveryType'] = 'عادية';
+                                    }
                                     if ((existingSingle['healthAtBirth'] ?? '')
                                         .toString()
-                                        .isEmpty)
+                                        .isEmpty) {
                                       existingSingle['healthAtBirth'] = 'عادية';
+                                    }
                                     existingData['singleChoice'] =
                                         existingSingle;
 
@@ -1349,14 +1359,16 @@ class _ParentProfilePageState extends State<ParentProfilePage> {
                                               <String, dynamic>{},
                                         );
                                     if (existingMulti['previousEnrollment'] ==
-                                        null)
+                                        null) {
                                       existingMulti['previousEnrollment'] = [
                                         'لا',
                                       ];
-                                    if (existingMulti['waterSource'] == null)
+                                    }
+                                    if (existingMulti['waterSource'] == null) {
                                       existingMulti['waterSource'] = [
                                         'ماء معلب',
                                       ];
+                                    }
                                     existingData['multiChoice'] = existingMulti;
 
                                     final result =
@@ -1449,7 +1461,7 @@ class _ParentProfilePageState extends State<ParentProfilePage> {
                         totalAmount: calculatedTotalAmount,
                         medicalForm: medicalFormData,
                       );
-                      if (!mounted) return;
+                      if (!context.mounted) return;
                       if (created) {
                         Navigator.pop(context);
                       }
@@ -1532,7 +1544,7 @@ class _ParentProfilePageState extends State<ParentProfilePage> {
   }) {
     return DropdownButtonFormField<String>(
       isExpanded: true,
-      value: value,
+      initialValue: value,
       dropdownColor: _baseDark.withValues(alpha: 0.95),
       icon: Icon(Icons.arrow_drop_down, color: _mutedText),
       style: TextStyle(color: _lightText),
