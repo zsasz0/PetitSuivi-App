@@ -12,7 +12,7 @@ export const useParametersData = ({ ui, planningsData }) => {
   const [aiParamId, setAiParamId] = useState(null);
   const [inscriptionsOpen, setInscriptionsOpen] = useState(true);
   const [inscriptionsParamId, setInscriptionsParamId] = useState(null);
-
+  // init data
   useEffect(() => {
     const fetchAll = async () => {
       try {

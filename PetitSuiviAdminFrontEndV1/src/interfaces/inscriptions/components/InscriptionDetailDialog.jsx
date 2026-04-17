@@ -94,7 +94,7 @@ const InscriptionDetailDialog = ({
                                             <Box component="span" sx={styles.infoBadge}>Non assignée</Box>
                                         )
                                     ) : (
-                                        <Button variant="outlined" onClick={() => onOpenAssign(child)} sx={styles.assignBadge}>
+                                        <Button variant="outlined" disabled={true} sx={styles.assignBadge}>
                                             Assigner
                                         </Button>
                                     )}
