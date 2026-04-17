@@ -109,6 +109,7 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
     );
   }
 
+  // true = show intro, false = show login
   Future<bool> _shouldShowIntro() async {
     final prefs = await SharedPreferences.getInstance();
     final introSeen = prefs.getBool(_introSeenKey) ?? false;
