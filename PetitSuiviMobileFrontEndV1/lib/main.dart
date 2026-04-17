@@ -109,7 +109,7 @@ class MyApp extends StatelessWidget {
             ),
 
             /// The initial screen presented when the app finishes launching.
-            home: const (),
+            home: const AnimatedSplashScreen(),
           );
         },
       ),

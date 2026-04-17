@@ -67,7 +67,11 @@ class ActivitiesDayActivitiesList extends StatelessWidget {
               child: Center(
                 child: Column(
                   children: [
-                    Icon(Icons.event_busy, color: TeacherTheme.mutedText, size: 32),
+                    Icon(
+                      Icons.event_busy,
+                      color: TeacherTheme.mutedText,
+                      size: 32,
+                    ),
                     const SizedBox(height: 8),
                     Text(
                       'Aucune activité prévue r',
@@ -146,7 +150,11 @@ class ActivitiesDayActivitiesList extends StatelessWidget {
           if (a.timeLabel.isNotEmpty) ...[
             Row(
               children: [
-                Icon(Icons.access_time, size: 14, color: TeacherTheme.mutedText),
+                Icon(
+                  Icons.access_time,
+                  size: 14,
+                  color: TeacherTheme.mutedText,
+                ),
                 const SizedBox(width: 4),
                 Text(
                   a.timeLabel,
@@ -161,7 +169,7 @@ class ActivitiesDayActivitiesList extends StatelessWidget {
             const SizedBox(height: 12),
           ] else
             const SizedBox(height: 2),
-
+          // is pending means the activity is not executed yet
           if (!isPending && canExecute)
             Row(
               children: [
@@ -172,13 +180,17 @@ class ActivitiesDayActivitiesList extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       decoration: BoxDecoration(
-                        color: status == 'not_executed' 
-                            ? ActivitiesTheme.statusNotExecuted.withValues(alpha: 0.15) 
+                        color: status == 'not_executed'
+                            ? ActivitiesTheme.statusNotExecuted.withValues(
+                                alpha: 0.15,
+                              )
                             : TeacherTheme.surfaceDark.withValues(alpha: 0.5),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: status == 'not_executed' 
-                              ? ActivitiesTheme.statusNotExecuted.withValues(alpha: 0.5) 
+                          color: status == 'not_executed'
+                              ? ActivitiesTheme.statusNotExecuted.withValues(
+                                  alpha: 0.5,
+                                )
                               : ActivitiesTheme.glassBorder,
                         ),
                       ),
@@ -186,9 +198,11 @@ class ActivitiesDayActivitiesList extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            Icons.cancel, 
-                            size: 14, 
-                            color: status == 'not_executed' ? ActivitiesTheme.statusNotExecuted : TeacherTheme.mutedText,
+                            Icons.cancel,
+                            size: 14,
+                            color: status == 'not_executed'
+                                ? ActivitiesTheme.statusNotExecuted
+                                : TeacherTheme.mutedText,
                           ),
                           const SizedBox(width: 4),
                           Flexible(
@@ -197,7 +211,9 @@ class ActivitiesDayActivitiesList extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.bold,
-                                color: status == 'not_executed' ? ActivitiesTheme.statusNotExecuted : TeacherTheme.mutedText,
+                                color: status == 'not_executed'
+                                    ? ActivitiesTheme.statusNotExecuted
+                                    : TeacherTheme.mutedText,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -215,13 +231,17 @@ class ActivitiesDayActivitiesList extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       decoration: BoxDecoration(
-                        color: status == 'executed' 
-                            ? ActivitiesTheme.statusExecuted.withValues(alpha: 0.15) 
+                        color: status == 'executed'
+                            ? ActivitiesTheme.statusExecuted.withValues(
+                                alpha: 0.15,
+                              )
                             : TeacherTheme.surfaceDark.withValues(alpha: 0.5),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: status == 'executed' 
-                              ? ActivitiesTheme.statusExecuted.withValues(alpha: 0.5) 
+                          color: status == 'executed'
+                              ? ActivitiesTheme.statusExecuted.withValues(
+                                  alpha: 0.5,
+                                )
                               : ActivitiesTheme.glassBorder,
                         ),
                       ),
@@ -229,9 +249,11 @@ class ActivitiesDayActivitiesList extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            Icons.check_circle, 
-                            size: 14, 
-                            color: status == 'executed' ? ActivitiesTheme.statusExecuted : TeacherTheme.mutedText,
+                            Icons.check_circle,
+                            size: 14,
+                            color: status == 'executed'
+                                ? ActivitiesTheme.statusExecuted
+                                : TeacherTheme.mutedText,
                           ),
                           const SizedBox(width: 4),
                           Flexible(
@@ -240,7 +262,9 @@ class ActivitiesDayActivitiesList extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.bold,
-                                color: status == 'executed' ? ActivitiesTheme.statusExecuted : TeacherTheme.mutedText,
+                                color: status == 'executed'
+                                    ? ActivitiesTheme.statusExecuted
+                                    : TeacherTheme.mutedText,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
