@@ -50,7 +50,10 @@ class EvaluationService {
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
       if (jsonResponse['success'] == true) {
-        return jsonResponse['data']['evaluations'] ?? [];
+        final data = jsonResponse['data'];
+        if (data is List) return data;
+        if (data is Map) return data['evaluations'] ?? [];
+        return [];
       }
     }
     throw Exception('Failed to fetch child evaluations');
@@ -66,7 +69,10 @@ class EvaluationService {
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
       if (jsonResponse['success'] == true) {
-        return jsonResponse['data']['evaluations'] ?? [];
+        final data = jsonResponse['data'];
+        if (data is List) return data;
+        if (data is Map) return data['evaluations'] ?? [];
+        return [];
       }
     }
     throw Exception('Failed to fetch parent competences');

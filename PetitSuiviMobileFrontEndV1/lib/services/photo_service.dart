@@ -48,7 +48,7 @@ class PhotoService {
     int expiresInDays = 30,
   }) async {
     final headers = _getHeaders(token);
-    final uri = Uri.parse('$baseUrl/teacher/teacher/photos');
+    final uri = Uri.parse('$baseUrl/teacher/photos');
 
     final request = http.MultipartRequest('POST', uri);
     request.headers.addAll(headers);
@@ -76,7 +76,7 @@ class PhotoService {
   /// Retrieves a list of photos uploaded by a specific teacher.
   Future<List<dynamic>> getTeacherPhotos(int teacherCin, String token) async {
     final response = await http.get(
-      Uri.parse('$baseUrl/teacher/teacher/photos'),
+      Uri.parse('$baseUrl/teacher/photos'),
       headers: _getHeaders(token),
     );
 
@@ -158,7 +158,7 @@ class PhotoService {
   /// Deletes a specific photo by its [photoId].
   Future<void> deletePhoto(int photoId, String token) async {
     final response = await http.delete(
-      Uri.parse('$baseUrl/teacher/teacher/photos/$photoId'),
+      Uri.parse('$baseUrl/teacher/photos/$photoId'),
       headers: _getHeaders(token),
     );
 

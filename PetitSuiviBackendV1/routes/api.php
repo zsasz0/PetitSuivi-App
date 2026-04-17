@@ -5,16 +5,25 @@ use App\Http\Controllers\Api\Auth\AuthController;
 
 // Public Authentication
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [\App\Http\Controllers\Api\Mobile\AuthController::class, 'register']);
-Route::post('/register/check-email', [\App\Http\Controllers\Api\Mobile\AuthController::class, 'checkRegistrationEmail']);
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/register/check-email', [AuthController::class, 'checkRegistrationEmail']);
 
 // Mobile Auth
-Route::post('/login/teacher', [\App\Http\Controllers\Api\Mobile\AuthController::class, 'teacherLogin']);
-Route::post('/login/parent', [\App\Http\Controllers\Api\Mobile\AuthController::class, 'parentLogin']);
+Route::post('/login/teacher', [AuthController::class, 'teacherLogin']);
+Route::post('/login/parent', [AuthController::class, 'parentLogin']);
 
 // Public registration endpoints
 Route::get('/parameters', [\App\Http\Controllers\Api\Mobile\Parent\ParentSupportController::class, 'index']);
 Route::get('/payment-methods', [\App\Http\Controllers\Api\Mobile\Parent\ParentPaymentMethodsController::class, 'index']);
+
+// Public planning status check (no auth required)
+Route::get('/plannings/active-check', function () {
+    $hasActive = \Illuminate\Support\Facades\DB::table('Planning')
+        ->where('Isarchived', 0)
+        ->exists();
+
+    return response()->json(['has_active' => $hasActive]);
+});
 
 // Authenticated Shared Routes
 Route::middleware('auth:sanctum')->group(function () {
@@ -24,9 +33,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // Mobile: Classes & Presences
     Route::get('/teachers/{cin}/classes/by-planning', [\App\Http\Controllers\Api\Mobile\ManageClassesController::class, 'classesByPlanning']);
     Route::get('/teachers/{cin}/classes', [\App\Http\Controllers\Api\Mobile\ManageClassesController::class, 'classesByPlanning']); // Alias
-    Route::get('/teachers/{cin}/classes/{classId}/activities', [\App\Http\Controllers\Api\Teacher\DailyPlanController::class, 'activitiesByClass']);
+    Route::get('/teachers/{cin}/classes/{classId}/activities', [\App\Http\Controllers\Api\Mobile\Teacher\DailyPlanController::class, 'activitiesByClass']);
     Route::patch('/teachers/{cin}/classes/{classId}/activities/{activityId}/status', function (\Illuminate\Http\Request $request, $cin, $classId, $activityId) {
-        return app(\App\Http\Controllers\Api\Teacher\DailyPlanController::class)->updateStatus($request, $activityId);
+        return app(\App\Http\Controllers\Api\Mobile\Teacher\DailyPlanController::class)->updateStatus($request, $activityId);
     });
     
     Route::get('/classes/{classId}/presences', [\App\Http\Controllers\Api\Mobile\ClassAttendanceController::class, 'index']);
@@ -74,6 +83,4 @@ Route::prefix('teacher')->group(function () {
     require __DIR__ . '/teacher.php';
 });
 
-Route::prefix('parent')->group(function () {
-    require __DIR__ . '/parent.php';
-});
+

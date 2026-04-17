@@ -5,8 +5,8 @@
 /// flow through the AnimatedSplashScreen.
 library;
 import 'dart:io';
-import 'package:newv/app_theme.dart';
-import 'package:newv/views/splash/animated_splash_screen.dart';
+import 'package:newv/views/themes/app_theme.dart';
+import 'package:newv/views/intro/splash/animated_splash_screen.dart';
 import 'package:newv/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,7 +14,9 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:provider/provider.dart';
 import 'models/auth_session.dart';
 import 'models/user_profile.dart';
-import 'theme_manager.dart';
+import 'views/themes/theme_manager.dart';
+
+
 
 /// The logic of the entry page is expertly handled by [AnimatedSplashScreen].
 ///

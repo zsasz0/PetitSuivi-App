@@ -138,7 +138,7 @@ class ParentChildrenController extends Controller
                 ->orderBy('Date')
                 ->orderBy('InscriptionID')
                 ->get()
-                ->map(function ($insc) {
+                ->map(function ($insc) use ($paymentMethods) {
                     // Get latest status from Inscription
                     $statusName = null;
                     if ($insc->InscriptionstatusID) {

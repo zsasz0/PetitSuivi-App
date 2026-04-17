@@ -51,6 +51,7 @@ class Signalement {
   /// Converts the [Signalement] instance to a JSON-compatible map.
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'child_id': childId,
       'teacher_id': teacherId,
       'activity_id': activityId,
