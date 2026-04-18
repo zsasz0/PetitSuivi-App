@@ -71,6 +71,7 @@ export const useInscriptionsData = ({ ui }) => {
                 health_comment: row?.health_comment || "",
                 is_archived: !!row?.is_archived,
                 previousInscriptions: row?.previous_inscriptions_count || 0,
+                meal_plan_id: row?.meal_plan_id,
             };
         })
     ), [inscriptionsList]);

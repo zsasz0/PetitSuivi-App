@@ -296,24 +296,37 @@ export const useInscriptionsActions = ({ ui, data }) => {
         let nextDietary = child.dietary_comment || "";
         let nextHealth = child.health_comment || "";
         const aiCurrentlyEnabled = await data.fetchAiEnabled();
+        const isFreePlan = child.meal_plan_id === 4;
 
         if (aiCurrentlyEnabled && hasMedicalForm && child.childId) {
-            try {
-                const response = await triggerMedicalRescan(child.childId);
-                nextDietary = response?.dietary_comment || "✅ Aucune restriction alimentaire détectée.";
-                nextHealth = response?.health_comment || "✅ Aucun problème de santé notable détecté.";
+            if (isFreePlan) {
+                // Automatically set the safe AI comments and immediately approve
+                nextDietary = "✅ Aucune restriction alimentaire détectée.";
+                nextHealth = "✅ Aucun problème de santé notable détecté.";
+                try {
+                    await updateAiComments(child.childId, nextDietary, nextHealth);
+                    await saveAiMealExceptions(child.childId, []);
+                } catch (e) {
+                    console.error("Failed to auto-save default comments for free plan", e);
+                }
+            } else {
+                try {
+                    const response = await triggerMedicalRescan(child.childId);
+                    nextDietary = response?.dietary_comment || "✅ Aucune restriction alimentaire détectée.";
+                    nextHealth = response?.health_comment || "✅ Aucun problème de santé notable détecté.";
 
-                const mealExceptions = await fetchAiMealExceptionsScan(child.childId, nextDietary, nextHealth);
-                setAiReviewContext({ child, classId });
-                setAiReviewDietary(nextDietary);
-                setAiReviewHealth(nextHealth);
-                setAiReviewMealExceptions(mealExceptions);
-                return { success: true, reviewRequired: true };
-            } catch (error) {
-                const message = error?.response?.data?.message || error.message || "Le service IA a échoué pendant l'approbation.";
-                const aiError = new Error(message);
-                aiError.code = "AI_APPROVAL_FAILED";
-                throw aiError;
+                    const mealExceptions = await fetchAiMealExceptionsScan(child.childId, nextDietary, nextHealth);
+                    setAiReviewContext({ child, classId });
+                    setAiReviewDietary(nextDietary);
+                    setAiReviewHealth(nextHealth);
+                    setAiReviewMealExceptions(mealExceptions);
+                    return { success: true, reviewRequired: true };
+                } catch (error) {
+                    const message = error?.response?.data?.message || error.message || "Le service IA a échoué pendant l'approbation.";
+                    const aiError = new Error(message);
+                    aiError.code = "AI_APPROVAL_FAILED";
+                    throw aiError;
+                }
             }
         }
 

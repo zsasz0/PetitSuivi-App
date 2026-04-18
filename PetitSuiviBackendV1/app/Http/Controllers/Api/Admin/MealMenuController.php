@@ -155,7 +155,8 @@ class MealMenuController extends Controller
     {
         $request->validate([
             'meal_name' => 'required|string',
-            'ingredients' => 'nullable|array'
+            'ingredients' => 'nullable|array',
+            'category' => 'nullable|string|in:lunch,snack',
         ]);
 
         if (!$this->isAiEnabled()) {
@@ -166,6 +167,7 @@ class MealMenuController extends Controller
         }
 
         $mealName = $request->input('meal_name');
+        $category = $request->input('category'); // lunch or snack
 
         // Fetch current un-archived Planning
         $planning = DB::table('Planning')
@@ -181,7 +183,25 @@ class MealMenuController extends Controller
                 $join->on('Child.ParentID', '=', 'Account.PersonID')
                      ->where('Account.RoleID', 3);
             })
-            ->where('Inscriptionstatus.Name', 'approved');
+            ->where('Inscriptionstatus.Name', 'approved')
+            ->where(function($q) {
+                $q->whereNull('Inscription.MealplanID')
+                  ->orWhere('Inscription.MealplanID', '!=', 4);
+            })
+            ->when($category === 'lunch', function ($q) {
+                // Exclude gouter-only children (MealplanID=3) from lunch meal scans
+                $q->where(function ($sub) {
+                    $sub->whereNull('Inscription.MealplanID')
+                        ->orWhere('Inscription.MealplanID', '!=', 3);
+                });
+            })
+            ->when($category === 'snack', function ($q) {
+                // Exclude dejeuner-only children (MealplanID=2) from snack meal scans
+                $q->where(function ($sub) {
+                    $sub->whereNull('Inscription.MealplanID')
+                        ->orWhere('Inscription.MealplanID', '!=', 2);
+                });
+            });
 
         // Restrict scan to children enrolled in the current active planning timeframe
         if ($planning) {
@@ -468,9 +488,17 @@ class MealMenuController extends Controller
      */
     public function getFoodExceptions(Request $request): JsonResponse
     {
-        $exceptions = DB::table('Child')
+        $planning = DB::table('Planning')
+            ->where('Isarchived', 0)
+            ->orderByDesc('PlanningID')
+            ->first();
+
+        $query = DB::table('Child')
             ->join('Childfoodexception', 'Child.ChildID', '=', 'Childfoodexception.ChildID')
             ->join('ChildFoodExceptionMeals', 'Childfoodexception.ChildfoodexceptionID', '=', 'ChildFoodExceptionMeals.ChildfoodexceptionID')
+            ->join('Payment', 'Child.ChildID', '=', 'Payment.ChildID')
+            ->join('Inscription', 'Payment.InscriptionID', '=', 'Inscription.InscriptionID')
+            ->join('Inscriptionstatus', 'Inscription.InscriptionstatusID', '=', 'Inscriptionstatus.InscriptionstatusID')
             ->select(
                 'Child.ChildID',
                 'Child.Firstname',
@@ -478,7 +506,21 @@ class MealMenuController extends Controller
                 'Childfoodexception.Reason',
                 'ChildFoodExceptionMeals.MealsID'
             )
-            ->get();
+            ->where('Inscriptionstatus.Name', 'approved')
+            ->where('Inscription.Isarchived', 0)
+            ->where(function($q) {
+                $q->whereNull('Inscription.MealplanID')
+                  ->orWhere('Inscription.MealplanID', '!=', 4);
+            });
+
+        if ($planning) {
+            $startYear = date('Y', strtotime($planning->Startdate ?? date('Y-09-01')));
+            $endYear = date('Y', strtotime($planning->Enddate ?? date('Y-06-30', strtotime('+1 year'))));
+            $query->whereYear('Inscription.Date', '>=', $startYear)
+                  ->whereYear('Inscription.Date', '<=', $endYear);
+        }
+
+        $exceptions = $query->get();
 
         $grouped = [];
         foreach ($exceptions as $exc) {

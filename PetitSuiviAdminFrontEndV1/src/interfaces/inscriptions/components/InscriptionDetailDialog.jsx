@@ -42,6 +42,14 @@ const InscriptionDetailDialog = ({
     const showTemplate = isEmpty || isFormDataEmpty;
     const isApproved = child.approval === "approved";
 
+    const mealPlanLabels = {
+        1: "Déjeuner et goûter",
+        2: "Déjeuner seulement",
+        3: "Goûter seulement",
+        4: "Gratuit (ne mange pas à l'école)",
+    };
+    const mealPlanLabel = child.meal_plan_id ? (mealPlanLabels[child.meal_plan_id] || `Plan #${child.meal_plan_id}`) : "Non défini";
+
     return (
         <Dialog open={open} onClose={saving || decisionLoading ? undefined : onClose} fullWidth maxWidth="lg" PaperProps={{ sx: { ...styles.dialogPaper, minHeight: "82vh" } }}>
             <DialogTitle sx={styles.dialogTitle}>Fiche d&apos;inscription</DialogTitle>
@@ -103,6 +111,10 @@ const InscriptionDetailDialog = ({
                             <Box sx={styles.metaItem}>
                                 <Typography variant="caption" color={colors.grey[300]}>Date d&apos;inscription</Typography>
                                 <Typography fontWeight="700" mt="6px">{child.inscriptionDate}</Typography>
+                            </Box>
+                            <Box sx={styles.metaItem}>
+                                <Typography variant="caption" color={colors.grey[300]}>Plan repas</Typography>
+                                <Typography fontWeight="700" mt="6px">{mealPlanLabel}</Typography>
                             </Box>
                         </Box>
                     </Box>

@@ -16,7 +16,7 @@ export const useManageMealsActions = ({ ui, data }) => {
             if (latestAiEnabled) {
                 ui.setCheckingExceptions(true);
                 try {
-                    const checkRes = await checkMealExceptions({ meal_name: mealName, ingredients: [] });
+                    const checkRes = await checkMealExceptions({ meal_name: mealName, ingredients: [], category });
                     if (checkRes.data?.success !== true) {
                         ui.setAddError((checkRes.data?.message || "La vérification IA a échoué.") + " Désactivez l'IA dans Paramètres pour continuer sans vérification.");
                         return;
