@@ -1,6 +1,8 @@
 import { Box } from "@mui/material";
-import { DataGrid, GridToolbarContainer, GridToolbarFilterButton } from "@mui/x-data-grid";
+import { DataGrid, GridToolbarContainer, GridToolbarFilterButton, frFR } from "@mui/x-data-grid";
 import { getStyles } from "../utils/styles";
+
+const FR_LOCALE = frFR.components.MuiDataGrid.defaultProps.localeText;
 
 /**
  * @file components/PaymentsDataGrid.jsx
@@ -41,6 +43,7 @@ const PaymentsDataGrid = ({ loading, rows, columns, colors, isDark }) => {
         pageSize={10}
         rowsPerPageOptions={[10, 50, 100]}
         disableSelectionOnClick
+        localeText={FR_LOCALE}
       />
     </Box>
   );

@@ -355,6 +355,14 @@ class ParentController extends Controller
                             ->delete();
                     }
 
+                    $evaluationIds = DB::table('Evaluation')
+                        ->whereIn('ChildID', $childIds)
+                        ->pluck('EvaluationID');
+
+                    if ($evaluationIds->isNotEmpty()) {
+                        DB::table('Grade')->whereIn('EvaluationID', $evaluationIds)->delete();
+                    }
+
                     DB::table('Childphotorecipient')->whereIn('ChildID', $childIds)->delete();
                     DB::table('Evaluation')->whereIn('ChildID', $childIds)->delete();
                     DB::table('Presence')->whereIn('ChildID', $childIds)->delete();

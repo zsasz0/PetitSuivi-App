@@ -1,6 +1,5 @@
 import { Box, Portal, Snackbar, Tab, Tabs, Typography, useTheme, Alert } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
-
+import { DataGrid, frFR } from "@mui/x-data-grid";
 import Header from "../../../components/Header";
 import { tokens } from "../../../theme";
 import "./MedicalForm.css";
@@ -19,6 +18,8 @@ import InscriptionsGridToolbar from "./InscriptionsGridToolbar";
 import ClassAssignDialog from "./ClassAssignDialog";
 import InscriptionDetailDialog from "./InscriptionDetailDialog";
 import ApprovalReviewDialog from "./ApprovalReviewDialog";
+
+const FR_LOCALE = frFR.components.MuiDataGrid.defaultProps.localeText;
 
 const Inscriptions = () => {
     const theme = useTheme();
@@ -144,6 +145,7 @@ const Inscriptions = () => {
                     pageSize={10}
                     rowsPerPageOptions={[10, 50, 100]}
                     disableSelectionOnClick
+                    localeText={FR_LOCALE}
                     components={{ Toolbar: InscriptionsGridToolbar }}
                     componentsProps={{ toolbar: { colors, isDark } }}
                     initialState={{ columns: { columnVisibilityModel: { inscriptionYear: false } } }}

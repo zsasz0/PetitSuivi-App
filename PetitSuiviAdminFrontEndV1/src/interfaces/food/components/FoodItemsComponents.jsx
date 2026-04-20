@@ -1,9 +1,11 @@
 import { Box, Button, Typography, Dialog, DialogTitle, DialogContent, DialogActions, TextField, CircularProgress, Chip, Switch, FormControlLabel, IconButton } from "@mui/material";
-import { DataGrid, GridToolbarContainer, GridToolbarFilterButton } from "@mui/x-data-grid";
+import { DataGrid, GridToolbarContainer, GridToolbarFilterButton, frFR } from "@mui/x-data-grid";
 import RestaurantMenuOutlinedIcon from "@mui/icons-material/RestaurantMenuOutlined";
 import BakeryDiningOutlinedIcon from "@mui/icons-material/BakeryDiningOutlined";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import CloseIcon from "@mui/icons-material/Close";
+
+const FR_LOCALE = frFR.components.MuiDataGrid.defaultProps.localeText;
 
 export const AiDisabledBannerMeals = ({ colors }) => (
     <Box mb="15px" p="12px" borderRadius="8px" backgroundColor="rgba(239,68,68,0.1)" border="1px solid rgba(239,68,68,0.3)" display="flex" alignItems="center" gap="10px">
@@ -46,7 +48,7 @@ export const DataGridSection = ({ loading, currentList, columns, styles, colors,
             </Box>
         </Box>
         <Box height="60vh" sx={styles.dataGrid}>
-            <DataGrid loading={loading} rows={currentList} columns={columns} components={{ Toolbar: FoodToolbar }} componentsProps={{ toolbar: { colors, isDark } }} pageSize={10} rowsPerPageOptions={[10, 50, 100]} disableSelectionOnClick rowHeight={74} />
+            <DataGrid loading={loading} rows={currentList} columns={columns} components={{ Toolbar: FoodToolbar }} componentsProps={{ toolbar: { colors, isDark } }} pageSize={10} rowsPerPageOptions={[10, 50, 100]} disableSelectionOnClick rowHeight={74} localeText={FR_LOCALE} />
         </Box>
     </Box>
 );

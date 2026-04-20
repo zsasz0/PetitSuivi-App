@@ -1,7 +1,9 @@
 import React from "react";
 import { Box, Button, Tab, Tabs, Typography } from "@mui/material";
 import PersonAddAlt1OutlinedIcon from "@mui/icons-material/PersonAddAlt1Outlined";
-import { DataGrid, GridToolbarContainer, GridToolbarFilterButton } from "@mui/x-data-grid";
+import { DataGrid, GridToolbarContainer, GridToolbarFilterButton, frFR } from "@mui/x-data-grid";
+
+const FR_LOCALE = frFR.components.MuiDataGrid.defaultProps.localeText;
 
 const ClassGridToolbar = ({ colors, isDark }) => (
     <GridToolbarContainer sx={{ display: "flex", justifyContent: "flex-start", p: "10px 14px" }}>
@@ -94,6 +96,7 @@ const ClassesDataGrid = ({ classesList, loading, columns, styles, colors, tab, o
                     pageSize={10}
                     rowsPerPageOptions={[10, 50, 100]}
                     disableSelectionOnClick
+                    localeText={FR_LOCALE}
                     components={{ Toolbar: ClassGridToolbar }}
                     componentsProps={{ toolbar: { colors, isDark } }}
                 />

@@ -1,8 +1,10 @@
 import { Box, Tooltip, Typography, IconButton } from "@mui/material";
-import { DataGrid, GridToolbarContainer, GridToolbarFilterButton } from "@mui/x-data-grid";
+import { DataGrid, GridToolbarContainer, GridToolbarFilterButton, frFR } from "@mui/x-data-grid";
 import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
 import { getStyles } from "../utils/styles";
 import { formatDate, formatShortTime, getTimeProgressMeta, getStatusMeta } from "../utils/formatters";
+
+const FR_LOCALE = frFR.components.MuiDataGrid.defaultProps.localeText;
 
 const EventsGridToolbar = ({ colors, isDark }) => (
   <GridToolbarContainer sx={{ display: "flex", justifyContent: "flex-start", p: "10px 14px" }}>
@@ -131,6 +133,7 @@ const EventDataGrid = ({ events, colors, isDark, openActionMenu }) => {
         rowsPerPageOptions={[10, 50, 100]}
         disableSelectionOnClick
         getRowHeight={() => "auto"}
+        localeText={FR_LOCALE}
       />
     </Box>
   );

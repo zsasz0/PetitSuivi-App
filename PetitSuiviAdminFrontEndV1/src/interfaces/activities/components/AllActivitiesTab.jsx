@@ -1,8 +1,10 @@
 import React from "react";
 import { Box, Typography, Button } from "@mui/material";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, frFR } from "@mui/x-data-grid";
 import { ActivitiesFilterToolbar } from "./ActivitiesFilterToolbar";
+
+const FR_LOCALE = frFR.components.MuiDataGrid.defaultProps.localeText;
 
 export const AllActivitiesTab = (props) => {
   const {
@@ -48,6 +50,7 @@ export const AllActivitiesTab = (props) => {
           rowsPerPageOptions={[10, 50, 100]}
           disableSelectionOnClick
           rowHeight={92}
+          localeText={FR_LOCALE}
         />
       </Box>
     </Box>

@@ -65,6 +65,54 @@ const MonthlySchedulePanel = ({
 
   return (
     <Box display="flex" flexDirection="column" gap="8px" mt="15px">
+      {historyRow.fraisAmount > 0 && (
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          p="10px 15px"
+          sx={getNeutralSurfaceSx(isDark)}
+          borderRadius="8px"
+          alignItems="center"
+        >
+          <Box>
+            <Typography color={isDark ? colors.grey[200] : "#334155"}>
+              {historyRow.inscriptionDate}
+            </Typography>
+            <Typography
+              variant="caption"
+              color={isDark ? colors.grey[400] : "#64748b"}
+              fontWeight="bold"
+            >
+              Frais Annuel d'Inscription
+            </Typography>
+          </Box>
+          <Box display="flex" alignItems="center" gap="12px">
+            <Typography fontWeight="bold" color={isDark ? colors.grey[100] : "#0f172a"}>
+              +{formatCurrency(historyRow.fraisAmount)}
+            </Typography>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={() => {
+                setReceiptData({
+                  ...historyRow,
+                  transaction: {
+                    id: "FRAIS",
+                    value: historyRow.fraisAmount,
+                    payment_date: historyRow.inscriptionDate,
+                    isFrais: true,
+                  },
+                });
+                setIsReceiptDialogOpen(true);
+              }}
+              sx={{ ...getSecondaryButtonSx(colors, isDark), py: "2px", minWidth: "auto", fontSize: "11px" }}
+            >
+              Reçu
+            </Button>
+          </Box>
+        </Box>
+      )}
+
       <Typography
         variant="h6"
         color={isDark ? colors.grey[100] : "#0f172a"}
