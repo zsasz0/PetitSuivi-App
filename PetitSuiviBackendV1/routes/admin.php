@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\Admin\MealMenuController;
 use App\Http\Controllers\Api\Admin\EventController;
 use App\Http\Controllers\Api\Admin\NotificationController;
 use App\Http\Controllers\Api\Admin\ParameterController;
+use App\Http\Controllers\Api\Admin\DocumentSignatureController;
 use App\Http\Controllers\Api\Admin\ReportAnalysisController;
 use App\Http\Controllers\Api\Admin\CopilotController;
 use App\Http\Controllers\Api\Admin\FoodExceptionController;
@@ -135,6 +136,9 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::post('notifications', [NotificationController::class, 'store']);
     Route::get('parameters', [ParameterController::class, 'index']);
     Route::put('parameters', [ParameterController::class, 'updateBulk']);
+    Route::get('parameters/signature', [DocumentSignatureController::class, 'show']);
+    Route::post('parameters/signature', [DocumentSignatureController::class, 'store']);
+    Route::delete('parameters/signature', [DocumentSignatureController::class, 'destroy']);
 
     // AI integrations & Reports
     Route::get('dashboard/stats', [ReportAnalysisController::class, 'getDashboardStats']);

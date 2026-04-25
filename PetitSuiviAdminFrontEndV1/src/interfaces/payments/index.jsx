@@ -72,6 +72,7 @@ const Payments = () => {
     receiptData,
     setReceiptData,
     companyParams,
+    signatureUrl,
     isConfirmPayOpen,
     setIsConfirmPayOpen,
     confirmPayData,
@@ -164,12 +165,14 @@ const Payments = () => {
         onClose={() => setIsInvoiceDialogOpen(false)}
         invoiceData={invoiceRow}
         companyParams={companyParams}
+        signatureUrl={signatureUrl}
       />
       <PaymentReceiptDialog
         open={isReceiptDialogOpen}
         onClose={() => setIsReceiptDialogOpen(false)}
         receiptData={receiptData}
         companyParams={companyParams}
+        signatureUrl={signatureUrl}
       />
 
       <ConfirmPaymentDialog

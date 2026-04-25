@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
 import {
-  getPaymentsRequest, getInscriptionsRequest, getParametersRequest, getPlanningsRequest
+  getPaymentsRequest, getInscriptionsRequest, getParametersRequest, getPlanningsRequest, getDocumentSignatureRequest
 } from "../api/paymentService";
 import { mapStatusToUi, normalizePaymentMethod, normalizeTextForMatch } from "../utils/formatters";
 
@@ -10,17 +10,19 @@ export const usePaymentsData = ({ ui }) => {
   const [selectedYear, setSelectedYear] = useState("all");
   const [planningsList, setPlanningsList] = useState([]);
   const [companyParams, setCompanyParams] = useState({});
+  const [signatureUrl, setSignatureUrl] = useState("");
 
   const loadPayments = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
-      const [paymentRows, inscriptionsRows, parametersRows, planningsRows] =
+      const [paymentRows, inscriptionsRows, parametersRows, planningsRows, signatureData] =
         await Promise.all([
           getPaymentsRequest(),
           getInscriptionsRequest(),
           getParametersRequest(),
           getPlanningsRequest(),
+          getDocumentSignatureRequest(),
         ]);
 
       const inscriptionByKey = new Map(inscriptionsRows.map((r) => [`${r?.id}-${r?.child_id}`, r]));
@@ -31,7 +33,9 @@ export const usePaymentsData = ({ ui }) => {
         address: parametersByName.get("kindergarten_address") || "123 Avenue des Écoles, Tunis, Tunisie",
         phone: parametersByName.get("contact_phone") || "+216 71 123 456",
         email: parametersByName.get("contact_email") || "contact@petitsuivi.tn",
+        directorName: parametersByName.get("director_name") || "mahmoud",
       });
+      setSignatureUrl(signatureData?.url || "");
 
       const planningsByYear = new Map(planningsRows.map((p) => [Number(p?.start_year || p?.startYear), p]));
       const planningsById = new Map(planningsRows.map((p) => [String(p?.id), p]));
@@ -86,6 +90,7 @@ export const usePaymentsData = ({ ui }) => {
             childId: row?.child_id,
             name: row?.child_full_name || "Inconnu",
             inscriptionDate: row?.inscription_date || "",
+            paymentDate: row?.payment_date || "",
             className: row?.class?.name || inscription?.class?.name || "—",
             totalAmount, paidAmount, remaining: Math.max(totalAmount - paidAmount, 0),
             paymentMethod: payMethod, paymentMethodLabel: payMethod === "monthlyPartial" ? "Paiement Mensuel" : "Paiement Annuel",
@@ -116,6 +121,7 @@ export const usePaymentsData = ({ ui }) => {
     } catch (err) {
       setError(err?.response?.data?.message || "Échec du chargement.");
       setPaymentsRows([]);
+      setSignatureUrl("");
     } finally {
       setLoading(false);
     }
@@ -162,6 +168,7 @@ export const usePaymentsData = ({ ui }) => {
     selectedYear, setSelectedYear,
     planningsList, setPlanningsList,
     companyParams, setCompanyParams,
+    signatureUrl, setSignatureUrl,
     loadPayments, filteredRows, stats, allTransactions,
   };
 };

@@ -8,6 +8,8 @@ export const useUIStates = () => {
 
   const [savingAi, setSavingAi] = useState(false);
   const [savingInscriptions, setSavingInscriptions] = useState(false);
+  const [uploadingSignature, setUploadingSignature] = useState(false);
+  const [deletingSignature, setDeletingSignature] = useState(false);
 
   const [archiveConfirmOpen, setArchiveConfirmOpen] = useState(false);
   const [archiveLoading, setArchiveLoading] = useState(false);
@@ -37,6 +39,8 @@ export const useUIStates = () => {
     success, setSuccess,
     savingAi, setSavingAi,
     savingInscriptions, setSavingInscriptions,
+    uploadingSignature, setUploadingSignature,
+    deletingSignature, setDeletingSignature,
     archiveConfirmOpen, setArchiveConfirmOpen,
     archiveLoading, setArchiveLoading,
     archiveResult, setArchiveResult,

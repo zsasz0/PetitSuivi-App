@@ -33,6 +33,15 @@ export const getPlanningsRequest = async () => {
     }
 };
 
+export const getDocumentSignatureRequest = async () => {
+    try {
+        const response = await api.get("/admin/parameters/signature");
+        return response.data?.data || null;
+    } catch {
+        return null;
+    }
+};
+
 export const postTransaction = async (inscriptionId, childId, payload) => {
     return await api.post(`/admin/payments/${inscriptionId}/${childId}/transactions`, payload);
 };

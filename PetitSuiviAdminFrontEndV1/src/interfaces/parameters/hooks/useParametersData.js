@@ -12,14 +12,16 @@ export const useParametersData = ({ ui, planningsData }) => {
   const [aiParamId, setAiParamId] = useState(null);
   const [inscriptionsOpen, setInscriptionsOpen] = useState(true);
   const [inscriptionsParamId, setInscriptionsParamId] = useState(null);
+  const [signature, setSignature] = useState({ url: "", isDefault: true });
   // init data
   useEffect(() => {
     const fetchAll = async () => {
       try {
         ui.setLoading(true);
-        const [paramsRes, planningsRes] = await Promise.all([
+        const [paramsRes, planningsRes, signatureRes] = await Promise.all([
           parametersService.fetchParameters().catch(() => ({ data: { data: [] } })),
           parametersService.fetchPlannings().catch(() => ({ data: { data: [] } })),
+          parametersService.fetchSignature().catch(() => ({ data: { data: null } })),
         ]);
 
         const data = paramsRes.data?.data || paramsRes.data || [];
@@ -38,6 +40,11 @@ export const useParametersData = ({ ui, planningsData }) => {
         }
 
         setParams(arr.map((p) => ({ id: p.id, name: p.name || "", value: p.value ?? "" })));
+        const signatureData = signatureRes.data?.data || null;
+        setSignature({
+          url: signatureData?.url || "",
+          isDefault: Boolean(signatureData?.is_default ?? true),
+        });
         planningsData.hydratePlannings(planningsRes.data?.data || []);
       } catch (err) {
         ui.setError(err?.response?.data?.message || "Erreur de chargement.");
@@ -120,16 +127,54 @@ export const useParametersData = ({ ui, planningsData }) => {
     }
   };
 
+  const handleUploadSignature = async (file) => {
+    if (!file) return;
+    ui.setUploadingSignature(true);
+    try {
+      const response = await parametersService.uploadSignature(file);
+      const signatureData = response.data?.data || null;
+      setSignature({
+        url: signatureData?.url || "",
+        isDefault: Boolean(signatureData?.is_default),
+      });
+      ui.showToast("Signature enregistrée avec succès.");
+    } catch (err) {
+      ui.showToast(err?.response?.data?.message || "Erreur lors de l'envoi de la signature.", "error");
+    } finally {
+      ui.setUploadingSignature(false);
+    }
+  };
+
+  const handleDeleteSignature = async () => {
+    ui.setDeletingSignature(true);
+    try {
+      const response = await parametersService.deleteSignature();
+      const signatureData = response.data?.data || null;
+      setSignature({
+        url: signatureData?.url || "",
+        isDefault: Boolean(signatureData?.is_default ?? true),
+      });
+      ui.showToast("Signature par défaut restaurée.");
+    } catch (err) {
+      ui.showToast(err?.response?.data?.message || "Erreur lors de la suppression de la signature.", "error");
+    } finally {
+      ui.setDeletingSignature(false);
+    }
+  };
+
   return {
     params, setParams,
     aiEnabled,
     inscriptionsOpen,
+    signature,
     visibleParams,
     groupedParams,
     hasParamValidationError,
     handleChange,
     handleToggleAi,
     handleToggleInscriptions,
+    handleUploadSignature,
+    handleDeleteSignature,
     handleSaveParams,
   };
 };

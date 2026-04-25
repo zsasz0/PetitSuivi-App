@@ -154,7 +154,8 @@ const StandardPaymentsPanel = ({
                       transaction: {
                         id: "FRAIS",
                         value: historyRow.fraisAmount,
-                        payment_date: historyRow.inscriptionDate,
+                        payment_date: historyRow.paymentDate || historyRow.inscriptionDate,
+                        date: historyRow.paymentDate || historyRow.inscriptionDate,
                         isFrais: true,
                       },
                     });

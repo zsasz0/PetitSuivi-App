@@ -1,3 +1,4 @@
+import React, { useRef } from "react";
 import {
   Alert,
   Box,
@@ -26,6 +27,14 @@ const Parameters = () => {
   const styles = getStyles(colors, isDark);
 
   const { state, actions } = useParametersController();
+  const signatureInputRef = useRef(null);
+
+  const handleSignatureSelect = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    await actions.handleUploadSignature(file);
+    event.target.value = "";
+  };
 
   if (state.loading) {
     return (
@@ -100,6 +109,50 @@ const Parameters = () => {
           colors={colors}
           styles={styles}
         />
+      </Box>
+
+      <Box sx={styles.card} mb="20px">
+        <Typography variant="h5" fontWeight="700" color={colors.grey[100]} mb="6px">Signature des documents</Typography>
+        <Typography variant="body2" color={colors.grey[300]} mb="18px">Cette image est stockée sur le serveur et utilisée dans les factures et reçus de paiement.</Typography>
+        <Box display="grid" gridTemplateColumns={{ xs: "1fr", md: "220px 1fr" }} gap="18px" alignItems="center">
+          <Box
+            sx={{
+              border: `1px dashed ${colors.primary[500]}`,
+              borderRadius: "16px",
+              minHeight: "160px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: colors.primary[400],
+              overflow: "hidden",
+              p: 2,
+            }}
+          >
+            {state.signature.url ? (
+              <Box component="img" src={state.signature.url} alt="Signature" sx={{ maxWidth: "100%", maxHeight: "120px", objectFit: "contain", mixBlendMode: "multiply" }} />
+            ) : (
+              <Typography variant="body2" color={colors.grey[300]}>Aucune signature</Typography>
+            )}
+          </Box>
+
+          <Box>
+            <Typography variant="body2" color={colors.grey[100]} mb="4px">
+              Source actuelle : {state.signature.isDefault ? "signature par défaut" : "signature personnalisée"}
+            </Typography>
+            <Typography variant="body2" color={colors.grey[300]} mb="16px">
+              Formats acceptés : JPG, PNG, WEBP. Taille max : 5 Mo.
+            </Typography>
+            <input ref={signatureInputRef} type="file" accept="image/png,image/jpeg,image/webp" style={{ display: "none" }} onChange={handleSignatureSelect} />
+            <Box display="flex" gap="12px" flexWrap="wrap">
+              <Button variant="contained" onClick={() => signatureInputRef.current?.click()} disabled={state.uploadingSignature || state.deletingSignature} sx={styles.primaryBtn}>
+                {state.uploadingSignature ? "Téléversement..." : state.signature.isDefault ? "Téléverser une signature" : "Remplacer la signature"}
+              </Button>
+              <Button variant="outlined" onClick={actions.handleDeleteSignature} disabled={state.deletingSignature || state.uploadingSignature || state.signature.isDefault} sx={{ borderRadius: "12px", px: 2.5, py: 1.1 }}>
+                {state.deletingSignature ? "Restauration..." : "Restaurer la signature par défaut"}
+              </Button>
+            </Box>
+          </Box>
+        </Box>
       </Box>
 
       <Box sx={styles.card} mt="20px">

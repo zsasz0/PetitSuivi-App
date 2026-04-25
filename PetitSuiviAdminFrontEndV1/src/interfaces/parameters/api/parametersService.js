@@ -10,6 +10,19 @@ export const parametersService = {
   updateParameters: async (parameters) => {
     return api.put("/admin/parameters", { parameters });
   },
+  fetchSignature: async () => {
+    return api.get("/admin/parameters/signature");
+  },
+  uploadSignature: async (file) => {
+    const formData = new FormData();
+    formData.append("signature", file);
+    return api.post("/admin/parameters/signature", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+  },
+  deleteSignature: async () => {
+    return api.delete("/admin/parameters/signature");
+  },
   archiveCurrentYear: async () => {
     return api.post("/admin/plannings/archive-current-year");
   },

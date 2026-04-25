@@ -19,6 +19,9 @@ export const useParametersController = () => {
       savingAi: ui.savingAi,
       inscriptionsOpen: paramData.inscriptionsOpen,
       savingInscriptions: ui.savingInscriptions,
+      signature: paramData.signature,
+      uploadingSignature: ui.uploadingSignature,
+      deletingSignature: ui.deletingSignature,
 
       archiveConfirmOpen: ui.archiveConfirmOpen,
       archiveLoading: ui.archiveLoading,
@@ -49,6 +52,8 @@ export const useParametersController = () => {
       closeToggleConfirm: ui.closeToggleConfirm,
       handleToggleAi: paramData.handleToggleAi,
       handleToggleInscriptions: paramData.handleToggleInscriptions,
+      handleUploadSignature: paramData.handleUploadSignature,
+      handleDeleteSignature: paramData.handleDeleteSignature,
       handleArchiveYear: planningsData.handleArchiveYear,
       handleSaveParams: paramData.handleSaveParams,
       handleSavePlanning: planningsData.handleSavePlanning,

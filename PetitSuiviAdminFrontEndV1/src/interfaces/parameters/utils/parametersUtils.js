@@ -10,6 +10,7 @@ export const PARAM_LABELS = {
   kindergarten_address: "Adresse",
   contact_email: "Email",
   contact_phone: "Téléphone",
+  director_name: "Nom du directeur",
   facebook_link: "Facebook",
   instagram_link: "Instagram",
   whatsapp_link: "WhatsApp",
@@ -18,7 +19,7 @@ export const PARAM_LABELS = {
 /**
  * List of hidden parameter names.
  */
-export const HIDDEN_PARAMS = ["ai_enabled", "Exceptions dejeuner : verification enfant", "inscriptions_open"];
+export const HIDDEN_PARAMS = ["ai_enabled", "Exceptions dejeuner : verification enfant", "inscriptions_open", "document_signature_path"];
 
 /**
  * Formats the planning label from start and end years.
@@ -129,7 +130,7 @@ export function sanitizeNumericInput(value) {
  */
 export function getParamCategory(name) {
   const normalized = String(name).toLowerCase();
-  if (normalized === "school_name" || normalized.includes("address") || normalized.includes("adresse") || normalized.includes("school_year")) return "identity";
+  if (normalized === "school_name" || normalized === "director_name" || normalized.includes("address") || normalized.includes("adresse") || normalized.includes("school_year") || normalized.includes("director") || normalized.includes("directeur")) return "identity";
   if (normalized.includes("dejeuner") || normalized.includes("déjeuner") || normalized.includes("gouter") || normalized.includes("goûter") || normalized.includes("cantine") || normalized.includes("meal") || normalized.includes("repas") || normalized.includes("tarif") || normalized.includes("prix")) return "meals";
   if (normalized.includes("email") || normalized.includes("phone") || normalized.includes("tel") || normalized.includes("facebook") || normalized.includes("instagram") || normalized.includes("whatsapp") || normalized.includes("contact") || normalized.includes("site") || normalized.includes("website")) return "contact";
   if (normalized.includes("frais") || normalized.includes("fee") || normalized.includes("capacity") || normalized.includes("amount")) return "fees";

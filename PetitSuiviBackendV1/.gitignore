@@ -18,6 +18,10 @@
 /public/storage
 /storage/*.key
 /storage/pail
+/storage/app/public/*
+!/storage/app/public/.gitignore
+!/storage/app/public/signatures/
+!/storage/app/public/signatures/default-signature.png
 /vendor
 _ide_helper.php
 Homestead.json

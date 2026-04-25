@@ -11,13 +11,13 @@ import { tokens } from '../../../theme';
 const formatCurrency = (amount) =>
     new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 0 }).format(Number(amount || 0)) + ' TND';
 
-const PaymentReceiptDialog = ({ open, onClose, receiptData, companyParams = {} }) => {
+const PaymentReceiptDialog = ({ open, onClose, receiptData, companyParams = {}, signatureUrl = '' }) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
 
     if (!receiptData || !receiptData.transaction) return null;
 
-    const { companyName = 'PETIT SUIVI', address = '123 Avenue des Écoles, Tunis, Tunisie', phone = '+216 71 123 456', email = 'contact@petitsuivi.tn' } = companyParams;
+    const { companyName = 'PETIT SUIVI', address = '123 Avenue des Écoles, Tunis, Tunisie', phone = '+216 71 123 456', email = 'contact@petitsuivi.tn', directorName = 'mahmoud' } = companyParams;
 
     const {
         parentName,
@@ -30,6 +30,8 @@ const PaymentReceiptDialog = ({ open, onClose, receiptData, companyParams = {} }
         transaction,
         targetMonthLabel
     } = receiptData;
+
+    const documentTitle = transaction.isFrais ? "Reçu des Frais d'Inscription" : 'Reçu de Paiement';
 
     const maskCin = (cin) => {
         if (!cin) return "";
@@ -44,9 +46,10 @@ const PaymentReceiptDialog = ({ open, onClose, receiptData, companyParams = {} }
         : `REC-${planningStartYear}-${planningEndYear}-${String(transaction.id).padStart(5, '0')}`;
 
     // Payment Date
-    const paymentDateObj = new Date(transaction.payment_date || Date.now());
+    const paymentDateValue = transaction.payment_date || transaction.date || receiptData.paymentDate || Date.now();
+    const paymentDateObj = new Date(paymentDateValue);
     const paymentDateStr = new Intl.DateTimeFormat('fr-FR', {
-        day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+        day: '2-digit', month: '2-digit', year: 'numeric'
     }).format(paymentDateObj);
 
     const disclaimerText = transaction.isFrais
@@ -63,6 +66,10 @@ const PaymentReceiptDialog = ({ open, onClose, receiptData, companyParams = {} }
     const handlePrint = () => {
         const cinHtml = parentCin ? `<p style="color:#4b5563;margin-top:4px;font-size:14px;">CIN: ${maskCin(parentCin)}</p>` : '';
         const amountPaid = transaction.amount_paid || transaction.value || transaction.amount;
+
+        const signatureImageHtml = signatureUrl
+            ? `<img src="${signatureUrl}" style="position:absolute; top:10px; left:50%; transform:translateX(-50%); width:180px; mix-blend-mode:multiply; z-index:0; pointer-events:none;" alt="Signature" />`
+            : '';
 
         const html = `<html><head>
             <meta charset="utf-8"/>
@@ -81,14 +88,14 @@ const PaymentReceiptDialog = ({ open, onClose, receiptData, companyParams = {} }
                         <div style="font-size:24px;font-weight:bold;color:#111827;">${companyName}</div>
                         <div style="color:#6b7280;font-size:14px;margin-top:4px;">École Maternelle &amp; Primaire</div>
                         <div style="margin-top:16px;font-size:14px;color:#4b5563;line-height:1.8;">
+                            <span style="color:#6b7280;font-weight:bold;">Directeur :</span> ${directorName}<br/>
                             <span style="color:#6b7280;font-weight:bold;">Adresse :</span> ${address}<br/>
                             <span style="color:#6b7280;font-weight:bold;">Tél :</span> ${phone}<br/>
                             <span style="color:#6b7280;font-weight:bold;">Email :</span> ${email}
                         </div>
                     </td>
                     <td style="border:none;vertical-align:top;text-align:right;width:50%;padding:0;">
-                        <div style="font-size:20px;font-weight:bold;color:#1f2937;text-transform:uppercase;">Reçu de Paiement</div>
-                        <div style="color:#6b7280;margin-top:4px;">N° ${receiptNumber}</div>
+                        <div style="color:#6b7280;">N° ${receiptNumber}</div>
                         <div style="margin-top:16px;font-size:14px;">
                             <p style="color:#4b5563;">Date: <span style="font-weight:normal;">${paymentDateStr}</span></p>
                             <p style="color:#4b5563;margin-top:4px;">Modalité: <span style="font-weight:normal;color:#1f2937;">${paymentMethodLabel || ''}</span></p>
@@ -98,6 +105,10 @@ const PaymentReceiptDialog = ({ open, onClose, receiptData, companyParams = {} }
             </table>
 
             <hr style="border:none;border-top:1px solid #e5e7eb;margin-bottom:24px;"/>
+
+            <div style="text-align:center;margin-bottom:24px;">
+                <div style="font-size:24px;font-weight:700;color:#111827;text-transform:uppercase;letter-spacing:0.08em;">${documentTitle}</div>
+            </div>
 
             <!-- Parent & Student Info -->
             <table style="border:1px solid #9ca3af;margin-bottom:40px;">
@@ -142,7 +153,7 @@ const PaymentReceiptDialog = ({ open, onClose, receiptData, companyParams = {} }
                 <tr>
                     <td style="border:none;text-align:center;padding:0;width:50%;position:relative;">
                         <p style="color:#4b5563;margin-bottom:48px;position:relative;z-index:1;">Signature de la Direction / Cachet</p>
-                        <img src="/assets/sig.png" style="position:absolute; top:10px; left:50%; transform:translateX(-50%); width:180px; mix-blend-mode:multiply; z-index:0; pointer-events:none;" alt="Signature" />
+                        ${signatureImageHtml}
                         <div style="border-bottom:1px solid #d1d5db;width:200px;margin:0 auto;position:relative;z-index:1;"></div>
                     </td>
                     <td style="border:none;width:50%;"></td>
@@ -218,19 +229,25 @@ const PaymentReceiptDialog = ({ open, onClose, receiptData, companyParams = {} }
                             <Typography variant="h3" fontWeight="bold" sx={{ color: '#111827' }}>{companyName}</Typography>
                             <Typography sx={{ color: '#6b7280', fontSize: '14px', mt: '4px' }}>École Maternelle & Primaire</Typography>
                             <Box mt="16px" sx={{ fontSize: '14px', color: '#4b5563', lineHeight: 1.6 }}>
+                                <Typography variant="body2"><strong style={{ color: '#6b7280' }}>Directeur :</strong> {directorName}</Typography>
                                 <Typography variant="body2"><strong style={{ color: '#6b7280' }}>Adresse :</strong> {address}</Typography>
                                 <Typography variant="body2"><strong style={{ color: '#6b7280' }}>Tél :</strong> {phone}</Typography> 
                                 <Typography variant="body2"><strong style={{ color: '#6b7280' }}>Email :</strong> {email}</Typography>
                             </Box>
                         </Box>
                         <Box textAlign="right">
-                            <Typography variant="h4" fontWeight="bold" sx={{ color: '#1f2937', textTransform: 'uppercase' }}>Reçu de Paiement</Typography>
-                            <Typography sx={{ color: '#6b7280', mt: '4px' }}>N° {receiptNumber}</Typography>
+                            <Typography sx={{ color: '#6b7280' }}>N° {receiptNumber}</Typography>
                             <Box mt="16px" sx={{ fontSize: '14px', fontWeight: 600 }}>
                                 <Typography variant="body2" color="#4b5563">Date: <span style={{ fontWeight: 'normal' }}>{paymentDateStr}</span></Typography>
                                 <Typography variant="body2" mt="4px" sx={{ color: '#4b5563' }}>Modalité: <span style={{ fontWeight: 'normal', color: '#1f2937' }}>{paymentMethodLabel}</span></Typography>
                             </Box>
                         </Box>
+                     </Box>
+
+                    <Box textAlign="center" mb="24px">
+                        <Typography variant="h4" fontWeight="700" sx={{ color: '#111827', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                            {documentTitle}
+                        </Typography>
                     </Box>
 
                     {/* Information Parent & Elève */}
@@ -277,21 +294,23 @@ const PaymentReceiptDialog = ({ open, onClose, receiptData, companyParams = {} }
                     <Box display="grid" gridTemplateColumns="1fr 1fr" gap={4} mt={"48px"} pt={"32px"} sx={{ borderTop: '2px dashed #e5e7eb' }}>
                         <Box textAlign="center" position="relative">
                             <Typography variant="body2" sx={{ color: '#4b5563', mb: '48px', position: 'relative', zIndex: 1 }}>Signature de la Direction / Cachet</Typography>
-                            <Box
-                                component="img"
-                                src="/assets/sig.png"
-                                alt="Signature"
-                                sx={{
-                                    position: 'absolute',
-                                    top: '10px',
-                                    left: '50%',
-                                    transform: 'translateX(-50%)',
-                                    width: '180px',
-                                    mixBlendMode: 'multiply',
-                                    pointerEvents: 'none',
-                                    zIndex: 0
-                                }}
-                            />
+                            {signatureUrl && (
+                                <Box
+                                    component="img"
+                                    src={signatureUrl}
+                                    alt="Signature"
+                                    sx={{
+                                        position: 'absolute',
+                                        top: '10px',
+                                        left: '50%',
+                                        transform: 'translateX(-50%)',
+                                        width: '180px',
+                                        mixBlendMode: 'multiply',
+                                        pointerEvents: 'none',
+                                        zIndex: 0
+                                    }}
+                                />
+                            )}
                             <Box sx={{ borderBottom: '1px solid #d1d5db', width: '200px', mx: 'auto', position: 'relative', zIndex: 1 }}></Box>
                         </Box>
                     </Box>
