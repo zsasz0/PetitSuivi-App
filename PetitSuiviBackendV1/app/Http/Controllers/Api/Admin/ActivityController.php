@@ -15,17 +15,24 @@ class ActivityController extends Controller
     public function index(Request $request): JsonResponse
     {
         $activities = \App\Models\Activity::all();
+        $planningUsageCounts = \App\Models\Plandayactivity::selectRaw('ActivityID, COUNT(*) as usage_count')
+            ->groupBy('ActivityID')
+            ->pluck('usage_count', 'ActivityID');
         
         $criteriaPivots = \App\Models\CriteriaActivity::join('Criteria', 'CriteriaActivity.CriteriaID', '=', 'Criteria.CriteriaID')
             ->select('CriteriaActivity.ActivityID', 'Criteria.CriteriaID as id', 'Criteria.Name as name')
             ->get()
             ->groupBy('ActivityID');
 
-        $data = $activities->map(function ($activity) use ($criteriaPivots) {
+        $data = $activities->map(function ($activity) use ($criteriaPivots, $planningUsageCounts) {
+            $planningUsageCount = (int) ($planningUsageCounts[$activity->ActivityID] ?? 0);
+
             return [
                 'id' => $activity->ActivityID,
                 'title' => $activity->Title,
                 'description' => $activity->Description,
+                'is_used_in_planning' => $planningUsageCount > 0,
+                'planning_usage_count' => $planningUsageCount,
                 'criteria' => $criteriaPivots->get($activity->ActivityID, collect())->map(function ($p) {
                     return ['id' => $p->id, 'name' => $p->name];
                 })->values()
@@ -156,6 +163,14 @@ class ActivityController extends Controller
     {
         $activity = \App\Models\Activity::find($id);
         if (!$activity) return response()->json(['success' => false, 'message' => 'Not found'], 404);
+
+        $planningUsageCount = \App\Models\Plandayactivity::where('ActivityID', $id)->count();
+        if ($planningUsageCount > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Impossible de supprimer cette activité car elle est utilisée dans un ou plusieurs plannings.'
+            ], 409);
+        }
         
         \Illuminate\Support\Facades\DB::beginTransaction();
         try {

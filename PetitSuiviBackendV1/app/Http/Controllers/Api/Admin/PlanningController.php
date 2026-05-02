@@ -37,14 +37,30 @@ class PlanningController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
+        $classCounts = DB::table('Class')
+            ->selectRaw('PlanningID, COUNT(*) as usage_count')
+            ->groupBy('PlanningID')
+            ->pluck('usage_count', 'PlanningID');
+
+        $plandayCounts = DB::table('Planday')
+            ->selectRaw('PlanningID, COUNT(*) as usage_count')
+            ->groupBy('PlanningID')
+            ->pluck('usage_count', 'PlanningID');
+
         $plannings = DB::table('Planning')
             ->orderByDesc('Startdate')
             ->get()
-            ->map(function ($p) {
+            ->map(function ($p) use ($classCounts, $plandayCounts) {
                 $startDate = $p->Startdate ?? date('Y-m-d');
                 $endDate   = $p->Enddate ?? date('Y-m-d');
                 $startYear = (int) date('Y', strtotime($startDate));
                 $endYear   = (int) date('Y', strtotime($endDate));
+                $deleteMeta = $this->getPlanningDeleteMeta(
+                    (int) $p->PlanningID,
+                    (bool) ($p->Isarchived ?? false),
+                    (int) ($classCounts[$p->PlanningID] ?? 0),
+                    (int) ($plandayCounts[$p->PlanningID] ?? 0),
+                );
 
                 return [
                     'id'          => $p->PlanningID,
@@ -54,6 +70,10 @@ class PlanningController extends Controller
                     'start_date'  => $startDate,
                     'end_date'    => $endDate,
                     'is_archived' => (bool) ($p->Isarchived ?? false),
+                    'classes_count' => $deleteMeta['classes_count'],
+                    'plandays_count' => $deleteMeta['plandays_count'],
+                    'is_deletable' => $deleteMeta['is_deletable'],
+                    'delete_blockers' => $deleteMeta['delete_blockers'],
                 ];
             });
 
@@ -163,6 +183,26 @@ class PlanningController extends Controller
      */
     public function destroy(int $id): JsonResponse
     {
+        $planning = DB::table('Planning')->where('PlanningID', $id)->first();
+        if (!$planning) {
+            return response()->json(['success' => false, 'message' => 'Planning not found.'], 404);
+        }
+
+        $deleteMeta = $this->getPlanningDeleteMeta(
+            $id,
+            (bool) ($planning->Isarchived ?? false),
+            (int) DB::table('Class')->where('PlanningID', $id)->count(),
+            (int) DB::table('Planday')->where('PlanningID', $id)->count(),
+        );
+
+        if (!$deleteMeta['is_deletable']) {
+            return response()->json([
+                'success' => false,
+                'message' => $this->getDeleteBlockedMessage($deleteMeta['delete_blockers']),
+                'delete_blockers' => $deleteMeta['delete_blockers'],
+            ], 409);
+        }
+
         DB::table('Planning')->where('PlanningID', $id)->delete();
 
         return response()->json([
@@ -241,5 +281,47 @@ class PlanningController extends Controller
             'end_date'    => $endDate,
             'is_archived' => (bool) ($p->Isarchived ?? false),
         ];
+    }
+
+    private function getPlanningDeleteMeta(int $planningId, bool $isArchived, int $classesCount, int $plandaysCount): array
+    {
+        $deleteBlockers = [];
+
+        if ($isArchived) {
+            $deleteBlockers[] = 'archived';
+        }
+
+        if ($classesCount > 0) {
+            $deleteBlockers[] = 'has_classes';
+        }
+
+        if ($plandaysCount > 0) {
+            $deleteBlockers[] = 'has_plandays';
+        }
+
+        return [
+            'planning_id' => $planningId,
+            'classes_count' => $classesCount,
+            'plandays_count' => $plandaysCount,
+            'is_deletable' => count($deleteBlockers) === 0,
+            'delete_blockers' => $deleteBlockers,
+        ];
+    }
+
+    private function getDeleteBlockedMessage(array $deleteBlockers): string
+    {
+        if (in_array('archived', $deleteBlockers, true)) {
+            return 'Impossible de supprimer une année scolaire archivée.';
+        }
+
+        if (in_array('has_classes', $deleteBlockers, true)) {
+            return 'Impossible de supprimer cette année scolaire car des classes y sont rattachées.';
+        }
+
+        if (in_array('has_plandays', $deleteBlockers, true)) {
+            return 'Impossible de supprimer cette année scolaire car des jours planifiés y sont rattachés.';
+        }
+
+        return 'Impossible de supprimer cette année scolaire.';
     }
 }

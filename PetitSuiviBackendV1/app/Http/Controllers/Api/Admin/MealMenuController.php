@@ -36,15 +36,33 @@ class MealMenuController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
+        $menuUsageCounts = DB::table('DailyPlanMeals')
+            ->selectRaw('MealsID, COUNT(*) as usage_count')
+            ->groupBy('MealsID')
+            ->pluck('usage_count', 'MealsID');
+
+        $exceptionUsageCounts = DB::table('ChildFoodExceptionMeals')
+            ->selectRaw('MealsID, COUNT(*) as usage_count')
+            ->groupBy('MealsID')
+            ->pluck('usage_count', 'MealsID');
+
         $meals = DB::table('Meals')
             ->join('Mealscategory', 'Meals.MealscategoryID', '=', 'Mealscategory.MealscategoryID')
             ->select('Meals.MealsID as id', 'Meals.Name as name', 'Mealscategory.Name as category_name')
             ->get()
-            ->map(function ($m) {
+            ->map(function ($m) use ($menuUsageCounts, $exceptionUsageCounts) {
+                $menuUsageCount = (int) ($menuUsageCounts[$m->id] ?? 0);
+                $exceptionUsageCount = (int) ($exceptionUsageCounts[$m->id] ?? 0);
+
                 return [
                     'id' => $m->id,
                     'name' => $m->name,
                     'category' => ['name' => $m->category_name],
+                    'is_used_in_menu' => $menuUsageCount > 0,
+                    'menu_usage_count' => $menuUsageCount,
+                    'is_used_in_exception' => $exceptionUsageCount > 0,
+                    'exception_usage_count' => $exceptionUsageCount,
+                    'is_deletable' => $menuUsageCount === 0 && $exceptionUsageCount === 0,
                 ];
             });
 
@@ -445,14 +463,32 @@ class MealMenuController extends Controller
      */
     public function destroy(int $id): JsonResponse
     {
+        $menuUsageCount = DB::table('DailyPlanMeals')->where('MealsID', $id)->count();
+        $exceptionUsageCount = DB::table('ChildFoodExceptionMeals')->where('MealsID', $id)->count();
+
+        if ($menuUsageCount > 0 && $exceptionUsageCount > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Impossible de supprimer cet aliment car il est utilisé dans des menus et des exceptions alimentaires.'
+            ], 409);
+        }
+
+        if ($menuUsageCount > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Impossible de supprimer cet aliment car il est utilisé dans un ou plusieurs menus.'
+            ], 409);
+        }
+
+        if ($exceptionUsageCount > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Impossible de supprimer cet aliment car il est utilisé dans une ou plusieurs exceptions alimentaires.'
+            ], 409);
+        }
+
         DB::beginTransaction();
         try {
-            $excIds = DB::table('ChildFoodExceptionMeals')->where('MealsID', $id)->pluck('ChildfoodexceptionID');
-            if ($excIds->isNotEmpty()) {
-                DB::table('ChildFoodExceptionMeals')->where('MealsID', $id)->delete();
-                DB::table('Childfoodexception')->whereIn('ChildfoodexceptionID', $excIds)->delete();
-            }
-
             DB::table('Meals')->where('MealsID', $id)->delete();
 
             DB::commit();
