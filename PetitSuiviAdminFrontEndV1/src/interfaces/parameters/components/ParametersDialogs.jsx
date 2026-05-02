@@ -37,7 +37,7 @@ export const DeletePlanningConfirmDialog = ({ open, onClose, onConfirm, colors, 
         Êtes-vous sûr de vouloir supprimer cette année scolaire ? Cette action est irréversible.
       </Typography>
       <Typography variant="body2" color={colors.grey[300]} sx={{ mt: 1 }}>
-        Si des classes ou inscriptions sont rattachées à cette année, la suppression sera refusée.
+        Seules les années vides créées par erreur peuvent être supprimées. Une année archivée ou déjà utilisée sera refusée.
       </Typography>
     </DialogContent>
     <DialogActions sx={styles.dialogActions}>

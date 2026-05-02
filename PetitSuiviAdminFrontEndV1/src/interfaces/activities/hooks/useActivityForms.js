@@ -86,7 +86,16 @@ export const useActivityForms = ({ ui, data }) => {
     }
   };
 
-  const handleDeleteCriteria = (criteria) => { setDeletingItem(criteria); setDeleteType("criteria"); openModal("delete"); };
+  const handleDeleteCriteria = (criteria) => {
+    if (criteria?.isUsed) {
+      showToast("Impossible de supprimer ce critère car il est utilisé par une ou plusieurs activités.", "warning");
+      return;
+    }
+
+    setDeletingItem(criteria);
+    setDeleteType("criteria");
+    openModal("delete");
+  };
 
   const handleAddAllActivity = async (e) => {
     e.preventDefault();
@@ -99,7 +108,7 @@ export const useActivityForms = ({ ui, data }) => {
     try {
       const res = await activitiesApi.addActivity({ title: addAllActivityForm.title.trim(), description: addAllActivityForm.description.trim() || null, criteria_ids: addAllActivityForm.criteriaIds });
       const newA = res.data?.data || res.data;
-      setAllActivities((prev) => [...prev, { id: newA.id, title: newA.title || "", description: newA.description || "", criteriaIds: (newA.criteria || []).map((c) => c.id), criteriaNames: (newA.criteria || []).map((c) => c.name).join(", ") || "-" }]);
+      setAllActivities((prev) => [...prev, { id: newA.id, title: newA.title || "", description: newA.description || "", isUsedInPlanning: false, planningUsageCount: 0, criteriaIds: (newA.criteria || []).map((c) => c.id), criteriaNames: (newA.criteria || []).map((c) => c.name).join(", ") || "-" }]);
       setAddAllActivityForm({ title: "", description: "", criteriaIds: [] });
       showToast("Activité créée avec succès.", "success");
       closeModal("allActivity");
@@ -157,13 +166,22 @@ export const useActivityForms = ({ ui, data }) => {
       closeModal("edit");
       showToast("Activité modifiée avec succès.", "success");
       const res = await activitiesApi.getActivities();
-      setAllActivities((res.data?.data || []).map((a) => ({ id: a.id, title: a.title || "", description: a.description || "", criteriaIds: (a.criteria || []).map((c) => c.id), criteriaNames: (a.criteria || []).map((c) => c.name).join(", ") || "-" })));
+      setAllActivities((res.data?.data || []).map((a) => ({ id: a.id, title: a.title || "", description: a.description || "", isUsedInPlanning: Boolean(a.is_used_in_planning), planningUsageCount: Number(a.planning_usage_count || 0), criteriaIds: (a.criteria || []).map((c) => c.id), criteriaNames: (a.criteria || []).map((c) => c.name).join(", ") || "-" })));
     } catch (err) {
       showToast(err?.response?.data?.message || "Erreur.", "error");
     }
   };
 
-  const handleDeleteActivity = (activity) => { setDeletingItem(activity); setDeleteType("activity"); openModal("delete"); };
+  const handleDeleteActivity = (activity) => {
+    if (activity?.isUsedInPlanning) {
+      showToast("Impossible de supprimer cette activité car elle est utilisée dans un ou plusieurs plannings.", "warning");
+      return;
+    }
+
+    setDeletingItem(activity);
+    setDeleteType("activity");
+    openModal("delete");
+  };
 
   const handleDeletePlannedActivity = async (activityId) => {
     if (isArchived) return;

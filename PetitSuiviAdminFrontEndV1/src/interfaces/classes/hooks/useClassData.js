@@ -1,6 +1,5 @@
 import { useState, useCallback } from "react";
 import {
-    deleteClass,
     fetchClasses,
     fetchClassTypes,
     fetchPlannings,
@@ -95,26 +94,6 @@ export const useClassData = ({ ui, typeName, showToast }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [typeName]);
 
-    const handleDeleteClick = (classItem) => {
-        ui.setActionMenuPosition(null);
-        ui.setActionMenuClass(null);
-        setSelectedClass(classItem);
-        ui.setIsDeleteDialogOpen(true);
-    };
-
-    const handleDeleteConfirm = async () => {
-        if (!selectedClass) return;
-
-        try {
-            await deleteClass(selectedClass.id);
-            setClassesList((prev) => prev.filter((classItem) => classItem.id !== selectedClass.id));
-            ui.setIsDeleteDialogOpen(false);
-            setSelectedClass(null);
-        } catch (error) {
-            alert(error.response?.data?.message || "Erreur lors de la suppression.");
-        }
-    };
-
     const handleToggleArchiveClick = async (classItem) => {
         try {
             ui.closeActionMenu();
@@ -138,8 +117,6 @@ export const useClassData = ({ ui, typeName, showToast }) => {
         selectedClass, setSelectedClass,
         loadData,
         loadClasses,
-        handleDeleteClick,
-        handleDeleteConfirm,
         handleToggleArchiveClick,
     };
 };

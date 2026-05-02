@@ -11,7 +11,7 @@ import { tokens } from "../../../theme";
 
 import SharedStatsCards from "./SharedStatsCards";
 import SharedDataGrid from "./SharedDataGrid";
-import { FormDialog, DeleteConfirmDialog } from "./Dialogs";
+import { FormDialog } from "./Dialogs";
 import { ParentEditForm } from "./ParentForms";
 import { ParentActionMenu } from "./ParentActionMenu";
 import { getParentColumns } from "../utils/parentColumns";
@@ -32,16 +32,14 @@ const Parent = () => {
     const {
         parents, loading,
         isEditDialogOpen, setIsEditDialogOpen,
-        isDeleteDialogOpen, setIsDeleteDialogOpen,
-        selectedParent,
         editFormData, editFormErrors, formError,
         handleEditFormChange, handleGeneratePassword,
         parentTab, handleTabChange,
         toast, closeToast,
         actionMenuPosition, actionMenuParent, closeActionMenu, openActionMenu,
         
-        openEditDialog, handleDeleteClick,
-        handleEditSubmit, handleDeleteConfirm, handleToggleArchive,
+        openEditDialog,
+        handleEditSubmit, handleToggleArchive,
         updateParentApprovalStatus
     } = controller;
 
@@ -75,13 +73,10 @@ const Parent = () => {
                 <ParentEditForm formData={editFormData} onChange={handleEditFormChange} errors={editFormErrors} styles={styles} onGeneratePassword={handleGeneratePassword} />
             </FormDialog>
 
-            <DeleteConfirmDialog title="Confirmer la suppression du parent" open={isDeleteDialogOpen} itemName={selectedParent?.name} onClose={() => setIsDeleteDialogOpen(false)} onConfirm={handleDeleteConfirm} styles={styles} colors={colors} />
-            
             <ParentActionMenu 
                 position={actionMenuPosition} parent={actionMenuParent} colors={colors} onClose={closeActionMenu}
                 onEdit={openEditDialog}
                 onToggleArchive={handleToggleArchive}
-                onDelete={handleDeleteClick}
             />
 
             <Snackbar open={toast.open} autoHideDuration={6000} onClose={closeToast} anchorOrigin={{ vertical: "top", horizontal: "right" }}>

@@ -1,6 +1,31 @@
 import { checkMealExceptions, addMeal, updateDietaryComment, deleteMeal } from '../../api/foodItemsService';
 
 export const useManageMealsActions = ({ ui, data }) => {
+    const getDeleteBlockedMessage = (meal) => {
+        if (meal?.isUsedInMenu && meal?.isUsedInException) {
+            return "Impossible de supprimer cet aliment car il est utilisé dans des menus et des exceptions alimentaires.";
+        }
+        if (meal?.isUsedInMenu) {
+            return "Impossible de supprimer cet aliment car il est utilisé dans un ou plusieurs menus.";
+        }
+        if (meal?.isUsedInException) {
+            return "Impossible de supprimer cet aliment car il est utilisé dans une ou plusieurs exceptions alimentaires.";
+        }
+
+        return "";
+    };
+
+    const handleDeleteClick = (meal) => {
+        const blockedMessage = getDeleteBlockedMessage(meal);
+        if (blockedMessage) {
+            ui.setToast({ open: true, message: blockedMessage, severity: "warning" });
+            return;
+        }
+
+        ui.setDeletingItem(meal);
+        ui.setIsDeleteDialogOpen(true);
+    };
+
     const handleAddItem = async (e) => {
         e.preventDefault();
         const mealName = ui.newItem.trim();
@@ -58,6 +83,15 @@ export const useManageMealsActions = ({ ui, data }) => {
 
     const handleDeleteConfirm = async () => {
         if (!ui.deletingItem) return;
+
+        const blockedMessage = getDeleteBlockedMessage(ui.deletingItem);
+        if (blockedMessage) {
+            ui.setToast({ open: true, message: blockedMessage, severity: "warning" });
+            ui.setIsDeleteDialogOpen(false);
+            ui.setDeletingItem(null);
+            return;
+        }
+
         try {
             await deleteMeal(ui.deletingItem.id);
             ui.setToast({ open: true, message: "Supprimé avec succès.", severity: "success" });
@@ -66,6 +100,6 @@ export const useManageMealsActions = ({ ui, data }) => {
     };
 
     return {
-        handleAddItem, handleConfirmSave, handleCancelPending, handleOverrideComment, handleDeleteConfirm
+        handleAddItem, handleConfirmSave, handleCancelPending, handleOverrideComment, handleDeleteClick, handleDeleteConfirm
     };
 };

@@ -25,6 +25,13 @@ const ManageMeals = () => {
 
     const { state, actions } = useManageMealsController();
 
+    const getDeleteTooltip = (meal) => {
+        if (meal?.isUsedInMenu && meal?.isUsedInException) return "Utilisé dans des menus et des exceptions alimentaires";
+        if (meal?.isUsedInMenu) return "Utilisé dans un ou plusieurs menus";
+        if (meal?.isUsedInException) return "Utilisé dans une ou plusieurs exceptions alimentaires";
+        return "Supprimer";
+    };
+
     const columns = [
         { field: "id", headerName: "ID", flex: 0.25, minWidth: 64, align: "center", headerAlign: "center" },
         {
@@ -41,10 +48,12 @@ const ManageMeals = () => {
         {
             field: "actions", headerName: "Actions", flex: 0.28, minWidth: 96, align: "center", headerAlign: "center", sortable: false, filterable: false,
             renderCell: ({ row }) => (
-                <Tooltip title="Supprimer">
-                    <IconButton sx={sxParams.dangerIconButton} size="small" onClick={() => { actions.setDeletingItem(row); actions.setIsDeleteDialogOpen(true); }}>
+                <Tooltip title={getDeleteTooltip(row)}>
+                    <span>
+                    <IconButton sx={sxParams.dangerIconButton} size="small" disabled={!row.isDeletable} onClick={() => actions.handleDeleteClick(row)}>
                         <DeleteOutlineIcon fontSize="small" />
                     </IconButton>
+                    </span>
                 </Tooltip>
             ),
         },

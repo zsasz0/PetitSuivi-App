@@ -39,10 +39,17 @@ export const usePlanningData = ({ dayTimelineInfo, selectedClassForWeekId, setVi
       setPlannings(planningRows);
       if (planningRows.length > 0) setSelectedPlanningId(getCurrentPlanningId(planningRows));
       setAllClassesData(classesRes.data?.data || []);
-      setCriteriaList((criteriaRes.data?.data || []).map((c) => ({ id: c.id, name: c.name })));
+      setCriteriaList((criteriaRes.data?.data || []).map((c) => ({
+        id: c.id,
+        name: c.name,
+        isUsed: Boolean(c.is_used),
+        usageCount: Number(c.usage_count || 0),
+      })));
       setAllActivities(
         (activitiesRes.data?.data || []).map((a) => ({
           id: a.id, title: a.title || "", description: a.description || "",
+          isUsedInPlanning: Boolean(a.is_used_in_planning),
+          planningUsageCount: Number(a.planning_usage_count || 0),
           criteriaIds: (a.criteria || []).map((c) => c.id),
           criteriaNames: (a.criteria || []).map((c) => c.name).join(", ") || "-",
         }))

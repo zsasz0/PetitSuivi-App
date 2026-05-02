@@ -42,6 +42,7 @@ export const useManageMealsController = () => {
             handleConfirmSave: actions.handleConfirmSave,
             handleCancelPending: actions.handleCancelPending,
             handleOverrideComment: actions.handleOverrideComment,
+            handleDeleteClick: actions.handleDeleteClick,
             handleDeleteConfirm: actions.handleDeleteConfirm,
             setIgnoredExceptions: ui.setIgnoredExceptions,
             setEditingCommentId: ui.setEditingCommentId,

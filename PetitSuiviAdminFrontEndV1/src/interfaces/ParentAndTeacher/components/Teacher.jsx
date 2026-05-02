@@ -10,7 +10,7 @@ import { tokens } from "../../../theme";
 
 import SharedStatsCards from "./SharedStatsCards";
 import SharedDataGrid from "./SharedDataGrid";
-import { FormDialog, DeleteConfirmDialog } from "./Dialogs";
+import { FormDialog } from "./Dialogs";
 import { TeacherAddForm, TeacherEditForm } from "./TeacherForms";
 import { TeacherActionMenu } from "./TeacherActionMenu";
 import { getTeacherColumns } from "../utils/teacherColumns";
@@ -30,10 +30,7 @@ const Teacher = () => {
         teachers, loading, activeTeacherCount,
 
         isEditDialogOpen, setIsEditDialogOpen,
-        isDeleteDialogOpen, setIsDeleteDialogOpen,
         isAddDialogOpen, setIsAddDialogOpen,
-
-        selectedTeacher,
 
         editFormData, editFormErrors, formError, sendEditCredentials, setSendEditCredentials,
         addFormData, addFormErrors, addFormError, addSaving, showAddPassword, setShowAddPassword, sendAddCredentials, setSendAddCredentials,
@@ -43,7 +40,7 @@ const Teacher = () => {
         actionMenuPosition, actionMenuTeacher, openActionMenu, closeActionMenu,
 
         openEditDialog, handleAddFormChange, handleEditFormChange, handleGenerateAddPassword, handleGenerateEditPassword,
-        handleEditSubmit, handleAddSubmit, handleDeleteConfirm, handleToggleArchive, handleDeleteClick, handleAddClick
+        handleEditSubmit, handleAddSubmit, handleToggleArchive, handleAddClick
     } = controller;
 
     const columns = getTeacherColumns(colors, isDark, {
@@ -80,13 +77,10 @@ const Teacher = () => {
                 <TeacherEditForm formData={editFormData} onChange={handleEditFormChange} errors={editFormErrors} styles={styles} onGeneratePassword={handleGenerateEditPassword} sendCredentials={sendEditCredentials} onToggleSendCredentials={setSendEditCredentials} />
             </FormDialog>
 
-            <DeleteConfirmDialog title="Confirmer la suppression" open={isDeleteDialogOpen} itemName={selectedTeacher?.name} onClose={() => setIsDeleteDialogOpen(false)} onConfirm={handleDeleteConfirm} styles={styles} colors={colors} />
-            
             <TeacherActionMenu 
                 position={actionMenuPosition} teacher={actionMenuTeacher} colors={colors} onClose={closeActionMenu}
                 onEdit={openEditDialog}
                 onToggleArchive={handleToggleArchive}
-                onDelete={handleDeleteClick}
             />
 
             <Snackbar open={toast.open} autoHideDuration={6000} onClose={closeToast} anchorOrigin={{ vertical: "top", horizontal: "right" }}>

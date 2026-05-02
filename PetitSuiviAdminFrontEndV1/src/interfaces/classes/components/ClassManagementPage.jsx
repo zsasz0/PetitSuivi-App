@@ -1,7 +1,6 @@
 import { Alert, Box, Menu, MenuItem, Snackbar } from "@mui/material";
 import { useTheme } from "@mui/material";
 import ArchiveOutlinedIcon from "@mui/icons-material/ArchiveOutlined";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import UnarchiveOutlinedIcon from "@mui/icons-material/UnarchiveOutlined";
 import { useEffect, useMemo, useState } from "react";
@@ -15,7 +14,6 @@ import { getStyles } from "../utils/styles";
 
 import ClassesDataGrid from "./ClassesDataGrid";
 import ClassFormDialog from "./ClassFormDialog";
-import DeleteDialog from "./DeleteDialog";
 import StatsCards from "./StatsCards";
 import StudentsDialog from "./StudentsDialog";
 
@@ -49,13 +47,10 @@ function ClassManagementPage({ headerTitle, typeName, addDialogTitle }) {
     openAddDialog,
     isEditDialogOpen,
     setIsEditDialogOpen,
-    isDeleteDialogOpen,
-    setIsDeleteDialogOpen,
     actionMenuPosition,
     actionMenuClass,
     openActionMenu,
     closeActionMenu,
-    selectedClass,
     addFormData,
     addFormError,
     addFormErrors,
@@ -68,10 +63,8 @@ function ClassManagementPage({ headerTitle, typeName, addDialogTitle }) {
     editSaving,
     handleEditSubmit,
     setEditFormData,
-    handleDeleteConfirm,
     handleToggleArchiveClick,
     handleEditClick,
-    handleDeleteClick,
     loadData,
     handleClassFormChange,
   } = useClassController(typeName, showToast);
@@ -147,7 +140,6 @@ function ClassManagementPage({ headerTitle, typeName, addDialogTitle }) {
                 submitLabel="Enregistrer"
                 saving={editSaving}
             />
-            <DeleteDialog open={isDeleteDialogOpen} onClose={() => setIsDeleteDialogOpen(false)} onConfirm={handleDeleteConfirm} selectedClass={selectedClass} colors={colors} styles={styles} />
             <StudentsDialog open={isStudentsDialogOpen} onClose={() => setIsStudentsDialogOpen(false)} studentsDialogClass={studentsDialogClass} colors={colors} styles={styles} isDark={isDark} />
             <Menu
                 open={Boolean(actionMenuPosition && actionMenuClass)}
@@ -175,12 +167,6 @@ function ClassManagementPage({ headerTitle, typeName, addDialogTitle }) {
                     <Box display="flex" alignItems="center" gap="10px">
                         {actionMenuClass?.is_archived ? <UnarchiveOutlinedIcon fontSize="small" /> : <ArchiveOutlinedIcon fontSize="small" />}
                         <span>{actionMenuClass?.is_archived ? "Désarchiver" : "Archiver"}</span>
-                    </Box>
-                </MenuItem>
-                <MenuItem onClick={() => handleDeleteClick(actionMenuClass)} sx={{ color: colors.redAccent[400] }}>
-                    <Box display="flex" alignItems="center" gap="10px">
-                        <DeleteOutlineIcon fontSize="small" />
-                        <span>Supprimer</span>
                     </Box>
                 </MenuItem>
             </Menu>

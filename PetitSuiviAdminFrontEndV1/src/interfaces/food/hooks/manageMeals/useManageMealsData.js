@@ -25,11 +25,22 @@ export const useManageMealsData = () => {
         try {
             setLoading(true);
             const rows = await fetchMeals();
-            setLunchOptions(rows.filter(m => (m?.category?.name || '').toLowerCase() === 'lunch').map(m => ({ id: m.id, name: m.name || '', type: 'lunch' })));
+            const mapMeal = (m, type) => ({
+                id: m.id,
+                name: m.name || '',
+                type,
+                isUsedInMenu: Boolean(m.is_used_in_menu),
+                menuUsageCount: Number(m.menu_usage_count || 0),
+                isUsedInException: Boolean(m.is_used_in_exception),
+                exceptionUsageCount: Number(m.exception_usage_count || 0),
+                isDeletable: Boolean(m.is_deletable),
+            });
+
+            setLunchOptions(rows.filter(m => (m?.category?.name || '').toLowerCase() === 'lunch').map(m => mapMeal(m, 'lunch')));
             setSnackOptions(rows.filter(m => {
                 const cat = (m?.category?.name || '').toLowerCase();
                 return cat === 'snack' || cat === 'snacks';
-            }).map(m => ({ id: m.id, name: m.name || '', type: 'snack' })));
+            }).map(m => mapMeal(m, 'snack')));
 
             try {
                 const excData = await fetchExceptionsForMeals();

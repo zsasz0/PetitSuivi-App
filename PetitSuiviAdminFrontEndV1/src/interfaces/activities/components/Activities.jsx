@@ -119,10 +119,12 @@ const Activities = () => {
       { field: "actions", headerName: "Actions", flex: 0.5, sortable: false, disableColumnMenu: true,
         renderCell: (params) => (
           <Box display="flex" gap="8px">
-            <Tooltip title="Supprimer">
-              <IconButton onClick={(e) => { e.stopPropagation(); handleDeleteCriteria(params.row); }} sx={styles.dangerIconButton}>
+            <Tooltip title={params.row.isUsed ? "Utilisé par une ou plusieurs activités" : "Supprimer"}>
+              <span>
+              <IconButton onClick={(e) => { e.stopPropagation(); handleDeleteCriteria(params.row); }} sx={styles.dangerIconButton} disabled={params.row.isUsed}>
                 <DeleteOutlineIcon sx={{ fontSize: "16px" }} />
               </IconButton>
+              </span>
             </Tooltip>
           </Box>
         ),
@@ -154,10 +156,12 @@ const Activities = () => {
                 <EditOutlinedIcon sx={{ fontSize: "16px" }} />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Supprimer">
-              <IconButton onClick={(e) => { e.stopPropagation(); handleDeleteActivity(params.row); }} sx={styles.dangerIconButton}>
+            <Tooltip title={params.row.isUsedInPlanning ? "Utilisée dans un ou plusieurs plannings" : "Supprimer"}>
+              <span>
+              <IconButton onClick={(e) => { e.stopPropagation(); handleDeleteActivity(params.row); }} sx={styles.dangerIconButton} disabled={params.row.isUsedInPlanning}>
                 <DeleteOutlineIcon sx={{ fontSize: "16px" }} />
               </IconButton>
+              </span>
             </Tooltip>
           </Box>
         ),

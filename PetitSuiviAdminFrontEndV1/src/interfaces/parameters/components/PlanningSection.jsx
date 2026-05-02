@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Typography, Alert, FormControl, InputLabel, Select, MenuItem, TextField, Button, Divider } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import { getPlanningLabel, validatePlanningDates } from "../utils/parametersUtils";
+import { getPlanningLabel, getPlanningDeleteBlockedMessage, validatePlanningDates } from "../utils/parametersUtils";
 
 export const PlanningSection = ({
   plannings,
@@ -23,6 +23,9 @@ export const PlanningSection = ({
   styles,
 }) => {
   const isNewMode = selectedPlanningId === "__new__";
+  const deleteBlockedMessage = !isNewMode && selectedPlanning && !selectedPlanning.isDeletable
+    ? getPlanningDeleteBlockedMessage(selectedPlanning)
+    : "";
 
   return (
   <Box sx={styles.card}>
@@ -76,13 +79,18 @@ export const PlanningSection = ({
               </Button>
             ) : (
               <>
-                <Button variant="outlined" color="error" onClick={handleRemovePlanning} disabled={savingPlanning || !selectedPlanningId} sx={styles.secondaryBtn}>Supprimer</Button>
+                <Button variant="outlined" color="error" onClick={handleRemovePlanning} disabled={savingPlanning || !selectedPlanningId || !selectedPlanning?.isDeletable} sx={styles.secondaryBtn}>Supprimer</Button>
                 <Button type="submit" variant="contained" disabled={savingPlanning || !selectedPlanningId} sx={styles.primaryBtn}>
                   {savingPlanning ? "Enregistrement..." : "Enregistrer"}
                 </Button>
               </>
             )}
           </Box>
+          {deleteBlockedMessage && (
+            <Alert severity="info" sx={{ mt: "4px" }}>
+              {deleteBlockedMessage}
+            </Alert>
+          )}
         </Box>
       </Box>
 

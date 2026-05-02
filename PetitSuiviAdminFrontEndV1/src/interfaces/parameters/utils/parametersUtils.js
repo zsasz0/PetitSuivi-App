@@ -55,7 +55,19 @@ export function mapPlanningFromApi(planning) {
     label: planning.label || getPlanningLabel(startYear, endYear),
     isActive: !planning.is_archived,
     isArchived: !!planning.is_archived,
+    classesCount: Number(planning.classes_count || 0),
+    plandaysCount: Number(planning.plandays_count || 0),
+    isDeletable: planning.is_deletable !== false,
+    deleteBlockers: Array.isArray(planning.delete_blockers) ? planning.delete_blockers : [],
   };
+}
+
+export function getPlanningDeleteBlockedMessage(planning) {
+  if (!planning) return "Sélectionnez une année scolaire.";
+  if ((planning.deleteBlockers || []).includes("archived")) return "Impossible de supprimer une année scolaire archivée.";
+  if ((planning.deleteBlockers || []).includes("has_classes")) return "Impossible de supprimer cette année scolaire car des classes y sont rattachées.";
+  if ((planning.deleteBlockers || []).includes("has_plandays")) return "Impossible de supprimer cette année scolaire car des jours planifiés y sont rattachés.";
+  return "Impossible de supprimer cette année scolaire.";
 }
 
 /**

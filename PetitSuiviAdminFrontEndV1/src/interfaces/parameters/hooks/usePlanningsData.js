@@ -5,6 +5,7 @@ import {
   getDefaultPlanning,
   validatePlanningDates,
   getPlanningLabel,
+  getPlanningDeleteBlockedMessage,
 } from "../utils/parametersUtils";
 
 export const usePlanningsData = ({ ui }) => {
@@ -124,6 +125,12 @@ export const usePlanningsData = ({ ui }) => {
 
   const requestRemovePlanning = () => {
     if (!selectedPlanningId) return ui.setPlanningMessage({ text: "Sélectionnez une année scolaire.", type: "error" });
+    if (!selectedPlanning?.isDeletable) {
+      const message = getPlanningDeleteBlockedMessage(selectedPlanning);
+      ui.setPlanningMessage({ text: message, type: "error" });
+      ui.showToast(message, "error");
+      return;
+    }
     ui.setDeletePlanningConfirmOpen(true);
   };
 
@@ -142,10 +149,7 @@ export const usePlanningsData = ({ ui }) => {
       setTimeout(() => ui.setPlanningMessage({ text: "", type: "" }), 3000);
     } catch (err) {
       const raw = err?.response?.data?.message || "";
-      const isFkError = raw.includes("Integrity constraint violation") || raw.includes("foreign key constraint") || raw.includes("1451");
-      const message = isFkError
-        ? "Impossible de supprimer cette année scolaire car des classes ou des inscriptions y sont encore rattachées. Veuillez d'abord les supprimer ou les archiver."
-        : raw || "Échec de la suppression.";
+      const message = raw || "Échec de la suppression.";
       ui.setPlanningMessage({ text: message, type: "error" });
       ui.showToast(message, "error");
     } finally {
