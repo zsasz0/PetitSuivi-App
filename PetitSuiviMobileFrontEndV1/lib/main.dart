@@ -18,6 +18,7 @@ import 'package:provider/provider.dart';
 import 'models/auth_session.dart';
 import 'models/user_profile.dart';
 import 'views/themes/theme_manager.dart';
+import 'services/local_notification_service.dart';
 
 /// The logic of the entry page is expertly handled by [AnimatedSplashScreen].
 ///
@@ -35,6 +36,9 @@ import 'views/themes/theme_manager.dart';
 void main() async {
   /// Initialize the app binding before executing any UI rendering.
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize the local notification service
+  await LocalNotificationService.init();
 
   /// Set the preferred orientation of the app to portrait only (up and down).
   await SystemChrome.setPreferredOrientations(<DeviceOrientation>[

@@ -74,7 +74,7 @@ class ActivitiesDayActivitiesList extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Aucune activité prévue r',
+                      'Aucune activité prévue',
                       style: TextStyle(
                         fontFamily: TeacherTheme.fontName,
                         color: TeacherTheme.mutedText,
@@ -100,6 +100,7 @@ class ActivitiesDayActivitiesList extends StatelessWidget {
     final todayDate = DateTime(today.year, today.month, today.day);
     final activityDate = DateTime(a.date.year, a.date.month, a.date.day);
     final canExecute = !activityDate.isAfter(todayDate);
+    final canChange = activityDate.isAtSameMomentAs(todayDate);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -175,7 +176,9 @@ class ActivitiesDayActivitiesList extends StatelessWidget {
               children: [
                 Expanded(
                   child: InkWell(
-                    onTap: () => onStatusUpdate(a, 'not_executed'),
+                    onTap: canChange
+                        ? () => onStatusUpdate(a, 'not_executed')
+                        : null,
                     borderRadius: BorderRadius.circular(12),
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -226,7 +229,9 @@ class ActivitiesDayActivitiesList extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: InkWell(
-                    onTap: () => onStatusUpdate(a, 'executed'),
+                    onTap: canChange
+                        ? () => onStatusUpdate(a, 'executed')
+                        : null,
                     borderRadius: BorderRadius.circular(12),
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8),

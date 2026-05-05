@@ -1,4 +1,5 @@
 import 'package:newv/utils/api_constants.dart';
+import 'package:newv/services/local_notification_service.dart';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -367,6 +368,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
   }
 
   void onTapped() {
+    LocalNotificationService.cancelAll();
     context.read<AuthSession>().clear();
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => const LoginPage()),

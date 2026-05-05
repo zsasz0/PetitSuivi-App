@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:newv/models/auth_session.dart';
+import 'package:newv/services/local_notification_service.dart';
 import 'package:newv/utils/unauthorized_handler.dart';
 import 'package:newv/views/auth/login/login_page.dart';
 import 'package:newv/views/teacher/profile/apis/teacher_profile_api.dart';
@@ -62,6 +63,7 @@ class TeacherProfileController {
   }
 
   void handleLogout() {
+    LocalNotificationService.cancelAll();
     context.read<AuthSession>().clear();
     if (!context.mounted) return;
     Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(

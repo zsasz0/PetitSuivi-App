@@ -5,12 +5,14 @@ import '../apis/apis.dart';
 import '../../../../models/auth_session.dart';
 import '../../../../models/account.dart';
 import '../../../parent/waitingForApproval/waiting_approval_page.dart';
+import '../../../../services/local_notification_service.dart';
 
 /// Controller class that handles business logic for the LoginPage.
 class LoginController {
   final BuildContext context;
   // Constructor
   LoginController(this.context);
+
   /// Attempts to automatically log the user in if a persisted session exists in AuthSession.
   /// Also verifies that an active school-year planning exists before navigating.
   Future<void> resumePersistedSessionIfAvailable({
@@ -35,10 +37,10 @@ class LoginController {
       return;
     }
 
-
     /// main logic
     // Navigate to the appropriate home page based on user role
     if (session.role == 'teacher') {
+      await LocalNotificationService.scheduleTeacherDailyReminder();
       onTeacherHome();
     } else if (session.role == 'parent') {
       onParentHome();
@@ -159,13 +161,14 @@ class LoginController {
         }
 
         if (roleName == 'teacher') {
+          await LocalNotificationService.scheduleTeacherDailyReminder();
           onTeacherHome();
         } else if (roleName == 'parent') {
           onParentHome();
         } else {
           onError('Role utilisateur invalide.');
         }
-      } 
+      }
       // 5. Handle Error response
       else {
         // Special case: Admin approval pending
