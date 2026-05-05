@@ -14,7 +14,21 @@ class CriteriaController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $criteria = \App\Models\Criteria::all(['CriteriaID as id', 'Name as name']);
+        $usageCounts = \App\Models\CriteriaActivity::selectRaw('CriteriaID, COUNT(*) as usage_count')
+            ->groupBy('CriteriaID')
+            ->pluck('usage_count', 'CriteriaID');
+
+        $criteria = \App\Models\Criteria::all()->map(function ($criterion) use ($usageCounts) {
+            $usageCount = (int) ($usageCounts[$criterion->CriteriaID] ?? 0);
+
+            return [
+                'id' => $criterion->CriteriaID,
+                'name' => $criterion->Name,
+                'is_used' => $usageCount > 0,
+                'usage_count' => $usageCount,
+            ];
+        })->values();
+
         return response()->json([
             'success' => true,
             'data' => $criteria
@@ -59,9 +73,15 @@ class CriteriaController extends Controller
             return response()->json(['success' => false, 'message' => 'Criteria not found.'], 404);
         }
 
+        $usageCount = \App\Models\CriteriaActivity::where('CriteriaID', $id)->count();
+        if ($usageCount > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Impossible de supprimer ce critère car il est utilisé par une ou plusieurs activités.'
+            ], 409);
+        }
+
         try {
-            // Delete pivot relationships first, if they exist
-            \App\Models\CriteriaActivity::where('CriteriaID', $id)->delete();
             $criteria->delete();
             
             return response()->json(['success' => true, 'message' => 'Criteria deleted.']);

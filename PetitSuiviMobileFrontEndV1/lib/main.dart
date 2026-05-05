@@ -1,13 +1,15 @@
-/**
- * @file main.dart
- * @brief The entry point and root configuration for the SmartKids application.
- * @details This file initializes the Flutter engine, sets up persistent state providers,
- * establishes the global visual theme, and manages the initial application navigation 
- * flow through the AnimatedSplashScreen.
- */
+/// @file main.dart
+/// @brief The entry point and root configuration for the SmartKids application.
+/// @details This file initializes the Flutter engine, sets up
+/// persistent state providers,
+/// establishes the global visual theme,
+/// and manages the initial application navigation
+/// flow through the AnimatedSplashScreen.
+library;
+
 import 'dart:io';
-import 'package:newv/app_theme.dart';
-import 'package:newv/views/splash/animated_splash_screen.dart';
+import 'package:newv/views/themes/app_theme.dart';
+import 'package:newv/views/intro/splash/animated_splash_screen.dart';
 import 'package:newv/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,20 +17,28 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:provider/provider.dart';
 import 'models/auth_session.dart';
 import 'models/user_profile.dart';
-import 'theme_manager.dart';
+import 'views/themes/theme_manager.dart';
+import 'services/local_notification_service.dart';
 
 /// The logic of the entry page is expertly handled by [AnimatedSplashScreen].
 ///
-/// The splash screen runs an aesthetic, character-by-character text entrance animation
-/// and a persistent glowing orbs background, while asynchronously checking `SharedPreferences`.
+/// The splash screen runs an aesthetic,
+/// character-by-character text entrance animation
+/// and a persistent glowing orbs background,
+/// while asynchronously checking `SharedPreferences`.
 ///
-/// If the introduction was never seen, it beautifully cross-fades into [IntroductionAnimationScreen].
-/// If the introduction was complete, it seamlessly transitions into the identical background of [LoginPage].
+/// If the introduction was never seen,
+/// it beautifully cross-fades into [IntroductionAnimationScreen].
+/// If the introduction was complete,
+/// it seamlessly transitions into the identical background of [LoginPage].
 
 /// The primary entry point for the application.
 void main() async {
   /// Initialize the app binding before executing any UI rendering.
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize the local notification service
+  await LocalNotificationService.init();
 
   /// Set the preferred orientation of the app to portrait only (up and down).
   await SystemChrome.setPreferredOrientations(<DeviceOrientation>[

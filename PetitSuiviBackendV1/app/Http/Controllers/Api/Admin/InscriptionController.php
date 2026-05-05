@@ -78,6 +78,7 @@ class InscriptionController extends Controller
                 'Inscription.Isarchived',
                 'Inscription.InscriptiontypeID',
                 'Inscription.InscriptionstatusID',
+                'Inscription.MealplanID',
                 'Child.ChildID',
                 'Child.Firstname as child_firstname',
                 'Child.Lastname as child_lastname',
@@ -264,6 +265,7 @@ class InscriptionController extends Controller
                 'is_archived'                 => (bool) $insc->Isarchived,
                 'status'                      => ['id' => $statusId, 'name' => $statusName],
                 'previous_inscriptions_count' => $prevCount,
+                'meal_plan_id'                => $insc->MealplanID,
             ];
         })->values();
 
@@ -373,6 +375,7 @@ class InscriptionController extends Controller
                 'status'          => ['id' => $statusId, 'name' => $statusName],
                 'class'           => $classData,
                 'medical_file'    => $medicalFile,
+                'meal_plan_id'    => $insc->MealplanID,
             ],
         ]);
     }
@@ -799,11 +802,36 @@ class InscriptionController extends Controller
             ]);
         }
 
-        // Load all meals from the database
-        $meals = DB::table('Meals')
+        // Resolve the child's MealplanID from their latest inscription
+        $mealPlanId = DB::table('Payment')
+            ->join('Inscription', 'Payment.InscriptionID', '=', 'Inscription.InscriptionID')
+            ->where('Payment.ChildID', $childId)
+            ->orderByDesc('Inscription.Date')
+            ->orderByDesc('Inscription.InscriptionID')
+            ->value('Inscription.MealplanID');
+
+        // Gratuit (MealplanID=4) → no meals to scan
+        if ((int) $mealPlanId === 4) {
+            return response()->json(['success' => true, 'exceptions' => []]);
+        }
+
+        // Load meals filtered by the child's meal plan
+        $mealsQuery = DB::table('Meals')
             ->leftJoin('Mealscategory', 'Meals.MealscategoryID', '=', 'Mealscategory.MealscategoryID')
-            ->select('Meals.MealsID', 'Meals.Name', 'Mealscategory.Name as category_name')
-            ->get();
+            ->select('Meals.MealsID', 'Meals.Name', 'Mealscategory.Name as category_name');
+
+        // Dejeuner-only (MealplanID=2) → only scan lunch meals
+        if ((int) $mealPlanId === 2) {
+            $mealsQuery->whereRaw('LOWER(Mealscategory.Name) = ?', ['lunch']);
+        }
+        // Gouter-only (MealplanID=3) → only scan snack meals
+        elseif ((int) $mealPlanId === 3) {
+            $mealsQuery->where(function ($sub) {
+                $sub->whereRaw('LOWER(Mealscategory.Name) IN (?, ?, ?, ?)', ['snack', 'snacks', 'goûter', 'gouter']);
+            });
+        }
+
+        $meals = $mealsQuery->get();
 
         if ($meals->isEmpty()) {
             return response()->json(['success' => true, 'exceptions' => []]);

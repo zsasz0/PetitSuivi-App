@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../theme_manager.dart';
-import '../../theme_colors.dart';
+import '../themes/theme_manager.dart';
+import '../themes/theme_colors.dart';
 
 // File: teacher_theme.dart
 // Purpose: Centralized theme constants and UI helpers for the teacher interface.

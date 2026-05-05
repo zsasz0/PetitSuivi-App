@@ -38,6 +38,11 @@ class ParameterController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
+        \Illuminate\Support\Facades\DB::table('Parameter')->updateOrInsert(
+            ['Name' => 'director_name'],
+            ['Value' => 'mahmoud']
+        );
+
         $parameters = \Illuminate\Support\Facades\DB::table('Parameter')->get()->map(function ($p) {
             return [
                 'id'    => $p->ParameterID,

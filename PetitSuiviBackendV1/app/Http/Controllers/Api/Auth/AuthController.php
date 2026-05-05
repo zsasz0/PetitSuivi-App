@@ -4,34 +4,62 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Account;
+use App\Support\AccountEmailUniqueness;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
     /**
+     * Verify password against multiple hash formats.
+     * Supports legacy plain text, MD5, and modern Bcrypt/Argon2.
+     */
+    private function verifyPassword(string $inputPassword, ?string $storedPassword): bool
+    {
+        if ($storedPassword === null) {
+            return false;
+        }
+
+        // Plain text (legacy)
+        if ($storedPassword === $inputPassword) {
+            return true;
+        }
+
+        // MD5 (legacy)
+        if (md5($inputPassword) === $storedPassword) {
+            return true;
+        }
+
+        // Bcrypt / Argon2 (modern)
+        try {
+            if (str_starts_with($storedPassword, '$2y$') || str_starts_with($storedPassword, '$argon')) {
+                return Hash::check($inputPassword, $storedPassword);
+            }
+        } catch (\Throwable $e) {
+            // Corrupted hash — treat as invalid
+        }
+
+        return false;
+    }
+
+    /**
      * Admin Login
      *
-     * Authenticates an administrative user via email and password, returning 
-     * a secure Bearer token for API access. Supports gracefully falling back
-     * between modern Bcrypt, legacy plain text, and MD5 hashes.
+     * Authenticates an administrative user via email and password, returning
+     * a secure Bearer token for API access.
      *
      * @group Authentication
-     * 
+     *
      * @bodyParam email string required The administrator's email. Example: admin@testing.com
      * @bodyParam password string required The administrator's password. Example: password
      *
      * @response 200 {
      *   "success": true,
      *   "message": "Connexion réussie",
-     *   "user": {
-     *     "AccountID": 10000000,
-     *     "Email": "admin@testing.com",
-     *     "Password": "$2y$12$...",
-     *     "PersonID": 12,
-     *     "RoleID": 1
-     *   },
+     *   "user": { "AccountID": 10000000, "Email": "admin@testing.com", "RoleID": 2 },
      *   "token": "1|abcdef1234567890..."
      * }
      * @response 401 {
@@ -47,30 +75,8 @@ class AuthController extends Controller
         ]);
 
         $account = Account::where('Email', $request->email)->first();
-        $isValid = false;
 
-        if ($account) {
-            // Support legacy plain text or MD5 hashed passwords
-            if ($account->Password === $request->password) {
-                $isValid = true;
-            } elseif (md5($request->password) === $account->Password) {
-                $isValid = true;
-            } else {
-                // Safely attempt Laravel Hash (Bcrypt/Argon2)
-                try {
-                    // Check if it's potentially a valid Laravel hash format before invoking
-                    if (str_starts_with($account->Password, '$2y$') || str_starts_with($account->Password, '$argon')) {
-                        if (Hash::check($request->password, $account->Password)) {
-                            $isValid = true;
-                        }
-                    }
-                } catch (\Throwable $e) {
-                    $isValid = false;
-                }
-            }
-        }
-
-        if (!$isValid) {
+        if (!$account || !$this->verifyPassword($request->password, $account->Password)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Les identifiants ne correspondent à aucun compte dans notre système.'
@@ -88,19 +94,301 @@ class AuthController extends Controller
     }
 
     /**
+     * Teacher Login
+     *
+     * Authenticates a teacher using email and password.
+     *
+     * @group Authentication
+     *
+     * @bodyParam email string required The teacher's email. Example: teacher@example.com
+     * @bodyParam password string required The teacher's password. Example: secret
+     *
+     * @response 200 { "success": true, "message": "Connexion réussie", "user": {}, "token": "..." }
+     * @response 401 { "success": false, "message": "Les identifiants ne correspondent à aucun compte dans notre système." }
+     * @response 403 { "success": false, "message": "Votre compte est archivé. Veuillez contacter l'administration." }
+     */
+    public function teacherLogin(Request $request): JsonResponse
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
+        $account = Account::where('RoleID', 1)->where('Email', $request->email)->first();
+
+        if (!$account || !$this->verifyPassword($request->password, $account->Password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Les identifiants ne correspondent à aucun compte dans notre système.'
+            ], 401);
+        }
+
+        if ($account->Is_archived) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Votre compte est archivé. Veuillez contacter l\'administration.'
+            ], 403);
+        }
+
+        $token = $account->createToken('mobile-teacher')->plainTextToken;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Connexion réussie',
+            'user' => [
+                'AccountID' => $account->AccountID,
+                'email' => $account->Email,
+                'cin' => $account->Cin,
+                'firstName' => $account->Firstname,
+                'lastName' => $account->Lastname,
+                'phone' => $account->Phone,
+                'address' => $account->Adresse,
+                'birthdate' => $account->Birthdate,
+                'inscriptionDate' => $account->Inscriptiondate,
+                'role' => ['name' => 'teacher'],
+            ],
+            'token' => $token
+        ]);
+    }
+
+    /**
+     * Check Registration Email Availability
+     *
+     * @group Authentication
+     *
+     * @bodyParam email string required The email to check. Example: test@example.com
+     */
+    public function checkRegistrationEmail(Request $request): JsonResponse
+    {
+        $request->validate([
+            'email' => ['required', 'email', 'max:255'],
+        ]);
+
+        $exists = AccountEmailUniqueness::exists($request->email);
+
+        return response()->json([
+            'available' => !$exists,
+            'message' => $exists ? AccountEmailUniqueness::DUPLICATE_EMAIL_MESSAGE : null,
+        ]);
+    }
+
+    /**
+     * Parent Login
+     *
+     * Authenticates a parent using email and password.
+     *
+     * @group Authentication
+     *
+     * @bodyParam email string required The parent's email. Example: parent@example.com
+     * @bodyParam password string required The parent's password. Example: secret
+     *
+     * @response 200 { "success": true, "message": "Connexion réussie", "user": {}, "token": "..." }
+     * @response 403 { "success": false, "message": "Votre compte nécessite l'approbation de l'administration." }
+     * @response 401 { "success": false, "message": "Les identifiants ne correspondent à aucun compte." }
+     */
+    public function parentLogin(Request $request): JsonResponse
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
+        $account = Account::where('RoleID', 3)->where('Email', $request->email)->first();
+
+        if (!$account || !$this->verifyPassword($request->password, $account->Password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Les identifiants ne correspondent à aucun compte dans notre système.'
+            ], 401);
+        }
+
+        if ($account->Approval_status !== 'approved') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Votre compte nécessite l\'approbation de l\'administration.',
+                'requires_admin_approval' => true
+            ], 403);
+        }
+
+        if ($account->Is_archived) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Votre compte est archivé. Veuillez contacter l\'administration.'
+            ], 403);
+        }
+
+        $token = $account->createToken('mobile-parent')->plainTextToken;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Connexion réussie',
+            'user' => [
+                'AccountID' => $account->AccountID,
+                'email' => $account->Email,
+                'cin' => $account->Cin,
+                'firstName' => $account->Firstname,
+                'lastName' => $account->Lastname,
+                'phone' => $account->Phone,
+                'address' => $account->Adresse,
+                'birthdate' => $account->Birthdate,
+                'inscriptionDate' => $account->Inscriptiondate,
+                'role' => ['name' => 'parent'],
+            ],
+            'token' => $token
+        ]);
+    }
+
+    /**
+     * Parent Registration
+     *
+     * Registers a new parent account along with their children and initial inscriptions.
+     *
+     * @group Authentication
+     *
+     * @bodyParam cin int required The parent's CIN. Example: 12345678
+     * @bodyParam firstName string required The parent's first name. Example: Sami
+     * @bodyParam lastName string required The parent's last name. Example: Ben Ali
+     * @bodyParam email string required The parent's email. Example: parent@example.com
+     * @bodyParam password string required The password. Example: secret
+     * @bodyParam children object[] required The list of children to add.
+     *
+     * @response 200 { "success": true, "message": "Inscription réussie." }
+     */
+    public function register(Request $request): JsonResponse
+    {
+        $request->validate([
+            'cin' => 'required',
+            'firstName' => 'required',
+            'lastName' => 'required',
+            'email' => ['required', 'email', 'max:255', AccountEmailUniqueness::validationRule()],
+            'password' => 'required',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $personId = DB::table('Person')->insertGetId([]);
+
+            DB::table('Parent')->insert([
+                'ParentID' => $personId
+            ]);
+
+            $accountId = DB::table('Account')->insertGetId([
+                'PersonID' => $personId,
+                'RoleID' => 3,
+                'Cin' => $request->cin,
+                'Firstname' => $request->firstName,
+                'Lastname' => $request->lastName,
+                'Birthdate' => $request->birthdate,
+                'Email' => AccountEmailUniqueness::trim($request->email),
+                'Phone' => $request->phone,
+                'Adresse' => $request->adresse,
+                'Password' => Hash::make($request->password),
+                'Inscriptiondate' => now()->toDateString(),
+                'Approval_status' => 'pending',
+                'Is_archived' => 0,
+            ]);
+
+            $children = $request->input('children', []);
+            foreach ($children as $childData) {
+                $childId = DB::table('Child')->insertGetId([
+                    'Firstname' => $childData['firstName'] ?? '',
+                    'Lastname'  => $childData['lastName'] ?? '',
+                    'Birthdate' => $childData['birthdate'] ?? null,
+                    'ParentID'  => $personId,
+                ]);
+
+                $inscriptions = $childData['inscriptions'] ?? [];
+                foreach ($inscriptions as $inscData) {
+                    $typeStr = $inscData['type'] ?? '';
+                    $typeID = (str_contains(strtolower($typeStr), 'maternelle') || str_contains(strtolower($typeStr), 'kindergarten')) ? 1 : 2;
+
+                    $mealStr = $inscData['meal_plan'] ?? '';
+                    $mealID = 4;
+                    if (str_contains(strtolower($mealStr), 'et le goûter') || str_contains(strtolower($mealStr), 'et le gouter')) $mealID = 1;
+                    elseif (str_contains(strtolower($mealStr), 'seulement le dejeuner') || str_contains(strtolower($mealStr), 'seulement le déjeuner')) $mealID = 2;
+                    elseif (str_contains(strtolower($mealStr), 'seulement le gouter') || str_contains(strtolower($mealStr), 'seulement le goûter')) $mealID = 3;
+
+                    $payID = ($inscData['payment_method'] ?? '') === 'oneShot' ? 2 : 1;
+                    $statusStr = $inscData['status'] ?? 'pending';
+                    $statusID = $statusStr === 'approved' ? 1 : ($statusStr === 'rejected' ? 2 : 3);
+
+                    $fraisSnapshot = (float) DB::table('Parameter')->where('Name', 'frais_inscription')->value('Value') ?: 0;
+                    $baseFee = (float) DB::table('Parameter')->where('Name', 'Prix de base')->value('Value') ?: 1200;
+                    $mealFee = (float) DB::table('Parameter')->where('Name', $mealStr)->value('Value') ?: 0;
+                    $secureTotalAmount = $baseFee + $mealFee;
+
+                    $inscriptionId = DB::table('Inscription')->insertGetId([
+                        'Date' => $inscData['insc_date'] ?? now()->toDateString(),
+                        'Totalamount' => $secureTotalAmount,
+                        'Isarchived' => 0,
+                        'Basefee' => $baseFee,
+                        'Mealplanfee' => $mealFee,
+                        'Fraisinscriptionsnapshot' => $fraisSnapshot,
+                        'Inscriptionfeespaymentamount' => null,
+                        'MealplanID' => $mealID,
+                        'PaymentmethodID' => $payID,
+                        'InscriptiontypeID' => $typeID,
+                        'TypeID' => $typeID,
+                        'InscriptionstatusID' => $statusID,
+                    ]);
+
+                    DB::table('Payment')->insert([
+                        'ChildID' => $childId,
+                        'InscriptionID' => $inscriptionId,
+                        'Amount' => $secureTotalAmount,
+                        'Date' => now()->toDateString(),
+                    ]);
+
+                    if (isset($childData['medicalRecordForm'])) {
+                        DB::table('Medicalform')->insert([
+                            'InscriptionID' => $inscriptionId,
+                            'Formdata' => json_encode($childData['medicalRecordForm']),
+                        ]);
+                    }
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Inscription réussie.'
+            ]);
+        } catch (QueryException $e) {
+            DB::rollBack();
+
+            if (AccountEmailUniqueness::isDuplicateTriggerException($e)) {
+                return response()->json([
+                    'message' => 'The given data was invalid.',
+                    'errors' => [
+                        'email' => [AccountEmailUniqueness::DUPLICATE_EMAIL_MESSAGE],
+                    ],
+                ], 422);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de l\'inscription: ' . $e->getMessage()
+            ], 500);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de l\'inscription: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * User Logout
      *
-     * Revokes the current access token and logs the user out securely 
-     * by destroying their active Sanctum token in the database.
+     * Revokes the current access token.
      *
      * @group Authentication
      * @authenticated
      *
-     * @response 200 {
-     *   "success": true,
-     *   "message": "Logged out successfully.",
-     *   "data": null
-     * }
+     * @response 200 { "success": true, "message": "Logged out successfully.", "data": null }
      */
     public function logout(Request $request): JsonResponse
     {
@@ -120,16 +408,10 @@ class AuthController extends Controller
     /**
      * Get Authenticated User Profile
      *
-     * Retrieves the profile information of the currently authenticated administrator.
-     *
      * @group Authentication
      * @authenticated
      *
-     * @response 200 {
-     *   "success": true,
-     *   "message": "Authenticated user profile.",
-     *   "data": null
-     * }
+     * @response 200 { "success": true, "message": "Authenticated user profile.", "data": null }
      */
     public function me(Request $request): JsonResponse
     {

@@ -1,16 +1,16 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\Teacher\AttendanceController;
-use App\Http\Controllers\Api\Teacher\DailyPlanController;
-use App\Http\Controllers\Api\Teacher\EvaluationController;
-use App\Http\Controllers\Api\Teacher\SignalementController;
-use App\Http\Controllers\Api\Teacher\ClassPhotoController;
-use App\Http\Controllers\Api\Teacher\PickupNotificationController;
-use App\Http\Controllers\Api\Teacher\ActivitySuggestionController;
-use App\Http\Controllers\Api\Teacher\ProfileController;
+use App\Http\Controllers\Api\Mobile\Teacher\AttendanceController;
+use App\Http\Controllers\Api\Mobile\Teacher\DailyPlanController;
+use App\Http\Controllers\Api\Mobile\Teacher\EvaluationController;
+use App\Http\Controllers\Api\Mobile\Teacher\SignalementController;
+use App\Http\Controllers\Api\Mobile\Teacher\ClassPhotoController;
+use App\Http\Controllers\Api\Mobile\Teacher\PickupNotificationController;
+use App\Http\Controllers\Api\Mobile\Teacher\ActivitySuggestionController;
+use App\Http\Controllers\Api\Mobile\Teacher\ProfileController;
 
-Route::middleware(['auth:sanctum', 'role:teacher'])->prefix('teacher')->group(function () {
+Route::middleware(['auth:sanctum', 'role:teacher'])->group(function () {
 
     // Attendance
     Route::post('attendance', [AttendanceController::class, 'store']);

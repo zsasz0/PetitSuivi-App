@@ -1,9 +1,9 @@
 import 'package:provider/provider.dart';
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:newv/app_theme.dart';
-import 'package:newv/theme_manager.dart';
-import 'package:newv/theme_colors.dart';
+import 'package:newv/views/themes/app_theme.dart';
+import 'package:newv/views/themes/theme_manager.dart';
+import 'package:newv/views/themes/theme_colors.dart';
 
 class EventDetailPage extends StatelessWidget {
   final Map<String, dynamic> eventData;

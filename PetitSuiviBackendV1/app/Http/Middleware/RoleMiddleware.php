@@ -12,7 +12,7 @@ class RoleMiddleware
      * Handle an incoming request.
      *
      * Checks if the authenticated user has the required role.
-     * Role mapping: 1 = admin, 2 = teacher, 3 = parent
+     * Role mapping: 1 = teacher, 2 = admin, 3 = parent
      *
      * @param Request $request
      * @param Closure $next

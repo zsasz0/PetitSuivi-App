@@ -1,0 +1,36 @@
+import 'package:flutter/material.dart';
+import 'package:newv/views/themes/theme_manager.dart';
+import 'package:newv/views/themes/theme_colors.dart';
+
+class ProfileTheme {
+  static Color get baseDark => ThemeManager.instance.isLightMode
+      ? const Color(0xFFF0F2F5)
+      : const Color(0xFF141B2D);
+
+  static Color get tealAccent => ThemeManager.instance.isLightMode
+      ? const Color(0xFF009688)
+      : const Color(0xFF4CCEAC);
+
+  static Color get indigoAccent => ThemeManager.instance.isLightMode
+      ? const Color(0xFF3F51B5)
+      : const Color(0xFF6870FA);
+
+  static Color get lightText => ThemeManager.instance.isLightMode
+      ? const Color(0xFF212529)
+      : const Color(0xFFF2F0F0);
+
+  static Color get mutedText => ThemeManager.instance.isLightMode
+      ? const Color(0xFF6C757D)
+      : const Color(0xFFA1A4AB);
+
+  static Color get redAccent => ThemeManager.instance.isLightMode
+      ? Colors.red.shade700
+      : Colors.redAccent;
+
+  static Color get glassBorder => ThemeColors.glassBorder;
+  static Color get glassBackgroundSubtle => ThemeColors.glassBackgroundSubtle;
+  static Color get divider => ThemeColors.divider;
+
+  static Color glassBorderWithOpacity(double opacity) =>
+      ThemeColors.glassBorderWithOpacity(opacity);
+}

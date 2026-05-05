@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\Admin\MealMenuController;
 use App\Http\Controllers\Api\Admin\EventController;
 use App\Http\Controllers\Api\Admin\NotificationController;
 use App\Http\Controllers\Api\Admin\ParameterController;
+use App\Http\Controllers\Api\Admin\DocumentSignatureController;
 use App\Http\Controllers\Api\Admin\ReportAnalysisController;
 use App\Http\Controllers\Api\Admin\CopilotController;
 use App\Http\Controllers\Api\Admin\FoodExceptionController;
@@ -27,27 +28,38 @@ use App\Http\Controllers\Api\Admin\ChildFoodExceptionOverrideController;
 Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
 
     // Master Entities
+
     Route::apiResource('accounts', AccountController::class)->except(['destroy']);
+    // crud operations on teachers
     Route::apiResource('teachers', TeacherController::class);
+    // used to set teacher as archived or not
     Route::patch('teachers/{cin}/toggle-archive', [TeacherController::class, 'toggleArchive']);
-    
     // Parents
+    // crud operations on parents
     Route::get('parents', [\App\Http\Controllers\Api\Admin\ParentController::class, 'index']);
     Route::post('parents', [\App\Http\Controllers\Api\Admin\ParentController::class, 'store']);
     Route::put('parents/{cin}', [\App\Http\Controllers\Api\Admin\ParentController::class, 'update']);
     Route::delete('parents/{cin}', [\App\Http\Controllers\Api\Admin\ParentController::class, 'destroy']);
+    // used to set parent as approved or not
     Route::patch('parents/{cin}/approval-status', [\App\Http\Controllers\Api\Admin\ParentController::class, 'updateApprovalStatus']);
+    // used to set parent as archived or not
     Route::patch('parents/{cin}/toggle-archive', [\App\Http\Controllers\Api\Admin\ParentController::class, 'toggleArchive']);
+    // crud operations on children
     Route::apiResource('children', ChildController::class)->except(['store', 'destroy']);
     
+
+
     // Classes
+    // get all class types
     Route::get('class-types', [ClassTypeController::class, 'index']);
+    // crud operations on classes
     Route::get('classes', [ClassController::class, 'index']);
     Route::post('classes', [ClassController::class, 'store']);
     Route::get('classes/{id}', [ClassController::class, 'show']);
     Route::put('classes/{id}', [ClassController::class, 'update']);
-    Route::patch('classes/{id}/toggle-archive', [ClassController::class, 'toggleArchive']);
     Route::delete('classes/{id}', [ClassController::class, 'destroy']);
+    // used to set class as archived or not
+    Route::patch('classes/{id}/toggle-archive', [ClassController::class, 'toggleArchive']);
 
     // Inscriptions
     Route::get('inscriptions', [InscriptionController::class, 'index']);
@@ -124,6 +136,9 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::post('notifications', [NotificationController::class, 'store']);
     Route::get('parameters', [ParameterController::class, 'index']);
     Route::put('parameters', [ParameterController::class, 'updateBulk']);
+    Route::get('parameters/signature', [DocumentSignatureController::class, 'show']);
+    Route::post('parameters/signature', [DocumentSignatureController::class, 'store']);
+    Route::delete('parameters/signature', [DocumentSignatureController::class, 'destroy']);
 
     // AI integrations & Reports
     Route::get('dashboard/stats', [ReportAnalysisController::class, 'getDashboardStats']);

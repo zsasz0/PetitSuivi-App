@@ -42,7 +42,7 @@ class PickupNotificationService {
   /// Retrieves a list of unread pickup notifications for the teacher.
   Future<List<dynamic>> getTeacherNotifications(String token) async {
     final response = await http.get(
-      Uri.parse('$baseUrl/teacher/teacher/pickup-notifications'),
+      Uri.parse('$baseUrl/teacher/pickup-notifications'),
       headers: _getHeaders(token),
     );
 
@@ -58,7 +58,7 @@ class PickupNotificationService {
   Future<void> markAsCompleted(int notificationId, String token) async {
     final response = await http.patch(
       Uri.parse(
-        '$baseUrl/teacher/teacher/pickup-notifications/$notificationId/complete',
+        '$baseUrl/teacher/pickup-notifications/$notificationId/complete',
       ),
       headers: _getHeaders(token),
     );

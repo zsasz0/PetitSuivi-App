@@ -6,6 +6,6 @@ class ApiConstants {
   /// Docker builds can override this at compile time for local stacks.
   static const String baseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'https://api.petitsuivi.me',
+    defaultValue: 'http://192.168.100.14:8000',
   );
 }

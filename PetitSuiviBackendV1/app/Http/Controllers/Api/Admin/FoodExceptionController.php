@@ -35,7 +35,8 @@ class FoodExceptionController extends Controller
             ->select(
                 'Inscription.InscriptionID',
                 'Inscription.Date as inscription_date',
-                'Inscription.Isarchived as inscription_archived'
+                'Inscription.Isarchived as inscription_archived',
+                'Inscription.MealplanID'
             )
             ->orderByDesc('Inscription.Date')
             ->orderByDesc('Inscription.InscriptionID')
@@ -140,6 +141,7 @@ class FoodExceptionController extends Controller
 
         try {
             $planning = null;
+            $mealType = $request->query('meal_type');
             if ($planningId) {
                 $planning = DB::table('Planning')->where('PlanningID', $planningId)->first();
             }
@@ -165,6 +167,37 @@ class FoodExceptionController extends Controller
                     })
                     ->filter();
 
+                // ──────────────────────────────────────────────────────────
+                // Step 1b: Filter children by MealplanID vs requested meal_type.
+                //   MealplanID mapping:
+                //     NULL or 1 = Full (both meals)  → show in dejeuner AND gouter
+                //     2         = Dejeuner only      → show ONLY in dejeuner
+                //     3         = Gouter only        → show ONLY in gouter
+                //     4         = Gratuit (free)      → exclude from both
+                // ──────────────────────────────────────────────────────────
+                if ($mealType) {
+                    $inscriptionByChild = $inscriptionByChild->filter(function ($inscription) use ($mealType) {
+                        $mealPlanId = $inscription->MealplanID ?? null;
+
+                        // Gratuit (4) → never show in any exception list
+                        if ((int) $mealPlanId === 4) {
+                            return false;
+                        }
+
+                        // Dejeuner-only (2) → exclude from gouter exceptions
+                        if ($mealType === 'gouter' && (int) $mealPlanId === 2) {
+                            return false;
+                        }
+
+                        // Gouter-only (3) → exclude from dejeuner exceptions
+                        if ($mealType === 'dejeuner' && (int) $mealPlanId === 3) {
+                            return false;
+                        }
+
+                        return true;
+                    });
+                }
+
                 $childIdsInYear = $inscriptionByChild->keys()->map(fn ($id) => (int) $id)->values()->toArray();
 
                 if (empty($childIdsInYear)) {
@@ -179,7 +212,6 @@ class FoodExceptionController extends Controller
             // Step 2: Get all food exceptions for children in that year.
             // JOIN: Child → Childfoodexception → ChildFoodExceptionMeals → Meals → Mealscategory
             // ──────────────────────────────────────────────────────────
-            $mealType = $request->query('meal_type');
 
             $rows = DB::table('Child')
                 ->join('Childfoodexception', 'Child.ChildID', '=', 'Childfoodexception.ChildID')
@@ -276,12 +308,14 @@ class FoodExceptionController extends Controller
                 $childId = $row->ChildID;
 
                 if (!isset($grouped[$childId])) {
+                    $childInscription = $inscriptionByChild[$childId] ?? null;
                     $grouped[$childId] = [
                         'child_id'        => $childId,
                         'child_name'      => trim($row->Firstname . ' ' . $row->Lastname),
                         'class_name'      => $row->class_name ?? 'Non assigné',
                         'exception_count' => 0,
                         'dietary_comment' => $dietaryComments[$childId] ?? null,
+                        'meal_plan_id'    => $childInscription->MealplanID ?? null,
                         'exceptions'      => [],
                     ];
                 }

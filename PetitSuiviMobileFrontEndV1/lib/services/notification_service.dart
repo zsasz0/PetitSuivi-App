@@ -62,7 +62,7 @@ class NotificationService {
 
   /// Maps the generic role name to its corresponding API resource path segment.
   String _getRolePath(String role) {
-    return role == 'parent' ? 'parents' : 'teacher/teacher';
+    return role == 'parent' ? 'parents' : 'teacher';
   }
 
   /// Retrieves a list of [NotificationModel] for the specified [role].

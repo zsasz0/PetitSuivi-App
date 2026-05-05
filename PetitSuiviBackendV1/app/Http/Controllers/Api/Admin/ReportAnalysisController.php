@@ -419,11 +419,17 @@ class ReportAnalysisController extends Controller
         $activeYear = DB::table('Planning')
             ->where('Isarchived', 0)->first();
 
+        $hasArchivedPlannings = DB::table('Planning')
+            ->where('Isarchived', 1)->exists();
+
+        $yearEnded = !$activeYear;
+        $yearArchived = !$activeYear && $hasArchivedPlannings;
+
         return response()->json([
             'data' => [
-                'year_ended' => $activeYear ? false : true,
-                'year_ended_message' => $activeYear ? null : "L'année scolaire est terminée.",
-                'year_archived' => false,
+                'year_ended' => $yearEnded,
+                'year_ended_message' => $yearEnded ? "L'année scolaire est terminée." : null,
+                'year_archived' => $yearArchived,
             ]
         ]);
     }
