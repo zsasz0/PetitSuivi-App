@@ -64,7 +64,7 @@ const MealExceptionReviewBox = ({
                                 />
                                 <Box>
                                     <Typography color={colors.grey[100]} fontWeight="700" fontSize="0.92rem">
-                                        Repas ID {exception.meal_id}
+                                        {exception.meal_name ? `${exception.meal_name} (ID ${exception.meal_id})` : `Repas ID ${exception.meal_id}`}
                                     </Typography>
                                     <Typography color={colors.grey[300]} fontSize="0.84rem" mt="4px">
                                         {exception.reason}

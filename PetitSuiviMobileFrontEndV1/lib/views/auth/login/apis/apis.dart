@@ -85,6 +85,8 @@ class LoginApis {
     final endpoint = isTeacher ? '/api/login/teacher' : '/api/login/parent';
     final uri = Uri.parse('$_baseUrl$endpoint');
 
+    debugPrint('[LoginApis] POST $uri');
+
     final response = await http.post(
       uri,
       headers: {
@@ -93,6 +95,9 @@ class LoginApis {
       },
       body: jsonEncode({'email': email, 'password': password}),
     );
+
+    debugPrint('[LoginApis] Response status: ${response.statusCode}');
+    debugPrint('[LoginApis] Response body: ${response.body}');
 
     final Map<String, dynamic> data = response.body.isNotEmpty
         ? jsonDecode(response.body) as Map<String, dynamic>
@@ -107,7 +112,7 @@ class LoginApis {
           // We can optionally store it in the data map for the controller to use
           data['account'] = account;
         } catch (e) {
-          // If parsing fails, we continue with raw data but could log the error
+          debugPrint('[LoginApis] Account.fromJson error: $e');
         }
       }
     }

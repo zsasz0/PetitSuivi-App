@@ -297,7 +297,7 @@ class MealMenuController extends Controller
         $response = Http::timeout(60)
             ->acceptJson()
             ->post($copilotUrl, [
-                'model' => 'gpt-4.1',
+                'model' => 'gpt-4o-mini',
                 'messages' => [
                     [
                         'role' => 'user',

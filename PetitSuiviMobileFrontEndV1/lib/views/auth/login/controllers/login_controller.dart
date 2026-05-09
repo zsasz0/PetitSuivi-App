@@ -187,8 +187,10 @@ class LoginController {
         final message = data['message']?.toString() ?? 'Échec de connexion.';
         onError(message);
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       // 6. Network or unexpected error
+      debugPrint('[LoginController] Login error: $e');
+      debugPrint('[LoginController] Stack trace: $stackTrace');
       onError('Impossible de joindre le serveur. Vérifiez l\'URL API.');
     } finally {
       // 7. Cleanup loading state

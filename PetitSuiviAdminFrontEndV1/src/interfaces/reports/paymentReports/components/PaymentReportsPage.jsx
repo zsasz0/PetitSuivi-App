@@ -34,7 +34,7 @@ const PaymentReportsPage = () => {
 
   return (
     <Box m="20px">
-      <Header title="RAPPORTS FINANCIERS" />
+      <Header title="RAPPORTS DE PAIEMENT" />
 
       <PlanningToolbar
         colors={colors}

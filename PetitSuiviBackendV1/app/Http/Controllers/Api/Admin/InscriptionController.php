@@ -856,6 +856,15 @@ class InscriptionController extends Controller
 
             $exceptions = $parsed;
 
+            // Enrich exceptions with meal name from DB
+            $mealsById = $meals->keyBy('MealsID');
+            $exceptions = array_map(function ($exc) use ($mealsById) {
+                $mealId = $exc['meal_id'] ?? null;
+                $meal = $mealId ? ($mealsById[$mealId] ?? null) : null;
+                $exc['meal_name'] = $meal->Name ?? null;
+                return $exc;
+            }, $exceptions);
+
             return response()->json(['success' => true, 'exceptions' => $exceptions]);
         } catch (\Exception $e) {
             return response()->json([
@@ -1223,7 +1232,7 @@ class InscriptionController extends Controller
             $response = Http::timeout(60)
                 ->acceptJson()
                 ->post($copilotUrl, [
-                    'model' => $validated['model'] ?? 'gpt-4.1',
+                    'model' => $validated['model'] ?? 'gpt-4o-mini',
                     'messages' => $messages,
                 ]);
 
@@ -1245,7 +1254,7 @@ class InscriptionController extends Controller
             return response()->json([
                 'success' => true,
                 'answer' => trim((string) data_get($raw, 'choices.0.message.content', '')),
-                'model' => data_get($raw, 'model', $validated['model'] ?? 'gpt-4.1'),
+                'model' => data_get($raw, 'model', $validated['model'] ?? 'gpt-4o-mini'),
                 'usage' => data_get($raw, 'usage'),
                 'raw' => $raw,
             ]);
@@ -1264,7 +1273,7 @@ class InscriptionController extends Controller
         $response = Http::timeout(60)
             ->acceptJson()
             ->post($copilotUrl, [
-                'model' => 'gpt-4.1',
+                'model' => 'gpt-4o-mini',
                 'messages' => [
                     [
                         'role' => 'user',

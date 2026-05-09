@@ -267,7 +267,7 @@ function Sidebar({ isSidebar = true }) {
             Signalements Comportementaux
           </a>
           <NavLink to="/management/payment-reports" className="submenu-item">
-            Rapports Financiers
+            Rapports de paiement
           </NavLink>
         </div>
       </div>
