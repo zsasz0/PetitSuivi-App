@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\PasswordResetMail;
 use App\Models\Account;
 use App\Support\AccountEmailUniqueness;
 use Illuminate\Database\QueryException;
@@ -10,6 +11,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -236,6 +239,75 @@ class AuthController extends Controller
             ],
             'token' => $token
         ]);
+    }
+
+    /**
+     * Forgot Password
+     *
+     * Generates a new temporary password for a parent or teacher account and
+     * sends it to the account email address.
+     *
+     * @group Authentication
+     *
+     * @bodyParam email string required The account email. Example: parent@example.com
+     * @bodyParam role string required The account role. Must be `teacher` or `parent`. Example: parent
+     *
+     * @response 200 { "success": true, "message": "Un nouveau mot de passe a ete envoye par email." }
+     * @response 404 { "success": false, "message": "Aucun utilisateur trouve avec cet email." }
+     */
+    public function forgotPassword(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'email' => 'required|email',
+            'role' => 'required|in:teacher,parent',
+        ]);
+
+        $roleId = $validated['role'] === 'teacher' ? 1 : 3;
+
+        $account = Account::where('RoleID', $roleId)
+            ->where('Email', trim($validated['email']))
+            ->first();
+
+        if (!$account) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Aucun utilisateur trouve avec cet email.',
+            ], 404);
+        }
+
+        $newPassword = $this->generateTemporaryPassword();
+
+        DB::beginTransaction();
+
+        try {
+            DB::table('Account')
+                ->where('AccountID', $account->AccountID)
+                ->update([
+                    'Password' => Hash::make($newPassword),
+                ]);
+
+            $freshAccount = Account::where('AccountID', $account->AccountID)->firstOrFail();
+            Mail::to($freshAccount->Email)->send(new PasswordResetMail($freshAccount, $newPassword));
+
+            DB::commit();
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Impossible d\'envoyer le nouveau mot de passe pour le moment.',
+            ], 500);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Un nouveau mot de passe a ete envoye par email.',
+        ]);
+    }
+
+    private function generateTemporaryPassword(): string
+    {
+        return 'PS-' . Str::upper(Str::random(8)) . random_int(10, 99);
     }
 
     /**

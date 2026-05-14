@@ -19,12 +19,14 @@ class LoginApis {
       );
       if (response.statusCode >= 200 && response.statusCode < 300) {
         final data = jsonDecode(response.body);
-        final List<dynamic> jsonList = data is List ? data : (data['data'] ?? []);
-        
+        final List<dynamic> jsonList = data is List
+            ? data
+            : (data['data'] ?? []);
+
         final List<Parameter> params = jsonList
             .map((p) => Parameter.fromJson(p as Map<String, dynamic>))
             .toList();
-        
+
         for (final p in params) {
           if (p.name == 'inscriptions_open') {
             return p.value == 'true' || p.value == '1';
@@ -54,7 +56,9 @@ class LoginApis {
         headers: {'Accept': 'application/json'},
       );
 
-      debugPrint('[LoginApis] GET /api/plannings/active-check → ${response.statusCode}');
+      debugPrint(
+        '[LoginApis] GET /api/plannings/active-check → ${response.statusCode}',
+      );
       debugPrint('[LoginApis] Response body: ${response.body}');
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -102,13 +106,15 @@ class LoginApis {
     final Map<String, dynamic> data = response.body.isNotEmpty
         ? jsonDecode(response.body) as Map<String, dynamic>
         : <String, dynamic>{};
-    
+
     // Using Account and Role classes to validate user data structure if present
     if (response.statusCode >= 200 && response.statusCode < 300) {
       if (data['user'] != null) {
         try {
           // This validates that the user data matches our Account entity
-          final account = Account.fromJson(data['user'] as Map<String, dynamic>);
+          final account = Account.fromJson(
+            data['user'] as Map<String, dynamic>,
+          );
           // We can optionally store it in the data map for the controller to use
           data['account'] = account;
         } catch (e) {
@@ -116,8 +122,35 @@ class LoginApis {
         }
       }
     }
-        
+
     // We add the status code to the map so the UI can handle different logic (e.g. 401, 403)
+    data['statusCode'] = response.statusCode;
+    return data;
+  }
+
+  /// Requests a temporary password for the selected account role.
+  static Future<Map<String, dynamic>> requestPasswordReset({
+    required String email,
+    required bool isTeacher,
+  }) async {
+    final uri = Uri.parse('$_baseUrl/api/password/forgot');
+
+    final response = await http.post(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: jsonEncode({
+        'email': email,
+        'role': isTeacher ? 'teacher' : 'parent',
+      }),
+    );
+
+    final Map<String, dynamic> data = response.body.isNotEmpty
+        ? jsonDecode(response.body) as Map<String, dynamic>
+        : <String, dynamic>{};
+
     data['statusCode'] = response.statusCode;
     return data;
   }

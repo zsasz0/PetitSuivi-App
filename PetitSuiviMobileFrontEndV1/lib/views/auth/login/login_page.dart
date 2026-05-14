@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:newv/views/themes/theme_manager.dart';
 import 'components/login/login_header.dart';
+import 'components/login/login_forgot_password_link.dart';
 import 'components/login/login_inputs.dart';
 import 'components/login/login_register_link.dart';
 import 'components/login/login_role_selector.dart';
 import 'components/login/login_submit_action.dart';
 import 'components/login/login_background.dart';
 import 'themes/login_theme.dart';
+import '../../themes/app_theme.dart';
 import '../register/register_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -18,24 +20,33 @@ class LoginPage extends StatefulWidget {
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
+
 /// The state for [LoginPage].
 class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   /// Controls the text value for the email address input.
   final TextEditingController _emailController = TextEditingController();
+
   /// Controls the text value for the password input.
   final TextEditingController _passwordController = TextEditingController();
+
   /// Tracks if a login request is actively being processed over the network.
   bool _isLoading = false;
+
   /// Keeps track of the selected user role. (1 = teacher, 2 = parent)
   int _selectedRole = 2;
+
   /// Evaluates whether the system allows new registrations (inscriptions).
   bool _inscriptionsOpen = true;
+
   /// Controls the background animation.
   late AnimationController _bgAnimController;
+
   /// Controls the stagger animation.
   late AnimationController _staggerController;
+
   /// The login controller.
   late final LoginController _controller;
+
   /// Initializes the controller and animations.
   @override
   void initState() {
@@ -43,12 +54,14 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     _controller = LoginController(context);
 
     _bgAnimController = AnimationController(
-        vsync: this, duration: const Duration(seconds: 20))
-      ..repeat();
+      vsync: this,
+      duration: const Duration(seconds: 20),
+    )..repeat();
 
     _staggerController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 1200))
-      ..forward();
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..forward();
 
     _loadSavedEmail();
     _checkInscriptionsOpen();
@@ -56,6 +69,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       _resumePersistedSessionIfAvailable();
     });
   }
+
   /// Disposes of the controller and animations.
   @override
   void dispose() {
@@ -78,6 +92,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       onError: _showError,
     );
   }
+
   /// Restores the last used email address using SharedPreferences to reduce repetitive typing.
   Future<void> _loadSavedEmail() async {
     final email = await _controller.getSavedEmail();
@@ -85,6 +100,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       _emailController.text = email;
     }
   }
+
   /// Queries the API to check if `inscriptions_open` parameter is active.
   /// Modifies local state to show or hide the registration option.
   Future<void> _checkInscriptionsOpen() async {
@@ -95,6 +111,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       });
     }
   }
+
   /// Validates input and fires the POST request for user authentication.
   Future<void> _handleLogin() async {
     await _controller.handleLogin(
@@ -109,20 +126,27 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       onParentHome: _openParentHome,
     );
   }
+
   /// Navigates to the teacher home screen.
   void _openTeacherHome() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const CombinedHomeScreen(userRole: 1)),
+      MaterialPageRoute(
+        builder: (context) => const CombinedHomeScreen(userRole: 1),
+      ),
     );
   }
+
   /// Navigates to the parent home screen.
   void _openParentHome() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const CombinedHomeScreen(userRole: 2)),
+      MaterialPageRoute(
+        builder: (context) => const CombinedHomeScreen(userRole: 2),
+      ),
     );
   }
+
   /// Opens the registration page only if an active school-year planning exists.
   Future<void> _handleRegister() async {
     final hasActive = await _controller.checkActivePlanning();
@@ -140,6 +164,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       MaterialPageRoute(builder: (context) => const RegisterPage()),
     );
   }
+
   /// Displays an error message in a SnackBar.
   void _showError(String message) {
     if (!mounted) return;
@@ -152,6 +177,151 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       ),
     );
   }
+
+  void _showSuccess(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green.shade600,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+    );
+  }
+
+  Future<void> _openForgotPasswordDialog() async {
+    var forgotEmail = _emailController.text.trim();
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        bool isSending = false;
+
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              backgroundColor: LoginTheme.baseDark,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              title: Text(
+                'Mot de passe oublie',
+                style: TextStyle(
+                  fontFamily: AppTheme.fontName,
+                  color: LoginTheme.lightText,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Entrez votre email pour recevoir un nouveau mot de passe.',
+                    style: TextStyle(
+                      fontFamily: AppTheme.fontName,
+                      color: LoginTheme.mutedText,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    initialValue: forgotEmail,
+                    onChanged: (value) => forgotEmail = value,
+                    keyboardType: TextInputType.emailAddress,
+                    style: TextStyle(
+                      fontFamily: AppTheme.fontName,
+                      color: LoginTheme.lightText,
+                    ),
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      labelStyle: TextStyle(
+                        fontFamily: AppTheme.fontName,
+                        color: LoginTheme.mutedText,
+                      ),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: LoginTheme.mutedText.withValues(alpha: 0.4),
+                        ),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: LoginTheme.tealAccent),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: isSending
+                      ? null
+                      : () => Navigator.pop(dialogContext),
+                  child: Text(
+                    'Annuler',
+                    style: TextStyle(
+                      fontFamily: AppTheme.fontName,
+                      color: LoginTheme.mutedText,
+                    ),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: isSending
+                      ? null
+                      : () async {
+                          FocusScope.of(dialogContext).unfocus();
+                          setDialogState(() => isSending = true);
+
+                          final result = await _controller.handleForgotPassword(
+                            email: forgotEmail.trim(),
+                            selectedRole: _selectedRole,
+                          );
+
+                          if (!mounted || !dialogContext.mounted) return;
+
+                          setDialogState(() => isSending = false);
+
+                          final success = result['success'] == true;
+                          final message =
+                              result['message']?.toString() ??
+                              'Une erreur est survenue.';
+
+                          if (success) {
+                            Navigator.of(dialogContext).pop();
+                            _showSuccess(message);
+                            return;
+                          }
+
+                          _showError(message);
+                        },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: LoginTheme.tealAccent,
+                    foregroundColor: LoginTheme.baseDark,
+                  ),
+                  child: isSending
+                      ? SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            color: LoginTheme.baseDark,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : Text(
+                          'Envoyer',
+                          style: TextStyle(
+                            fontFamily: AppTheme.fontName,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   // ---------------------------------------------------------------------------
   // WIDGET BUILD
   // ---------------------------------------------------------------------------
@@ -170,9 +340,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 60),
-                  LoginHeader(
-                    staggerController: _staggerController,
-                  ),
+                  LoginHeader(staggerController: _staggerController),
                   const SizedBox(height: 48),
                   LoginInputs(
                     staggerController: _staggerController,
@@ -182,14 +350,20 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                   const SizedBox(height: 24),
                   LoginRoleSelector(
                     selectedRole: _selectedRole,
-                    onRoleChanged: (role) => setState(() => _selectedRole = role),
+                    onRoleChanged: (role) =>
+                        setState(() => _selectedRole = role),
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 6),
+                  LoginForgotPasswordLink(
+                    staggerController: _staggerController,
+                    onPressed: _openForgotPasswordDialog,
+                  ),
+                  const SizedBox(height: 10),
                   LoginSubmitAction(
                     isLoading: _isLoading,
                     onPressed: _handleLogin,
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 12),
                   LoginRegisterLink(
                     inscriptionsOpen: _inscriptionsOpen,
                     staggerController: _staggerController,
@@ -204,5 +378,4 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       ),
     );
   }
-
 }

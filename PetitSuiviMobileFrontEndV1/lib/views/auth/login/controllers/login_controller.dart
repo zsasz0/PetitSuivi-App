@@ -197,4 +197,36 @@ class LoginController {
       onLoadingChanged(false);
     }
   }
+
+  /// Requests a server-generated temporary password for the selected role.
+  Future<Map<String, dynamic>> handleForgotPassword({
+    required String email,
+    required int selectedRole,
+  }) async {
+    if (email.isEmpty) {
+      return {'success': false, 'message': 'Email est obligatoire.'};
+    }
+
+    try {
+      final data = await LoginApis.requestPasswordReset(
+        email: email,
+        isTeacher: selectedRole == 1,
+      );
+
+      final statusCode = data['statusCode'] as int? ?? 500;
+      return {
+        'success': statusCode >= 200 && statusCode < 300,
+        'message': data['message']?.toString() ?? 'Une erreur est survenue.',
+        'statusCode': statusCode,
+      };
+    } catch (e, stackTrace) {
+      debugPrint('[LoginController] Forgot password error: $e');
+      debugPrint('[LoginController] Forgot password stack trace: $stackTrace');
+      return {
+        'success': false,
+        'message': 'Impossible de joindre le serveur. Verifiez l\'URL API.',
+        'statusCode': 500,
+      };
+    }
+  }
 }

@@ -11,6 +11,7 @@ Route::post('/register/check-email', [AuthController::class, 'checkRegistrationE
 // Mobile Auth
 Route::post('/login/teacher', [AuthController::class, 'teacherLogin']);
 Route::post('/login/parent', [AuthController::class, 'parentLogin']);
+Route::post('/password/forgot', [AuthController::class, 'forgotPassword']);
 
 // Public registration endpoints
 Route::get('/parameters', [\App\Http\Controllers\Api\Mobile\Parent\ParentSupportController::class, 'index']);
@@ -82,5 +83,4 @@ Route::prefix('admin')->group(function () {
 Route::prefix('teacher')->group(function () {
     require __DIR__ . '/teacher.php';
 });
-
 

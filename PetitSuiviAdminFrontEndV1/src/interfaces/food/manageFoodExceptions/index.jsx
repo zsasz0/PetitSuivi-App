@@ -110,6 +110,7 @@ const ManageFoodExceptions = () => {
                 allMeals={state.allMeals}
                 saving={state.addSaving}
                 selectedPlanningId={state.selectedPlanningId}
+                existingExceptions={state.children}
             />
         </Box>
     );

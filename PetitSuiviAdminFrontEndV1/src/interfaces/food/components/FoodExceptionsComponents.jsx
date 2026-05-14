@@ -121,10 +121,24 @@ export const ChildCard = ({ child, isExpanded, onToggle, getSeverityColor, color
     );
 };
 
-export const AddExceptionDialog = ({ open, onClose, onSubmit, colors, sx, allChildren, allMeals, saving, selectedPlanningId }) => {
+export const AddExceptionDialog = ({ open, onClose, onSubmit, colors, sx, allChildren, allMeals, saving, selectedPlanningId, existingExceptions = [] }) => {
     const [selectedChild, setSelectedChild] = useState(null);
     const [selectedMeals, setSelectedMeals] = useState([]);
     const [reason, setReason] = useState("");
+
+    // Filter out meals the selected child already has exceptions for
+    const availableMeals = (() => {
+        if (!selectedChild) return allMeals;
+        const childData = existingExceptions.find(c => c.child_id === selectedChild.child_id);
+        if (!childData || !childData.exceptions?.length) return allMeals;
+        const forbiddenMealIds = new Set(childData.exceptions.map(e => e.meal_id));
+        return allMeals.filter(m => !forbiddenMealIds.has(m.id || m.MealsID));
+    })();
+
+    const handleChildChange = (_, val) => {
+        setSelectedChild(val);
+        setSelectedMeals([]); // Reset meals when child changes
+    };
 
     const handleSubmit = () => {
         if (!selectedChild || selectedMeals.length === 0 || !reason.trim()) return;
@@ -142,9 +156,9 @@ export const AddExceptionDialog = ({ open, onClose, onSubmit, colors, sx, allChi
             <DialogTitle sx={sx.dialogTitle}>Ajouter une exception alimentaire</DialogTitle>
             <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: '16px', mt: 1 }}>
                 <Box sx={sx.formCard}>
-                <Autocomplete options={allChildren} getOptionLabel={(opt) => [opt.child_name, opt.class_name].filter(Boolean).join(" • ")} value={selectedChild} onChange={(_, val) => setSelectedChild(val)} renderInput={(params) => <TextField {...params} label="Enfant" variant="outlined" InputLabelProps={{ shrink: true }} sx={sx.filledInputSx} />} isOptionEqualToValue={(o, v) => o.child_id === v.child_id} />
-                <Autocomplete multiple options={allMeals} getOptionLabel={(opt) => opt.name || opt.Name || ""} value={selectedMeals} onChange={(_, val) => setSelectedMeals(val)} renderInput={(params) => <TextField {...params} label="Repas à interdire" variant="outlined" InputLabelProps={{ shrink: true }} sx={sx.filledInputSx} />} renderTags={(value, getTagProps) => value.map((opt, index) => <Chip label={opt.name || opt.Name || ""} {...getTagProps({ index })} key={opt.id || opt.MealsID} sx={sx.mealChip} /> )} isOptionEqualToValue={(o, v) => (o.id || o.MealsID) === (v.id || v.MealsID)} />
-                <TextField label="Raison de la restriction" variant="outlined" multiline minRows={2} value={reason} onChange={(e) => setReason(e.target.value)} InputLabelProps={{ shrink: true }} sx={sx.filledInputSx} />
+                    <Autocomplete options={allChildren} getOptionLabel={(opt) => [opt.child_name, opt.class_name].filter(Boolean).join(" • ")} value={selectedChild} onChange={handleChildChange} renderInput={(params) => <TextField {...params} label="Enfant" variant="outlined" InputLabelProps={{ shrink: true }} sx={sx.filledInputSx} />} isOptionEqualToValue={(o, v) => o.child_id === v.child_id} />
+                    <Autocomplete multiple options={availableMeals} getOptionLabel={(opt) => opt.name || opt.Name || ""} value={selectedMeals} onChange={(_, val) => setSelectedMeals(val)} renderInput={(params) => <TextField {...params} label="Repas à interdire" variant="outlined" InputLabelProps={{ shrink: true }} sx={sx.filledInputSx} />} renderTags={(value, getTagProps) => value.map((opt, index) => <Chip label={opt.name || opt.Name || ""} {...getTagProps({ index })} key={opt.id || opt.MealsID} sx={sx.mealChip} />)} isOptionEqualToValue={(o, v) => (o.id || o.MealsID) === (v.id || v.MealsID)} noOptionsText="Tous les repas sont déjà interdits pour cet enfant" />
+                    <TextField label="Raison de la restriction" variant="outlined" multiline minRows={2} value={reason} onChange={(e) => setReason(e.target.value)} InputLabelProps={{ shrink: true }} sx={sx.filledInputSx} />
                 </Box>
             </DialogContent>
             <DialogActions sx={sx.dialogActions}>

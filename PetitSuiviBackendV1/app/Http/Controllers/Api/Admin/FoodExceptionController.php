@@ -218,15 +218,18 @@ class FoodExceptionController extends Controller
                 ->join('ChildFoodExceptionMeals', 'Childfoodexception.ChildfoodexceptionID', '=', 'ChildFoodExceptionMeals.ChildfoodexceptionID')
                 ->join('Meals', 'ChildFoodExceptionMeals.MealsID', '=', 'Meals.MealsID')
                 ->join('Mealscategory', 'Meals.MealscategoryID', '=', 'Mealscategory.MealscategoryID')
-                ->leftJoin('ChildClass', function ($join) {
+                ->leftJoin('ChildClass', function ($join) use ($planningId) {
                     $join->on('Child.ChildID', '=', 'ChildClass.ChildID');
-                })
-                ->leftJoin('Class', function ($join) use ($planningId) {
-                    $join->on('ChildClass.ClassID', '=', 'Class.ClassID');
+
                     if ($planningId) {
-                        $join->where('Class.PlanningID', '=', $planningId);
+                        $join->whereIn('ChildClass.ClassID', function ($query) use ($planningId) {
+                            $query->select('Class.ClassID')
+                                ->from('Class')
+                                ->where('Class.PlanningID', '=', $planningId);
+                        });
                     }
                 })
+                ->leftJoin('Class', 'ChildClass.ClassID', '=', 'Class.ClassID')
                 ->when($childIdsInYear !== null, function ($q) use ($childIdsInYear) {
                     $q->whereIn('Child.ChildID', $childIdsInYear);
                 })
@@ -393,6 +396,28 @@ class FoodExceptionController extends Controller
 
         try {
             DB::beginTransaction();
+
+            // Check for duplicate meal exceptions for this child
+            $existingMealIds = DB::table('Childfoodexception')
+                ->join('ChildFoodExceptionMeals', 'Childfoodexception.ChildfoodexceptionID', '=', 'ChildFoodExceptionMeals.ChildfoodexceptionID')
+                ->where('Childfoodexception.ChildID', $request->child_id)
+                ->whereIn('ChildFoodExceptionMeals.MealsID', $request->meal_ids)
+                ->pluck('ChildFoodExceptionMeals.MealsID')
+                ->unique()
+                ->toArray();
+
+            if (!empty($existingMealIds)) {
+                DB::rollBack();
+                $mealNames = DB::table('Meals')
+                    ->whereIn('MealsID', $existingMealIds)
+                    ->pluck('Name')
+                    ->toArray();
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cet enfant a déjà une exception pour : ' . implode(', ', $mealNames) . '.',
+                ], 422);
+            }
 
             $exceptionId = DB::table('Childfoodexception')->insertGetId([
                 'ChildID' => $request->child_id,

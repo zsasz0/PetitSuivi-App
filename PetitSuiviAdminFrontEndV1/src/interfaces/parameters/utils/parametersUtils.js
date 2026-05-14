@@ -142,7 +142,9 @@ export function sanitizeNumericInput(value) {
  */
 export function getParamCategory(name) {
   const normalized = String(name).toLowerCase();
+  const normalizedAscii = normalized.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   if (normalized === "school_name" || normalized === "director_name" || normalized.includes("address") || normalized.includes("adresse") || normalized.includes("school_year") || normalized.includes("director") || normalized.includes("directeur")) return "identity";
+  if (normalizedAscii.includes("mon enfant ne mange pas a lecole") || normalizedAscii.includes("mon enfant ne mange pas a l'ecole")) return "meals";
   if (normalized.includes("dejeuner") || normalized.includes("déjeuner") || normalized.includes("gouter") || normalized.includes("goûter") || normalized.includes("cantine") || normalized.includes("meal") || normalized.includes("repas") || normalized.includes("tarif") || normalized.includes("prix")) return "meals";
   if (normalized.includes("email") || normalized.includes("phone") || normalized.includes("tel") || normalized.includes("facebook") || normalized.includes("instagram") || normalized.includes("whatsapp") || normalized.includes("contact") || normalized.includes("site") || normalized.includes("website")) return "contact";
   if (normalized.includes("frais") || normalized.includes("fee") || normalized.includes("capacity") || normalized.includes("amount")) return "fees";
