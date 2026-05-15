@@ -24,7 +24,7 @@ class ParentProfilePage extends StatefulWidget {
 
 class _ParentProfilePageState extends State<ParentProfilePage> {
   late final ProfileController _controller;
-  
+
   final List<Map<String, dynamic>> _children = [];
   List<String> _paymentMethods = ['oneShot', 'monthlyPartial'];
   bool _isLoadingChildren = true;
@@ -37,7 +37,8 @@ class _ParentProfilePageState extends State<ParentProfilePage> {
     'Mon enfant prend le déjeuner et le goûter': 350.0,
     'Mon enfant prend seulement le déjeuner': 250.0,
     'Mon enfant prend seulement le goûter': 120.0,
-    'Mon enfant ne mange pas à l\'école (le parent le récupère puis le ramène)': 0.0,
+    'Mon enfant ne mange pas à l\'école (le parent le récupère puis le ramène)':
+        0.0,
   };
 
   static const List<String> _mealPlanOptions = [
@@ -62,14 +63,16 @@ class _ParentProfilePageState extends State<ParentProfilePage> {
     await Future.wait([
       _controller.loadPaymentMethods(
         defaultPaymentMethods: _paymentMethods,
-        setPaymentMethods: (methods) => setState(() => _paymentMethods = methods),
+        setPaymentMethods: (methods) =>
+            setState(() => _paymentMethods = methods),
       ),
       _controller.loadPricingParameters(
         mealPlanOptions: _mealPlanOptions,
         setLoading: (val) => setState(() => _loadingPricing = val),
         setInscriptionsOpen: (val) => setState(() => _inscriptionsOpen = val),
         setBaseFee: (val) => setState(() => _baseFee = val),
-        setMealPlanFees: (val) => setState(() => _mealPlanFees = {..._mealPlanFees, ...val}),
+        setMealPlanFees: (val) =>
+            setState(() => _mealPlanFees = {..._mealPlanFees, ...val}),
       ),
     ]);
   }
@@ -134,7 +137,14 @@ class _ParentProfilePageState extends State<ParentProfilePage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ChildProfileViewPage(childData: child),
+        builder: (context) => ChildProfileViewPage(
+          childData: child,
+          inscriptionsOpen: _inscriptionsOpen,
+          onRefresh: () async {
+            await _initData();
+            await _loadChildren();
+          },
+        ),
       ),
     );
   }
@@ -160,10 +170,8 @@ class _ParentProfilePageState extends State<ParentProfilePage> {
     showDialog(
       context: context,
       builder: (context) => ChangePasswordDialog(
-        onSubmit: (pwd, messenger) => _controller.changePassword(
-          newPassword: pwd,
-          messenger: messenger,
-        ),
+        onSubmit: (pwd, messenger) =>
+            _controller.changePassword(newPassword: pwd, messenger: messenger),
       ),
     );
   }

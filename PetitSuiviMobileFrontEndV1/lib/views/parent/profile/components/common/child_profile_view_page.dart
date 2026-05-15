@@ -3,19 +3,51 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:newv/l10n/app_localizations.dart';
 import 'package:newv/views/themes/theme_manager.dart';
+import 'package:newv/views/parent/child_tracking/components/child_tracking/re_registration_page.dart';
 
 // Modular Imports
 import 'package:newv/views/parent/profile/themes/profile_theme.dart';
 
 class ChildProfileViewPage extends StatelessWidget {
   final Map<String, dynamic> childData;
+  final bool inscriptionsOpen;
+  final VoidCallback onRefresh;
 
-  const ChildProfileViewPage({super.key, required this.childData});
+  const ChildProfileViewPage({
+    super.key,
+    required this.childData,
+    required this.inscriptionsOpen,
+    required this.onRefresh,
+  });
 
   @override
   Widget build(BuildContext context) {
     context.watch<ThemeManager>();
     final l10n = AppLocalizations.of(context)!;
+
+    // Extract status from inscriptions
+    final inscriptions = childData['extraData']?['inscriptions'] as List? ?? [];
+    String status = 'inconnu';
+    if (inscriptions.isNotEmpty) {
+      status = inscriptions.last['status']?['name']?.toString() ?? 'inconnu';
+    }
+
+    String displayStatus = 'Inconnu';
+    if (status.toLowerCase() == 'approved') {
+      displayStatus = 'Approuvé';
+    }
+    if (status.toLowerCase() == 'pending') {
+      displayStatus = 'En attente';
+    }
+    if (status.toLowerCase() == 'rejected') {
+      displayStatus = 'Rejeté';
+    }
+    if (status.toLowerCase() == 'inscription_requise') {
+      displayStatus = 'Inscription requise';
+    }
+
+    bool needsReRegistration = status.toLowerCase() == 'inscription_requise';
+
     return Container(
       color: ProfileTheme.baseDark,
       child: Scaffold(
@@ -32,7 +64,10 @@ class ChildProfileViewPage extends StatelessWidget {
           backgroundColor: Colors.transparent,
           elevation: 0,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios_new_rounded, color: ProfileTheme.lightText),
+            icon: Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: ProfileTheme.lightText,
+            ),
             onPressed: () => Navigator.pop(context),
           ),
         ),
@@ -69,9 +104,95 @@ class ChildProfileViewPage extends StatelessWidget {
                   Icons.calendar_today_rounded,
                   l10n.age,
                   '${_calculateAge(childData['birthDate']?.toString())} ${l10n.yearsOld}',
+                ),
+                _buildInfoRow(
+                  Icons.info_outline_rounded,
+                  'Statut',
+                  displayStatus,
                   isLast: true,
                 ),
               ]),
+              const SizedBox(height: 32),
+
+              if (inscriptionsOpen || !needsReRegistration)
+                ElevatedButton(
+                  onPressed: needsReRegistration
+                      ? () async {
+                          final result = await Navigator.push<bool>(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ReRegistrationPage(
+                                childId: childData['id'] ?? 0,
+                                firstName:
+                                    childData['firstName']?.toString() ?? '',
+                                lastName:
+                                    childData['lastName']?.toString() ?? '',
+                                birthDate:
+                                    childData['birthDate']
+                                        ?.toString()
+                                        .split('T')
+                                        .first ??
+                                    '',
+                              ),
+                            ),
+                          );
+                          if (result == true) {
+                            onRefresh();
+                            if (context.mounted) Navigator.pop(context);
+                          }
+                        }
+                      : null,
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(56),
+                    backgroundColor: ProfileTheme.indigoAccent,
+                    disabledBackgroundColor: ProfileTheme.indigoAccent
+                        .withValues(alpha: 0.3),
+                    foregroundColor: Colors.white,
+                    disabledForegroundColor: Colors.white70,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.school_outlined, size: 22),
+                      SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          'Inscrire pour la nouvelle année',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              else if (needsReRegistration)
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Colors.orange.withValues(alpha: 0.3),
+                    ),
+                  ),
+                  child: const Text(
+                    'Les inscriptions sont actuellement fermées.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.orange,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
             ],
           ),
         ),
@@ -118,8 +239,6 @@ class ChildProfileViewPage extends StatelessWidget {
       ],
     );
   }
-
-
 
   Widget _buildGlassCard(List<Widget> rows) {
     return ClipRRect(

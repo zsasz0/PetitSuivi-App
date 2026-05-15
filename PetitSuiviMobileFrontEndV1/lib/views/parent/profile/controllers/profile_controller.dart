@@ -35,7 +35,9 @@ class ProfileController {
 
       final raw = response.body.isNotEmpty ? jsonDecode(response.body) : null;
       final list = raw is List ? raw : (raw is Map ? raw['data'] : null);
-      if (response.statusCode >= 200 && response.statusCode < 300 && list is List) {
+      if (response.statusCode >= 200 &&
+          response.statusCode < 300 &&
+          list is List) {
         double? baseFee;
         final Map<String, double> mealFees = {};
 
@@ -97,7 +99,9 @@ class ProfileController {
           ? jsonDecode(response.body) as Map<String, dynamic>
           : <String, dynamic>{};
       final data = body['data'];
-      if (response.statusCode >= 200 && response.statusCode < 300 && data is List) {
+      if (response.statusCode >= 200 &&
+          response.statusCode < 300 &&
+          data is List) {
         final methods = data
             .map((e) => e.toString())
             .where((e) => e == 'oneShot' || e == 'monthlyPartial')
@@ -129,7 +133,10 @@ class ProfileController {
     }
 
     try {
-      final response = await ProfileApis.getChildren(parentCin.toString(), token);
+      final response = await ProfileApis.getChildren(
+        parentCin.toString(),
+        token,
+      );
       if (!context.mounted) return;
 
       if (UnauthorizedHandler.handle(
@@ -143,13 +150,16 @@ class ProfileController {
           ? jsonDecode(response.body) as Map<String, dynamic>
           : <String, dynamic>{};
 
-      if (response.statusCode >= 200 && response.statusCode < 300 && body['data'] is List) {
+      if (response.statusCode >= 200 &&
+          response.statusCode < 300 &&
+          body['data'] is List) {
         final mapped = (body['data'] as List).whereType<Map>().map((item) {
           final map = item.cast<String, dynamic>();
           final inscriptions = (map['inscriptions'] is List)
               ? map['inscriptions'] as List
               : const [];
           return <String, dynamic>{
+            'id': map['id'],
             'firstName': map['firstName']?.toString() ?? '',
             'lastName': map['lastName']?.toString() ?? '',
             'birthDate': map['birthdate']?.toString(),
@@ -289,7 +299,8 @@ class ProfileController {
       messenger.showSnackBar(
         SnackBar(
           content: Text(
-            body['message']?.toString() ?? 'Échec du changement de mot de passe.',
+            body['message']?.toString() ??
+                'Échec du changement de mot de passe.',
           ),
           backgroundColor: Colors.red.shade800,
         ),
