@@ -35,7 +35,7 @@ class RegisterController {
 
     double? baseFee;
     final Map<String, double> mealFees = {};
-    
+
     const mealPlanOptions = [
       'Mon enfant prend le déjeuner et le goûter',
       'Mon enfant prend seulement le déjeuner',
@@ -109,7 +109,9 @@ class RegisterController {
     return null;
   }
 
-  Future<Map<String, dynamic>?> openMedicalRecordPage(Map<String, dynamic> initialData) async {
+  Future<Map<String, dynamic>?> openMedicalRecordPage(
+    Map<String, dynamic> initialData,
+  ) async {
     return await Navigator.push<Map<String, dynamic>>(
       context,
       MaterialPageRoute(
@@ -143,24 +145,74 @@ class RegisterController {
     return null;
   }
 
-  Future<bool> checkEmailAvailability(String email, Function(String?) onEmailError) async {
+  Future<bool> checkEmailAvailability(
+    String email,
+    Function(String?) onEmailError,
+  ) async {
     try {
       final response = await RegisterApi.checkEmail(email);
       final body = response['body'] as Map<String, dynamic>;
       final emailError = extractEmailError(body);
       final available = body['available'] == true;
 
-      if (response['statusCode'] >= 200 && response['statusCode'] < 300 && available) {
+      if (response['statusCode'] >= 200 &&
+          response['statusCode'] < 300 &&
+          available) {
         onEmailError(null);
         return true;
       }
 
-      final message = emailError ?? body['message']?.toString() ?? 'Cet email est déjà utilisé.';
+      final message =
+          emailError ??
+          body['message']?.toString() ??
+          'Cet email est déjà utilisé.';
       onEmailError(message);
       showError(message);
       return false;
     } catch (_) {
       showError('Impossible de vérifier l\'email pour le moment.');
+      return false;
+    }
+  }
+
+  String? extractCinError(Map<String, dynamic> body) {
+    final errors = body['errors'];
+    if (errors is! Map<String, dynamic>) return null;
+
+    final cinErrors = errors['cin'];
+    if (cinErrors is List && cinErrors.isNotEmpty) {
+      return cinErrors.first.toString();
+    }
+    if (cinErrors is String && cinErrors.isNotEmpty) {
+      return cinErrors;
+    }
+    return null;
+  }
+
+  Future<bool> checkCinAvailability(
+    String cin,
+    Function(String?) onCinError,
+  ) async {
+    try {
+      final response = await RegisterApi.checkCin(cin);
+      final body = response['body'] as Map<String, dynamic>;
+      final cinError = extractCinError(body);
+      final available = body['available'] == true;
+
+      if (response['statusCode'] >= 200 &&
+          response['statusCode'] < 300 &&
+          available) {
+        onCinError(null);
+        return true;
+      }
+
+      final message =
+          cinError ?? body['message']?.toString() ?? 'Ce CIN est déjà utilisé.';
+      onCinError(message);
+      showError(message);
+      return false;
+    } catch (_) {
+      showError('Impossible de vérifier le CIN pour le moment.');
       return false;
     }
   }

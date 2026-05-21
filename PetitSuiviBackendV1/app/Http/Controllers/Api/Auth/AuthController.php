@@ -176,6 +176,27 @@ class AuthController extends Controller
     }
 
     /**
+     * Check Registration CIN Availability
+     *
+     * @group Authentication
+     *
+     * @bodyParam cin string required The CIN to check. Example: 12345678
+     */
+    public function checkRegistrationCin(Request $request): JsonResponse
+    {
+        $request->validate([
+            'cin' => ['required', 'string', 'max:255'],
+        ]);
+
+        $exists = Account::where('Cin', $request->cin)->exists();
+
+        return response()->json([
+            'available' => !$exists,
+            'message' => $exists ? 'Ce CIN est déjà utilisé.' : null,
+        ]);
+    }
+
+    /**
      * Parent Login
      *
      * Authenticates a parent using email and password.

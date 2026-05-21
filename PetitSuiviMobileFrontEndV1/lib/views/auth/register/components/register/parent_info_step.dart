@@ -19,6 +19,7 @@ class ParentInfoStep extends StatelessWidget {
   final String birthDate;
   final VoidCallback onSelectDate;
   final String? emailErrorText;
+  final String? cinErrorText;
 
   const ParentInfoStep({
     super.key,
@@ -33,6 +34,7 @@ class ParentInfoStep extends StatelessWidget {
     required this.birthDate,
     required this.onSelectDate,
     this.emailErrorText,
+    this.cinErrorText,
   });
 
   @override
@@ -86,7 +88,10 @@ class ParentInfoStep extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.calendar_today, color: RegisterTheme.mutedText),
+                      Icon(
+                        Icons.calendar_today,
+                        color: RegisterTheme.mutedText,
+                      ),
                       const SizedBox(width: 16),
                       Text(
                         birthDate != '' ? birthDate : 'Date de naissance',
@@ -110,6 +115,7 @@ class ParentInfoStep extends StatelessWidget {
           label: 'CIN',
           icon: Icons.credit_card_outlined,
           keyboardType: TextInputType.number,
+          errorText: cinErrorText,
         ),
         GlassTextField(
           controller: phoneController,

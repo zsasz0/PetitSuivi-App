@@ -11,7 +11,7 @@ export const useParentUIStates = () => {
     
     // Forms
     const [editFormData, setEditFormData] = useState({ 
-        firstName: "", lastName: "", birthdate: "", phone: "", email: "", adresse: "", password: "", password_confirmation: "" 
+        cin: "", firstName: "", lastName: "", birthdate: "", phone: "", email: "", adresse: "", password: "", password_confirmation: "" 
     });
     const [formError, setFormError] = useState("");
     const [editFormErrors, setEditFormErrors] = useState({});

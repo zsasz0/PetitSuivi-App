@@ -81,13 +81,23 @@ export const computeTeacherActivity = (teacherData, classesResult, activitiesRes
     return { formattedData, activeTodayCount };
 };
 
+/** Map of known English Laravel validation messages → French translations */
+const ERROR_TRANSLATIONS = {
+    "The cin has already been taken.": "Ce CIN est déjà utilisé.",
+    "The email has already been taken.": "Cette adresse e-mail est déjà utilisée.",
+    "The name has already been taken.": "Ce nom est déjà utilisé.",
+};
+
+const translateError = (msg) => ERROR_TRANSLATIONS[msg] ?? msg;
+
 /**
  * Safely format api errors for the forms
  */
 export const applyApiErrors = (validationErrors, setFieldErrors, setGlobalError, fallbackMessage) => {
     if (validationErrors?.email?.[0]) {
-        setFieldErrors((previous) => ({ ...previous, email: validationErrors.email[0] }));
-        setGlobalError(validationErrors.email[0]);
+        const msg = translateError(validationErrors.email[0]);
+        setFieldErrors((previous) => ({ ...previous, email: msg }));
+        setGlobalError(msg);
         return;
     }
 
@@ -95,7 +105,7 @@ export const applyApiErrors = (validationErrors, setFieldErrors, setGlobalError,
         const firstKey = Object.keys(validationErrors)[0];
         const firstMessage = validationErrors[firstKey]?.[0];
         if (firstMessage) {
-            setGlobalError(firstMessage);
+            setGlobalError(translateError(firstMessage));
             return;
         }
     }

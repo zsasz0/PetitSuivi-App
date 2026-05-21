@@ -121,10 +121,10 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
   void _save() {
     final missingText = <String>[];
     final requiredTextConfigs = [
-      {'key': 'childFullName', 'label': 'الاسم واللقب'},
-      {'key': 'birthDatePlace', 'label': 'تاريخ ومكان الولادة'},
-      {'key': 'nationality', 'label': 'الجنسية'},
-      {'key': 'address', 'label': 'العنوان العائلي'},
+      {'key': 'childFullName', 'label': 'الاسم واللقب / Nom & Prénom'},
+      {'key': 'birthDatePlace', 'label': 'الولادة / Naissance (Date & Lieu)'},
+      {'key': 'nationality', 'label': 'الجنسية / Nationalité'},
+      {'key': 'address', 'label': 'العنوان / Adresse'},
     ];
     for (final config in requiredTextConfigs) {
       final key = config['key']!;
@@ -137,7 +137,7 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'يرجى ملء الحقول الإلزامية التالية: ${missingText.join('، ')}',
+            'يرجى ملء الحقول الإلزامية التالية / Veuillez remplir les champs obligatoires suivants : ${missingText.join('، ')}',
             textDirection: TextDirection.rtl,
           ),
           backgroundColor: Colors.redAccent,
@@ -156,7 +156,7 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
-            'يرجى الإجابة على جميع الأسئلة ذات الاختيار الواحد',
+            'يرجى الإجابة على جميع الأسئلة ذات الاختيار الواحد / Veuillez répondre à toutes les questions à choix unique',
             textDirection: TextDirection.rtl,
           ),
           backgroundColor: Colors.redAccent,
@@ -190,32 +190,35 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
     final pages = <Widget>[
       _buildPage(
         pageNumber: 1,
-        title: 'إرشادات عامة',
-        subtitle: 'الصفحة 1 من $_totalPages',
+        title: 'إرشادات عامة / Informations générales',
+        subtitle: 'الصفحة / Page 1 من/sur $_totalPages',
         content: _buildSection1(),
       ),
       _buildPage(
         pageNumber: 2,
-        title: 'إرشادات عن الولادة والأمراض',
-        subtitle: 'الصفحة 2 من $_totalPages',
+        title:
+            'إرشادات عن الولادة والأمراض / Informations sur la naissance et les maladies',
+        subtitle: 'الصفحة / Page 2 من/sur $_totalPages',
         content: _buildSection2(),
       ),
       _buildPage(
         pageNumber: 3,
-        title: 'الحالة الصحية الحالية للطفل',
-        subtitle: 'الصفحة 3 من $_totalPages',
+        title:
+            'الحالة الصحية الحالية للطفل / État de santé actuel de l\'enfant',
+        subtitle: 'الصفحة / Page 3 من/sur $_totalPages',
         content: _buildSection3(),
       ),
       _buildPage(
         pageNumber: 4,
-        title: 'الوضع الاجتماعي والنفسي للطفل',
-        subtitle: 'الصفحة 4 من $_totalPages',
+        title:
+            'الوضع الاجتماعي والنفسي للطفل / Situation sociale et psychologique',
+        subtitle: 'الصفحة / Page 4 من/sur $_totalPages',
         content: _buildSection4(),
       ),
       _buildPage(
         pageNumber: 5,
-        title: 'معلومات إضافية',
-        subtitle: 'الصفحة 5 من $_totalPages',
+        title: 'معلومات إضافية / Informations supplémentaires',
+        subtitle: 'الصفحة / Page 5 من/sur $_totalPages',
         content: _buildSection5(),
       ),
     ];
@@ -225,12 +228,15 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
       child: Scaffold(
         backgroundColor: RegisterTheme.baseDark,
         appBar: AppBar(
-          title: Text(
-            'الملف الطبي للطفل',
-            style: TextStyle(
-              fontFamily: AppTheme.fontName,
-              fontWeight: FontWeight.bold,
-              color: RegisterTheme.lightText,
+          title: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              'الملف الطبي / Dossier médical',
+              style: TextStyle(
+                fontFamily: AppTheme.fontName,
+                fontWeight: FontWeight.bold,
+                color: RegisterTheme.lightText,
+              ),
             ),
           ),
           backgroundColor: Colors.transparent,
@@ -284,7 +290,9 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
                 boxShadow: selected
                     ? [
                         BoxShadow(
-                          color: RegisterTheme.tealAccent.withValues(alpha: 0.4),
+                          color: RegisterTheme.tealAccent.withValues(
+                            alpha: 0.4,
+                          ),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -367,32 +375,41 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
         children: [
           if (_currentPage > 0)
             Expanded(
-              flex: 1,
+              flex: 3,
               child: OutlinedButton(
                 onPressed: _goPrevious,
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(color: RegisterTheme.glassBorder),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 16,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: Text(
-                  'السابق',
-                  style: TextStyle(
-                    color: RegisterTheme.lightText,
-                    fontWeight: FontWeight.bold,
+                child: Center(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      'السابق / Précédent',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: RegisterTheme.lightText,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
               ),
             )
           else
-            const Spacer(flex: 1),
+            const Spacer(flex: 3),
 
           const SizedBox(width: 16),
 
           Expanded(
-            flex: 2,
+            flex: 4,
             child: ElevatedButton(
               onPressed: isLast ? _save : _goNext,
               style: ElevatedButton.styleFrom(
@@ -407,12 +424,17 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    isLast ? 'حفظ الملف الطبي' : 'التالي',
-                    style: TextStyle(
-                      color: isLast ? RegisterTheme.lightText : RegisterTheme.baseDark,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                  Flexible(
+                    child: Text(
+                      isLast ? 'حفظ / Enregistrer' : 'التالي / Suivant',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: isLast
+                            ? RegisterTheme.lightText
+                            : RegisterTheme.baseDark,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -420,7 +442,9 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
                     isLast
                         ? Icons.check_circle_outline
                         : Icons.arrow_forward_ios,
-                    color: isLast ? RegisterTheme.lightText : RegisterTheme.baseDark,
+                    color: isLast
+                        ? RegisterTheme.lightText
+                        : RegisterTheme.baseDark,
                     size: 18,
                   ),
                 ],
@@ -452,107 +476,136 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _text('childFullName', 'اسم الطفل ولقبه', icon: Icons.person_outline),
+        _text(
+          'childFullName',
+          'الاسم واللقب / Nom & Prénom',
+          icon: Icons.person_outline,
+        ),
         _text(
           'birthDatePlace',
-          'تاريخ ومكان الولادة',
+          'الولادة / Naissance',
           icon: Icons.cake_outlined,
         ),
-        _text('nationality', 'الجنسية', icon: Icons.flag_outlined),
+        _text(
+          'nationality',
+          'الجنسية / Nationalité',
+          icon: Icons.flag_outlined,
+        ),
         _text(
           'address',
-          'العنوان',
+          'العنوان / Adresse',
           maxLines: 2,
           icon: Icons.location_on_outlined,
         ),
         _multi(
           key: 'previousEnrollment',
-          title: 'هل كان الطفل مرسما؟',
-          options: const ['بمحضنة', 'بروضة أخرى', 'بكتاب آخر', 'لا'],
-          exclusiveOption: 'لا',
+          title: 'هل كان الطفل مرسما؟ / L\'enfant était-il inscrit avant ?',
+          options: const [
+            'بمحضنة / Crèche',
+            'بروضة أخرى / Autre jardin d\'enfants',
+            'بكتاب آخر / École coranique',
+            'لا / Non',
+          ],
+          exclusiveOption: 'لا / Non',
         ),
-        _text('institutionStudyDuration', 'اسم المؤسسة، مدة الدراسة'),
-        _yesNo('parentsKinship', 'هل هناك قرابة بين الأب والأم؟'),
+        _text(
+          'institutionStudyDuration',
+          'المؤسسة والمدة / Établissement & Durée',
+        ),
+        _yesNo(
+          'parentsKinship',
+          'هل هناك قرابة بين الأب والأم؟ / Lien de parenté entre les parents ?',
+        ),
         if (_checks['parentsKinship'] == true)
-          _text('kinshipDetails', 'إن نعم، حددها'),
+          _text('kinshipDetails', 'إن نعم، حددها / Si oui, précisez'),
 
-        _sectionHeader('معلومات الأب', Icons.man_outlined),
-        _text('fatherName', 'اسم الأب'),
+        _sectionHeader('الأب / Père', Icons.man_outlined),
+        _text('fatherName', 'اسم الأب / Nom du père'),
         _text(
           'fatherBirthYear',
-          'سنة الولادة',
+          'سنة الولادة / Année de naissance',
           keyboardType: TextInputType.number,
         ),
-        _text('fatherJob', 'المهنة'),
-        _yesNo('fatherAlive', 'هل هو على قيد الحياة؟'),
-        _yesNo('fatherLivesWithFamily', 'يعيش مع أسرته'),
-        _yesNo('fatherDivorced', 'مطلق'),
-        _yesNo('fatherAbroad', 'مقيم بالخارج'),
-        _yesNo('fatherAlcohol', 'هل يتعاطى الكحول'),
-        _yesNo('fatherSmoking', 'السجائر'),
+        _text('fatherJob', 'المهنة / Profession'),
+        _yesNo('fatherAlive', 'هل هو على قيد الحياة؟ / Est-il en vie ?'),
+        _yesNo('fatherLivesWithFamily', 'يعيش مع أسرته / Vit avec sa famille'),
+        _yesNo('fatherDivorced', 'مطلق / Divorcé'),
+        _yesNo('fatherAbroad', 'مقيم بالخارج / Réside à l\'étranger'),
+        _yesNo('fatherAlcohol', 'هل يتعاطى الكحول / Consomme de l\'alcool'),
+        _yesNo('fatherSmoking', 'السجائر / Fumeur'),
 
-        _sectionHeader('معلومات الأم', Icons.woman_outlined),
-        _text('motherName', 'اسم الأم'),
+        _sectionHeader('الأم / Mère', Icons.woman_outlined),
+        _text('motherName', 'اسم الأم / Nom de la mère'),
         _text(
           'motherBirthYear',
-          'سنة الولادة',
+          'سنة الولادة / Année de naissance',
           keyboardType: TextInputType.number,
         ),
-        _text('motherJob', 'المهنة'),
-        _yesNo('motherAlive', 'هل هي على قيد الحياة؟'),
-        _yesNo('motherLivesWithFamily', 'تعيش مع أسرتها'),
-        _yesNo('motherDivorced', 'مطلقة'),
-        _yesNo('motherAbroad', 'مقيمة بالخارج'),
-        _yesNo('motherAlcohol', 'هل يتعاطى الكحول'),
-        _yesNo('motherSmoking', 'السجائر'),
+        _text('motherJob', 'المهنة / Profession'),
+        _yesNo('motherAlive', 'هل هي على قيد الحياة؟ / Est-elle en vie ?'),
+        _yesNo('motherLivesWithFamily', 'تعيش مع أسرتها / Vit avec sa famille'),
+        _yesNo('motherDivorced', 'مطلقة / Divorcée'),
+        _yesNo('motherAbroad', 'مقيمة بالخارج / Réside à l\'étranger'),
+        _yesNo('motherAlcohol', 'هل يتعاطى الكحول / Consomme de l\'alcool'),
+        _yesNo('motherSmoking', 'السجائر / Fumeuse'),
 
-        _sectionHeader('الإخوة والمسكن', Icons.home_outlined),
+        _sectionHeader(
+          'الإخوة والسكن / Fratrie et domicile',
+          Icons.home_outlined,
+        ),
         _text(
           'siblingsAliveBoys',
-          'الإخوة على قيد الحياة - ذكور',
+          'إخوة ذكور / Frères en vie',
           keyboardType: TextInputType.number,
         ),
         _text(
           'siblingsAliveGirls',
-          'الإخوة على قيد الحياة - إناث',
+          'أخوات إناث / Sœurs en vie',
           keyboardType: TextInputType.number,
         ),
         _text(
           'siblingsDeceasedBoys',
-          'المتوفون - ذكور',
+          'إخوة متوفون / Frères décédés',
           keyboardType: TextInputType.number,
         ),
         _text(
           'siblingsDeceasedGirls',
-          'المتوفون - إناث',
+          'أخوات متوفيات / Sœurs décédées',
           keyboardType: TextInputType.number,
         ),
-        _text('childOrder', 'ترتيب الولد', keyboardType: TextInputType.number),
+        _text(
+          'childOrder',
+          'ترتيب الطفل / Ordre de l\'enfant',
+          keyboardType: TextInputType.number,
+        ),
         _text(
           'absenceFromStudy',
-          'أيام الغياب',
+          'أيام الغياب / Jours d\'absence',
           keyboardType: TextInputType.number,
         ),
         _text(
           'roomsCount',
-          'عدد الغرف بالمنزل',
+          'عدد الغرف / Nbr. chambres',
           keyboardType: TextInputType.number,
         ),
         _multi(
           key: 'waterSource',
-          title: 'مصدر الماء',
+          title: 'مصدر الماء / Source d\'eau',
           options: const [
-            'حنفية في البيت',
-            'حنفية عمومية',
-            'بئر',
-            'ماء معلب',
-            'مصدر آخر',
+            'حنفية في البيت / Robinet à la maison',
+            'حنفية عمومية / Robinet public',
+            'بئر / Puits',
+            'ماء معلب / Eau en bouteille',
+            'مصدر آخر / Autre source',
           ],
         ),
-        _text('healthSupervisingStructure', 'الهيكل الصحي'),
+        _text(
+          'healthSupervisingStructure',
+          'الهيكل الصحي / Structure de santé',
+        ),
         _text(
           'familyDoctor',
-          'طبيب العائلة (إن وجد)',
+          'طبيب العائلة / Médecin de famille',
           icon: Icons.medical_services_outlined,
         ),
       ],
@@ -565,105 +618,139 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
       children: [
         _single(
           key: 'motherPregnancyHealth',
-          title: 'الحالة الصحية للأم أثناء الحمل',
-          options: const ['عادية', 'مشاكل صحية'],
+          title:
+              'الحالة الصحية للأم أثناء الحمل / Santé de la mère pendant la grossesse',
+          options: const ['عادية / Normale', 'مشاكل صحية / Problèmes de santé'],
         ),
-        if (_singleChoice['motherPregnancyHealth'] == 'مشاكل صحية')
+        if (_singleChoice['motherPregnancyHealth'] ==
+            'مشاكل صحية / Problèmes de santé')
           _text(
             'pregnancyHealthDetails',
-            'إذا كان هناك مشاكل، اذكرها',
+            'المشاكل الصحية / Préciser les problèmes',
             maxLines: 2,
           ),
         _single(
           key: 'birthPlace',
-          title: 'مكان الولادة',
-          options: const ['بالمنزل', 'المستشفى', 'مصحة خاصة'],
+          title: 'مكان الولادة / Lieu de naissance',
+          options: const [
+            'بالمنزل / À domicile',
+            'المستشفى / Hôpital',
+            'مصحة خاصة / Clinique privée',
+          ],
         ),
         _single(
           key: 'birthTiming',
-          title: 'توقيت الولادة',
-          options: const ['في أوانها', 'قبل أوانها'],
+          title: 'توقيت الولادة / Moment de l\'accouchement',
+          options: const ['في أوانها / À terme', 'قبل أوانها / Prématuré'],
         ),
         _single(
           key: 'deliveryType',
-          title: 'نوع الولادة',
-          options: const ['عادية', 'غير عادية'],
+          title: 'نوع الولادة / Type d\'accouchement',
+          options: const ['عادية / Normal', 'غير عادية / Compliqué'],
         ),
-        if (_singleChoice['deliveryType'] == 'غير عادية')
+        if (_singleChoice['deliveryType'] == 'غير عادية / Compliqué')
           _text(
             'deliveryDetails',
-            'إذا كانت غير عادية، اذكر التفاصيل',
+            'تفاصيل الولادة / Préciser les détails',
             maxLines: 2,
           ),
         _single(
           key: 'healthAtBirth',
-          title: 'الحالة الصحية للطفل عند الولادة',
-          options: const ['عادية', 'غير عادية'],
+          title:
+              'الحالة الصحية للطفل عند الولادة / État de santé à la naissance',
+          options: const ['عادية / Normal', 'غير عادية / Anormal'],
         ),
-        if (_singleChoice['healthAtBirth'] == 'غير عادية')
+        if (_singleChoice['healthAtBirth'] == 'غير عادية / Anormal')
           _text(
             'healthAtBirthDetails',
-            'إذا كانت غير عادية، اذكر التفاصيل',
+            'تفاصيل الحالة / Préciser les détails',
             maxLines: 2,
           ),
-        _yesNo('congenitalMalformations', 'هل توجد تشوهات خلقية؟'),
+        _yesNo(
+          'congenitalMalformations',
+          'هل توجد تشوهات خلقية؟ / Malformations congénitales ?',
+        ),
         if (_checks['congenitalMalformations'] == true)
-          _text('malformationsDetails', 'إن نعم، اذكرها', maxLines: 2),
+          _text(
+            'malformationsDetails',
+            'التشوهات / Préciser les malformations',
+            maxLines: 2,
+          ),
 
-        _sectionHeader('تاريخ الأمراض', Icons.history_outlined),
+        _sectionHeader('الأمراض / Historique', Icons.history_outlined),
         _multi(
           key: 'diseases',
-          title: 'اختر الأمراض المزمنة إن وجدت',
+          title: 'اختر الأمراض المزمنة إن وجدت / Maladies chroniques',
           options: const [
-            'الروماتيزم',
-            'أمراض المفاصل',
-            'أمراض الدم',
-            'أمراض القلب',
-            'أمراض الكلى',
-            'أمراض الرئة',
-            'الربو',
-            'الجذبة',
-            'الحساسية',
-            'خلل في الغدد',
-            'أمراض أخرى',
+            'الروماتيزم / Rhumatisme',
+            'أمراض المفاصل / Maladies articulaires',
+            'أمراض الدم / Maladies du sang',
+            'أمراض القلب / Maladies cardiaques',
+            'أمراض الكلى / Maladies rénales',
+            'أمراض الرئة / Maladies pulmonaires',
+            'الربو / Asthme',
+            'الجذبة / Épilepsie/Convulsions',
+            'الحساسية / Allergies',
+            'خلل في الغدد / Troubles glandulaires',
+            'أمراض أخرى / Autres maladies',
           ],
         ),
-        if (_multiChoice['diseases']?.contains('أمراض أخرى') == true)
+        if (_multiChoice['diseases']?.contains(
+              'أمراض أخرى / Autres maladies',
+            ) ==
+            true)
           _text(
             'diseaseOtherDetails',
-            'أمراض مزمنة أخرى - اذكر التفاصيل',
+            'أمراض أخرى / Autres maladies',
             maxLines: 2,
           ),
         _multi(
           key: 'diseases2',
-          title: 'أمراض الطفولة السابقة',
+          title: 'أمراض الطفولة السابقة / Maladies infantiles passées',
           options: const [
-            'الحصبة',
-            'الحميرة',
-            'النكاف',
-            'الجدري',
-            'التهاب السحايا',
-            'التشنج',
-            'مرض السكري',
-            'الصفراء',
-            'حالة صحية أخرى',
+            'الحصبة / Rougeole',
+            'الحميرة / Rubéole',
+            'النكاف / Oreillons',
+            'الجدري / Varicelle',
+            'التهاب السحايا / Méningite',
+            'التشنج / Spasmes',
+            'مرض السكري / Diabète',
+            'الصفراء / Jaunisse',
+            'حالة صحية أخرى / Autre condition',
           ],
         ),
-        if (_multiChoice['diseases2']?.contains('حالة صحية أخرى') == true)
+        if (_multiChoice['diseases2']?.contains(
+              'حالة صحية أخرى / Autre condition',
+            ) ==
+            true)
           _text(
             'healthConditionOtherDetails',
-            'حالة صحية أخرى - اذكرها',
+            'حالة أخرى / Autre condition',
             maxLines: 2,
           ),
-        _yesNo('hospitalized', 'هل سبق له الإقامة بالمستشفى؟'),
+        _yesNo(
+          'hospitalized',
+          'هل سبق له الإقامة بالمستشفى؟ / Déjà hospitalisé ?',
+        ),
         if (_checks['hospitalized'] == true)
-          _text('hospitalizationDetails', 'إن نعم، اذكر التفاصيل', maxLines: 2),
-        _yesNo('surgeries', 'هل خضع لعمليات جراحية؟'),
+          _text(
+            'hospitalizationDetails',
+            'تفاصيل الإقامة / Détails d\'hospitalisation',
+            maxLines: 2,
+          ),
+        _yesNo(
+          'surgeries',
+          'هل خضع لعمليات جراحية؟ / Interventions chirurgicales ?',
+        ),
         if (_checks['surgeries'] == true)
-          _text('surgeriesDetails', 'إن نعم، اذكر التفاصيل', maxLines: 2),
+          _text(
+            'surgeriesDetails',
+            'تفاصيل العمليات / Détails des chirurgies',
+            maxLines: 2,
+          ),
         _text(
           'hospitalAddress',
-          'عنوان المستشفى أو المصحة المعالجة',
+          'عنوان المستشفى / Adresse de l\'hôpital',
           maxLines: 2,
           icon: Icons.local_hospital_outlined,
         ),
@@ -676,51 +763,99 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _sectionHeader(
-          'الحالة الصحية للطفل حالياً',
+          'الحالة الصحية / Santé actuelle',
           Icons.monitor_heart_outlined,
         ),
-        _yesNo('current_allergy', 'هل يعاني الطفل من حساسية؟'),
+        _yesNo('current_allergy', 'هل يعاني الطفل من حساسية؟ / Allergies ?'),
         if (_checks['current_allergy'] == true)
-          _text('allergyDetails', 'ما هي الحساسية؟', maxLines: 2),
-        _yesNo('current_fracture_history', 'خلفيات للكسور؟'),
-        _yesNo('current_surgery_history', 'خلفيات لعمليات جراحية؟'),
-        _yesNo('current_motor_deficiency', 'قصور عضلي أو حركي؟'),
-        _yesNo('current_visual_deficiency', 'قصور بصري؟'),
-        _yesNo('current_hearing_deficiency', 'قصور سمعي؟'),
-        _yesNo('current_speech_delay', 'تأخر في النطق؟'),
-        _yesNo('current_balance_trouble', 'فقدان التوازن أو اضطراب المشي؟'),
-        _yesNo('current_headache', 'صداع مزمن؟'),
-        _yesNo('current_ear_pain', 'آلام أو سيلان في الأذن؟'),
-        _yesNo('current_stomach_pain', 'آلام في البطن والمعدة؟'),
-        _yesNo('current_anemia', 'فقر الدم؟'),
-        _yesNo('current_breathing_difficulty', 'صعوبات في التنفس؟'),
-        _yesNo('current_sphincter_trouble', 'اضطرابات في المثانة؟'),
-        _yesNo('current_other_health_issue', 'مشاكل صحية أخرى؟'),
-        _yesNo('current_takes_medications', 'هل يتناول حالياً أدوية؟'),
+          _text(
+            'allergyDetails',
+            'تفاصيل الحساسية / Détails des allergies',
+            maxLines: 2,
+          ),
+        _yesNo(
+          'current_fracture_history',
+          'خلفيات للكسور؟ / Antécédents de fractures ?',
+        ),
+        _yesNo(
+          'current_surgery_history',
+          'خلفيات لعمليات جراحية؟ / Antécédents chirurgicaux ?',
+        ),
+        _yesNo(
+          'current_motor_deficiency',
+          'قصور عضلي أو حركي؟ / Déficience motrice ?',
+        ),
+        _yesNo(
+          'current_visual_deficiency',
+          'قصور بصري؟ / Déficience visuelle ?',
+        ),
+        _yesNo(
+          'current_hearing_deficiency',
+          'قصور سمعي؟ / Déficience auditive ?',
+        ),
+        _yesNo('current_speech_delay', 'تأخر في النطق؟ / Retard de parole ?'),
+        _yesNo(
+          'current_balance_trouble',
+          'فقدان التوازن أو اضطراب المشي؟ / Troubles de l\'équilibre ?',
+        ),
+        _yesNo('current_headache', 'صداع مزمن؟ / Maux de tête chroniques ?'),
+        _yesNo(
+          'current_ear_pain',
+          'آلام أو سيلان في الأذن؟ / Douleurs aux oreilles ?',
+        ),
+        _yesNo(
+          'current_stomach_pain',
+          'آلام في البطن والمعدة؟ / Maux d\'estomac/ventre ?',
+        ),
+        _yesNo('current_anemia', 'فقر الدم؟ / Anémie ?'),
+        _yesNo(
+          'current_breathing_difficulty',
+          'صعوبات في التنفس؟ / Difficultés respiratoires ?',
+        ),
+        _yesNo(
+          'current_sphincter_trouble',
+          'اضطرابات في المثانة؟ / Troubles sphinctériens ?',
+        ),
+        _yesNo(
+          'current_other_health_issue',
+          'مشاكل صحية أخرى؟ / Autres problèmes de santé ?',
+        ),
+        _yesNo(
+          'current_takes_medications',
+          'هل يتناول حالياً أدوية؟ / Prend des médicaments ?',
+        ),
         if (_checks['current_takes_medications'] == true)
-          _text('medicationDetails', 'ما هي الأدوية؟', maxLines: 2),
+          _text(
+            'medicationDetails',
+            'أسماء الأدوية / Noms des médicaments',
+            maxLines: 2,
+          ),
         _yesNo(
           'current_under_treatment',
-          'هل يتلقى حالياً علاجاً أو إشرافاً طبياً؟',
+          'هل يتلقى حالياً علاجاً أو إشرافاً طبياً؟ / Sous traitement ou suivi médical ?',
         ),
         if (_checks['current_under_treatment'] == true)
-          _text('treatmentDetails', 'ما نوع العلاج؟', maxLines: 2),
+          _text(
+            'treatmentDetails',
+            'نوع العلاج / Quel traitement ?',
+            maxLines: 2,
+          ),
 
         _sectionHeader(
-          'الحالة الصحية للعائلة والأقارب',
+          'صحة العائلة / Santé familiale',
           Icons.family_restroom_outlined,
         ),
-        _yesNo('family_diabetes', 'السكري'),
-        _yesNo('family_hypertension', 'ضغط الدم'),
-        _yesNo('family_anemia', 'فقر الدم'),
-        _yesNo('family_allergy', 'حساسية'),
-        _yesNo('family_deafness', 'الصمم'),
-        _yesNo('family_genetic', 'مرض وراثي'),
-        _yesNo('family_mental_delay', 'تأخر ذهني'),
-        _yesNo('family_congenital', 'مرض خلقي'),
-        _yesNo('family_psychiatric', 'مرض نفسي'),
-        _yesNo('family_obesity', 'السمنة'),
-        _yesNo('family_mutism', 'البكم'),
+        _yesNo('family_diabetes', 'السكري / Diabète'),
+        _yesNo('family_hypertension', 'ضغط الدم / Hypertension'),
+        _yesNo('family_anemia', 'فقر الدم / Anémie'),
+        _yesNo('family_allergy', 'حساسية / Allergies'),
+        _yesNo('family_deafness', 'الصمم / Surdité'),
+        _yesNo('family_genetic', 'مرض وراثي / Maladie génétique'),
+        _yesNo('family_mental_delay', 'تأخر ذهني / Retard mental'),
+        _yesNo('family_congenital', 'مرض خلقي / Maladie congénitale'),
+        _yesNo('family_psychiatric', 'مرض نفسي / Maladie psychiatrique'),
+        _yesNo('family_obesity', 'السمنة / Obésité'),
+        _yesNo('family_mutism', 'البكم / Mutisme'),
       ],
     );
   }
@@ -731,45 +866,63 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
       children: [
         _single(
           key: 'social_position_siblings',
-          title: 'وضعية الطفل بين الإخوة',
-          options: const ['وحيد', 'الأكبر', 'الأوسط', 'الأصغر'],
+          title: 'وضعية الطفل بين الإخوة / Position parmi les frères et sœurs',
+          options: const [
+            'وحيد / Unique',
+            'الأكبر / Aîné',
+            'الأوسط / Cadet',
+            'الأصغر / Benjamin',
+          ],
         ),
         _single(
           key: 'social_lives_with',
-          title: 'يقيم الطفل عادة مع',
-          options: const ['والده', 'والدته', 'كلا الوالدين', 'شخص آخر'],
+          title: 'يقيم الطفل عادة مع / L\'enfant vit avec',
+          options: const [
+            'والده / Son père',
+            'والدته / Sa mère',
+            'كلا الوالدين / Ses deux parents',
+            'شخص آخر / Autre personne',
+          ],
         ),
         _single(
           key: 'social_family_relation',
-          title: 'علاقة الطفل مع العائلة',
-          options: const ['عادية', 'جيدة', 'صعبة'],
+          title: 'علاقة الطفل مع العائلة / Relation avec la famille',
+          options: const [
+            'عادية / Normale',
+            'جيدة / Bonne',
+            'صعبة / Difficile',
+          ],
         ),
         _multi(
           key: 'social_behavior',
-          title: 'السلوك العام للطفل',
+          title: 'السلوك العام للطفل / Comportement général',
           options: const [
-            'عادي',
-            'سريع الانفعال',
-            'عدواني',
-            'خجول',
-            'كثير الحركة',
+            'عادي / Normal',
+            'سريع الانفعال / Irritable',
+            'عدواني / Agressif',
+            'خجول / Timide',
+            'كثير الحركة / Hyperactif',
           ],
-          exclusiveOption: 'عادي',
+          exclusiveOption: 'عادي / Normal',
         ),
         _single(
           key: 'social_eating',
-          title: 'طبيعة تناول الأكل',
-          options: const ['جيد', 'ضعيف', 'يرفض الأكل'],
+          title: 'طبيعة تناول الأكل / Alimentation',
+          options: const [
+            'جيد / Bonne',
+            'ضعيف / Faible',
+            'يرفض الأكل / Refuse de manger',
+          ],
         ),
         _single(
           key: 'social_sleep',
-          title: 'طبيعة النوم',
-          options: const ['جيد', 'قلق', 'كوابيس'],
+          title: 'طبيعة النوم / Sommeil',
+          options: const ['جيد / Bon', 'قلق / Agité', 'كوابيس / Cauchemars'],
         ),
         _single(
           key: 'social_time_space',
-          title: 'النظام الزمني والمكاني',
-          options: const ['طبيعي', 'غير منظم'],
+          title: 'النظام الزمني والمكاني / Repères spatio-temporels',
+          options: const ['طبيعي / Normaux', 'غير منظم / Désorganisés'],
         ),
       ],
     );
@@ -781,7 +934,7 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
       children: [
         _text(
           'socialAdditionalInfo',
-          'معلومات، ملاحظات، أو توصيات خاصة تعتقد أنها قد تفيد الطبيب المدرسي أو المشرفين...',
+          'ملاحظات إضافية / Remarques supplémentaires',
           maxLines: 8,
           icon: Icons.notes_outlined,
         ),
@@ -796,17 +949,23 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
         children: [
           Icon(icon, color: RegisterTheme.accentColor),
           const SizedBox(width: 8),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: RegisterTheme.accentColor,
-              fontFamily: AppTheme.fontName,
+          Flexible(
+            child: Text(
+              title,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: RegisterTheme.accentColor,
+                fontFamily: AppTheme.fontName,
+              ),
             ),
           ),
           const SizedBox(width: 16),
-          Expanded(child: Divider(color: RegisterTheme.accentColor.withValues(alpha: 0.3))),
+          Expanded(
+            child: Divider(
+              color: RegisterTheme.accentColor.withValues(alpha: 0.3),
+            ),
+          ),
         ],
       ),
     );
@@ -846,7 +1005,9 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
               fontFamily: AppTheme.fontName,
               color: RegisterTheme.mutedText.withValues(alpha: 0.8),
             ),
-            suffixIcon: icon != null ? Icon(icon, color: RegisterTheme.mutedText) : null,
+            suffixIcon: icon != null
+                ? Icon(icon, color: RegisterTheme.mutedText)
+                : null,
             border: InputBorder.none,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
@@ -874,7 +1035,9 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
                 : RegisterTheme.glassBackground,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: value ? RegisterTheme.tealAccent : RegisterTheme.glassBackground,
+              color: value
+                  ? RegisterTheme.tealAccent
+                  : RegisterTheme.glassBackground,
             ),
           ),
           child: Row(
@@ -883,7 +1046,9 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
                 child: Text(
                   title,
                   style: TextStyle(
-                    color: value ? RegisterTheme.lightText : RegisterTheme.mutedText,
+                    color: value
+                        ? RegisterTheme.lightText
+                        : RegisterTheme.mutedText,
                     fontSize: 15,
                     fontFamily: AppTheme.fontName,
                     fontWeight: value ? FontWeight.bold : FontWeight.normal,
@@ -897,7 +1062,9 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
                 height: 24,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  color: value ? RegisterTheme.tealAccent : RegisterTheme.glassBorder,
+                  color: value
+                      ? RegisterTheme.tealAccent
+                      : RegisterTheme.glassBorder,
                 ),
                 child: Stack(
                   alignment: Alignment.center,
@@ -965,13 +1132,17 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
                         : RegisterTheme.glassBackground,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: isSelected ? RegisterTheme.tealAccent : RegisterTheme.glassBorder,
+                      color: isSelected
+                          ? RegisterTheme.tealAccent
+                          : RegisterTheme.glassBorder,
                     ),
                   ),
                   child: Text(
                     option,
                     style: TextStyle(
-                      color: isSelected ? RegisterTheme.tealAccent : RegisterTheme.mutedText,
+                      color: isSelected
+                          ? RegisterTheme.tealAccent
+                          : RegisterTheme.mutedText,
                       fontWeight: isSelected
                           ? FontWeight.bold
                           : FontWeight.normal,
@@ -1056,7 +1227,11 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
                           ),
                         ),
                         child: isSelected
-                            ? Icon(Icons.check, size: 16, color: RegisterTheme.lightText)
+                            ? Icon(
+                                Icons.check,
+                                size: 16,
+                                color: RegisterTheme.lightText,
+                              )
                             : null,
                       ),
                       const SizedBox(width: 16),
@@ -1064,7 +1239,9 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
                         child: Text(
                           option,
                           style: TextStyle(
-                            color: isSelected ? RegisterTheme.lightText : RegisterTheme.mutedText,
+                            color: isSelected
+                                ? RegisterTheme.lightText
+                                : RegisterTheme.mutedText,
                             fontSize: 15,
                             fontFamily: AppTheme.fontName,
                           ),

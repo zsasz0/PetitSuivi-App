@@ -76,7 +76,7 @@ export const validateTeacherBirthdate = (birthdate) => {
         age--;
     }
 
-    if (age < 22 || age > 70) return "L'enseignant doit avoir entre 22 et 70 ans.";
+    if (age < 18 || age > 70) return "L'enseignant doit avoir entre 18 et 70 ans.";
     return null;
 };
 
@@ -130,6 +130,40 @@ export const validateName = (name, fieldName = "Le nom") => {
 };
 
 /**
+ * Validates first/last names, allowing letters and spaces only.
+ * @param {string} name - The name to validate.
+ * @param {string} fieldName - Label to use in the error message.
+ * @returns {string|null} Error message if invalid, or null if valid.
+ */
+export const validatePersonName = (name, fieldName = "Le nom") => {
+    const baseError = validateName(name, fieldName);
+    if (baseError) return baseError;
+
+    if (!/^[\p{L} ]+$/u.test(String(name).trim())) {
+        return `${fieldName} doit contenir uniquement des lettres et des espaces.`;
+    }
+
+    return null;
+};
+
+/**
+ * Validates labels that should contain only letters and spaces.
+ * @param {string} value - The label to validate.
+ * @param {string} fieldName - Label to use in the error message.
+ * @returns {string|null} Error message if invalid, or null if valid.
+ */
+export const validateLettersAndSpaces = (value, fieldName = "Ce champ") => {
+    const baseError = validateGenericString(value, fieldName);
+    if (baseError) return baseError;
+
+    if (!/^[\p{L} ]+$/u.test(String(value).trim())) {
+        return `${fieldName} doit contenir uniquement des lettres et des espaces.`;
+    }
+
+    return null;
+};
+
+/**
  * A generic string validator ensuring the field is not empty and is safe from HTML injection.
  * @param {string} str - The string to validate.
  * @param {string} fieldName - Label to use in the error message.
@@ -176,10 +210,10 @@ export const validateTeacherForm = (data, isEdit = false) => {
         if (addressError) errors.adresse = addressError;
     }
 
-    const firstNameError = validateName(data.firstName, "Le prénom");
+    const firstNameError = validatePersonName(data.firstName, "Le prénom");
     if (firstNameError) errors.firstName = firstNameError;
 
-    const lastNameError = validateName(data.lastName, "Le nom");
+    const lastNameError = validatePersonName(data.lastName, "Le nom");
     if (lastNameError) errors.lastName = lastNameError;
 
     const emailError = validateEmail(data.email);
@@ -212,10 +246,10 @@ export const validateParentForm = (data, isEdit = false) => {
     const addressError = validateOptionalGenericString(data.adresse, "L'adresse");
     if (addressError) errors.adresse = addressError;
 
-    const firstNameError = validateName(data.firstName, "Le prénom");
+    const firstNameError = validatePersonName(data.firstName, "Le prénom");
     if (firstNameError) errors.firstName = firstNameError;
 
-    const lastNameError = validateName(data.lastName, "Le nom");
+    const lastNameError = validatePersonName(data.lastName, "Le nom");
     if (lastNameError) errors.lastName = lastNameError;
 
     const emailError = validateEmail(data.email);

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:newv/views/themes/app_theme.dart';
 import 'package:newv/views/themes/theme_manager.dart';
 import '../../themes/register_theme.dart';
+import '../../controllers/register_validators.dart';
 import 'child_registration_form.dart';
 
 /// Step 2 of the registration wizard containing the list of children.
@@ -83,8 +84,24 @@ class ChildrenInfoStep extends StatelessWidget {
         Align(
           alignment: Alignment.center,
           child: TextButton.icon(
-            onPressed: onAddChild,
-            icon: Icon(Icons.add_circle_outline, color: RegisterTheme.accentColor),
+            onPressed: () {
+              final error = RegisterValidators.validateChildrenStep(children);
+              if (error != null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(error),
+                    backgroundColor: Colors.red.shade600,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              } else {
+                onAddChild();
+              }
+            },
+            icon: Icon(
+              Icons.add_circle_outline,
+              color: RegisterTheme.accentColor,
+            ),
             label: Text(
               'Ajouter un autre enfant',
               style: TextStyle(

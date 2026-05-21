@@ -101,10 +101,11 @@ class _ChildTrackingCompetencesTabState
 
       for (var eval in evals) {
         // Try multiple potential keys for date
-        String evalDate = (eval['evaluation_date'] ?? eval['date'] ?? '').toString();
+        String evalDate = (eval['evaluation_date'] ?? eval['date'] ?? '')
+            .toString();
 
         if (evalDate.isEmpty) continue;
-        
+
         // Handle full ISO strings by taking only the date part
         if (evalDate.contains('T')) {
           evalDate = evalDate.split('T')[0];
@@ -609,12 +610,6 @@ class _ChildTrackingCompetencesTabState
                 ),
                 const SizedBox(height: 8),
                 _buildLegendRow(
-                  const Color(0xFFFFA726),
-                  'En cours',
-                  'En voie d\'acquisition',
-                ),
-                const SizedBox(height: 8),
-                _buildLegendRow(
                   const Color(0xFFEF5350),
                   'À renforcer',
                   'Nécessite un accompagnement',
@@ -706,16 +701,24 @@ class _ChildTrackingCompetencesTabState
   Widget _buildActivityEvaluationCard(dynamic evaluation) {
     // Parent UI uses the exact date of the evaluation returned from backend
     // Try multiple keys for date and activity details
-    String dateStr = (evaluation['evaluation_date'] ?? evaluation['date'] ?? 'Date inconnue').toString();
+    String dateStr =
+        (evaluation['evaluation_date'] ?? evaluation['date'] ?? 'Date inconnue')
+            .toString();
     if (dateStr.contains('T')) dateStr = dateStr.split('T')[0];
-    
+
     final teacherMap = evaluation['teacher'];
-    final teacherName = evaluation['teacher_name'] ?? 
-                      (teacherMap is Map ? '${teacherMap['firstName']} ${teacherMap['lastName']}' : 'Éducatrice');
-    
+    final teacherName =
+        evaluation['teacher_name'] ??
+        (teacherMap is Map
+            ? '${teacherMap['firstName']} ${teacherMap['lastName']}'
+            : 'Éducatrice');
+
     final activityMap = evaluation['activity'];
-    final activityName = evaluation['activity_name'] ?? 
-                        (activityMap is Map ? activityMap['title'] : 'Activité ${evaluation['activity_id']}');
+    final activityName =
+        evaluation['activity_name'] ??
+        (activityMap is Map
+            ? activityMap['title']
+            : 'Activité ${evaluation['activity_id']}');
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),

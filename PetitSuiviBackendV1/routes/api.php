@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Auth\AuthController;
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/register/check-email', [AuthController::class, 'checkRegistrationEmail']);
+Route::post('/register/check-cin', [AuthController::class, 'checkRegistrationCin']);
 
 // Mobile Auth
 Route::post('/login/teacher', [AuthController::class, 'teacherLogin']);

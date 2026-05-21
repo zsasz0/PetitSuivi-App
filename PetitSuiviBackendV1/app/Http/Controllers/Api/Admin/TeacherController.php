@@ -194,6 +194,7 @@ class TeacherController extends Controller
         $account = Account::where('Cin', $cin)->where('RoleID', 1)->firstOrFail();
 
         $request->validate([
+            'cin' => 'required|integer|unique:Account,Cin,' . $account->AccountID . ',AccountID',
             'firstName' => 'required|string|max:255',
             'lastName' => 'required|string|max:255',
             'email' => ['required', 'email', 'max:255', AccountEmailUniqueness::validationRule($account->AccountID)],
@@ -201,6 +202,7 @@ class TeacherController extends Controller
         ]);
 
         $updateData = [
+            'Cin' => $request->cin,
             'Firstname' => $request->firstName,
             'Lastname' => $request->lastName,
             'Email' => AccountEmailUniqueness::trim($request->email),

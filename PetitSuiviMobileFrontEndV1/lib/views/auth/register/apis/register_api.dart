@@ -5,7 +5,9 @@ import 'package:newv/utils/api_constants.dart';
 class RegisterApi {
   static const String _baseUrl = ApiConstants.baseUrl;
 
-  static Future<Map<String, dynamic>> register(Map<String, dynamic> payload) async {
+  static Future<Map<String, dynamic>> register(
+    Map<String, dynamic> payload,
+  ) async {
     final uri = Uri.parse('$_baseUrl/api/register');
     final response = await http.post(
       uri,
@@ -15,10 +17,12 @@ class RegisterApi {
       },
       body: jsonEncode(payload),
     );
-    
+
     return {
       'statusCode': response.statusCode,
-      'body': response.body.isNotEmpty ? jsonDecode(response.body) : <String, dynamic>{},
+      'body': response.body.isNotEmpty
+          ? jsonDecode(response.body)
+          : <String, dynamic>{},
     };
   }
 
@@ -35,7 +39,28 @@ class RegisterApi {
 
     return {
       'statusCode': response.statusCode,
-      'body': response.body.isNotEmpty ? jsonDecode(response.body) : <String, dynamic>{},
+      'body': response.body.isNotEmpty
+          ? jsonDecode(response.body)
+          : <String, dynamic>{},
+    };
+  }
+
+  static Future<Map<String, dynamic>> checkCin(String cin) async {
+    final uri = Uri.parse('$_baseUrl/api/register/check-cin');
+    final response = await http.post(
+      uri,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'cin': cin}),
+    );
+
+    return {
+      'statusCode': response.statusCode,
+      'body': response.body.isNotEmpty
+          ? jsonDecode(response.body)
+          : <String, dynamic>{},
     };
   }
 

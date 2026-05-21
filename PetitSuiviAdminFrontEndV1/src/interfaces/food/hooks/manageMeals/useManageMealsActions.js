@@ -1,4 +1,5 @@
 import { checkMealExceptions, addMeal, updateDietaryComment, deleteMeal } from '../../api/foodItemsService';
+import { validateLettersAndSpaces } from '../../../../utils/validation';
 
 export const useManageMealsActions = ({ ui, data }) => {
     const getDeleteBlockedMessage = (meal) => {
@@ -30,6 +31,12 @@ export const useManageMealsActions = ({ ui, data }) => {
         e.preventDefault();
         const mealName = ui.newItem.trim();
         if (!mealName) return;
+
+        const nameError = validateLettersAndSpaces(mealName, "Le nom de l'aliment");
+        if (nameError) {
+            ui.setAddError(nameError);
+            return;
+        }
 
         const existingMeal = [...data.lunchOptions, ...data.snackOptions].find(m => m.name.toLowerCase() === mealName.toLowerCase());
         if (existingMeal) { ui.setAddError(`L'aliment "${mealName}" existe déjà !`); return; }

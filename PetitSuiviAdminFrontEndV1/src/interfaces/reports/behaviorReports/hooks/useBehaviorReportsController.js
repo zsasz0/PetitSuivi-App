@@ -166,11 +166,17 @@ export const useBehaviorReportsController = () => {
       if (!response?.output) return;
 
       let jsonText = response.output.trim();
-      if (jsonText.startsWith("```json")) {
-        jsonText = jsonText.replace(/^```json/, "").replace(/```$/, "").trim();
-      } else if (jsonText.startsWith("```")) {
-        jsonText = jsonText.replace(/^```/, "").replace(/```$/, "").trim();
+      const jsonMatch = jsonText.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+      if (jsonMatch) {
+        jsonText = jsonMatch[1];
+      } else {
+        const firstBrace = jsonText.indexOf('{');
+        const lastBrace = jsonText.lastIndexOf('}');
+        if (firstBrace !== -1 && lastBrace !== -1) {
+          jsonText = jsonText.substring(firstBrace, lastBrace + 1);
+        }
       }
+      jsonText = jsonText.trim();
 
       try {
         const parsed = JSON.parse(jsonText);

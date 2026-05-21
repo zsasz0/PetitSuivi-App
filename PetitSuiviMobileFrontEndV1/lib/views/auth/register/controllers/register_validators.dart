@@ -10,9 +10,30 @@ class RegisterValidators {
     required String password,
     required String confirmPassword,
   }) {
+    final nameRegex = RegExp(r"^[a-zA-ZÀ-ÿ\s\-']+$");
+
     if (firstName.isEmpty) return 'Le prénom est requis.';
+    if (!nameRegex.hasMatch(firstName))
+      return 'Le prénom ne doit pas contenir de chiffres ou de symboles.';
     if (lastName.isEmpty) return 'Le nom est requis.';
+    if (!nameRegex.hasMatch(lastName))
+      return 'Le nom ne doit pas contenir de chiffres ou de symboles.';
     if (birthDate.isEmpty) return 'La date de naissance est requise.';
+
+    final parsedBirthDate = DateTime.tryParse(birthDate);
+    if (parsedBirthDate != null) {
+      final now = DateTime.now();
+      int ageYears = now.year - parsedBirthDate.year;
+      if (now.month < parsedBirthDate.month ||
+          (now.month == parsedBirthDate.month &&
+              now.day < parsedBirthDate.day)) {
+        ageYears--;
+      }
+      if (ageYears < 18 || ageYears > 100) {
+        return 'L\'âge doit être compris entre 18 et 100 ans.';
+      }
+    }
+
     if (cin.isEmpty) return 'Le CIN est requis.';
     if (cin.length != 8 || int.tryParse(cin) == null) {
       return 'Le CIN doit comporter exactement 8 chiffres.';
@@ -59,14 +80,23 @@ class RegisterValidators {
       final lastName = child['lastName']?.toString().trim() ?? '';
       final birthDateStr = child['birthDate']?.toString().trim() ?? '';
 
-      if (firstName.isEmpty) return 'Le prénom de l\'enfant ${i + 1} est requis.';
+      final nameRegex = RegExp(r"^[a-zA-ZÀ-ÿ\s\-']+$");
+
+      if (firstName.isEmpty)
+        return 'Le prénom de l\'enfant ${i + 1} est requis.';
+      if (!nameRegex.hasMatch(firstName))
+        return 'Le prénom de l\'enfant ${i + 1} ne doit pas contenir de chiffres ou de symboles.';
       if (lastName.isEmpty) return 'Le nom de l\'enfant ${i + 1} est requis.';
-      if (birthDateStr.isEmpty) return 'La date de naissance de l\'enfant ${i + 1} est requise.';
+      if (!nameRegex.hasMatch(lastName))
+        return 'Le nom de l\'enfant ${i + 1} ne doit pas contenir de chiffres ou de symboles.';
+      if (birthDateStr.isEmpty)
+        return 'La date de naissance de l\'enfant ${i + 1} est requise.';
 
       final parsedDate = DateTime.tryParse(birthDateStr);
       if (parsedDate != null) {
         final now = DateTime.now();
-        int ageMonths = (now.year - parsedDate.year) * 12 + now.month - parsedDate.month;
+        int ageMonths =
+            (now.year - parsedDate.year) * 12 + now.month - parsedDate.month;
         if (now.day < parsedDate.day) ageMonths--;
         if (ageMonths < 24 || ageMonths > 64) {
           return 'L\'âge de l\'enfant ${i + 1} doit être compris entre 2 ans et 5 ans et 4 mois.';

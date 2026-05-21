@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { eventsService } from "../api/eventsService";
+import { validateLettersAndSpaces } from "../../../utils/validation";
 
 export const useEventsForms = ({ ui, data }) => {
   const [editingEvent, setEditingEvent] = useState(null);
@@ -66,6 +67,12 @@ export const useEventsForms = ({ ui, data }) => {
 
     if (!form.name.trim() || !form.description.trim() || !form.date || !form.start_time || !form.end_time) {
       setFormError("Veuillez remplir tous les champs (le nom, la description, la date et les horaires ne peuvent pas être vides).");
+      return;
+    }
+
+    const nameError = validateLettersAndSpaces(form.name, "Le nom de l'événement");
+    if (nameError) {
+      setFormError(nameError);
       return;
     }
 

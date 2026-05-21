@@ -25,6 +25,7 @@ class _RegisterPageState extends State<RegisterPage> {
   int _currentStep = 0;
   bool _isLoading = false;
   String? _emailErrorText;
+  String? _cinErrorText;
   List<String> _paymentMethods = ['oneShot', 'monthlyPartial'];
 
   // Parent Data Controllers
@@ -48,11 +49,18 @@ class _RegisterPageState extends State<RegisterPage> {
     _addChild(); // Initial child
     _loadMethods();
     _emailController.addListener(_clearEmailError);
+    _cinController.addListener(_clearCinError);
   }
 
   void _clearEmailError() {
     if (_emailErrorText != null) {
       setState(() => _emailErrorText = null);
+    }
+  }
+
+  void _clearCinError() {
+    if (_cinErrorText != null) {
+      setState(() => _cinErrorText = null);
     }
   }
 
@@ -89,10 +97,11 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future<void> _selectDate() async {
+    final now = DateTime.now();
     final date = await _controller.selectDate(
-      initialDate: DateTime.now().subtract(const Duration(days: 365 * 30)),
-      firstDate: DateTime(1950),
-      lastDate: DateTime.now(),
+      initialDate: DateTime(now.year - 30, now.month, now.day),
+      firstDate: DateTime(now.year - 100, now.month, now.day),
+      lastDate: DateTime(now.year - 18, now.month, now.day),
       tealAccent: RegisterTheme.tealAccent,
       baseDark: RegisterTheme.baseDark,
       lightText: RegisterTheme.lightText,
@@ -140,7 +149,12 @@ class _RegisterPageState extends State<RegisterPage> {
         (err) => setState(() => _emailErrorText = err),
       );
 
-      if (isAvailable && mounted) {
+      final isCinAvailable = await _controller.checkCinAvailability(
+        _cinController.text.trim(),
+        (err) => setState(() => _cinErrorText = err),
+      );
+
+      if (isAvailable && isCinAvailable && mounted) {
         setState(() => _currentStep = 1);
       }
     } else {
@@ -187,7 +201,7 @@ class _RegisterPageState extends State<RegisterPage> {
               'payment_method': child['paymentMethod'],
               'meal_plan': child['mealPlan'],
               'total_amount': child['totalPayment'],
-            }
+            },
           ],
         };
       }).toList(),
@@ -206,7 +220,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     context.watch<ThemeManager>();
-    
+
     return PopScope(
       canPop: _currentStep == 0,
       onPopInvokedWithResult: (didPop, result) {
@@ -270,6 +284,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           birthDate: _birthDate,
                           onSelectDate: _selectDate,
                           emailErrorText: _emailErrorText,
+                          cinErrorText: _cinErrorText,
                         )
                       : ChildrenInfoStep(
                           children: _children,

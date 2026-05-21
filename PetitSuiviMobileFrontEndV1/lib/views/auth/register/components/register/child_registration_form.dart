@@ -63,10 +63,16 @@ class _ChildRegistrationFormState extends State<ChildRegistrationForm> {
   void initState() {
     super.initState();
     _controller = RegisterController(context);
-    _nameController = TextEditingController(text: widget.childData['firstName']);
-    _surnameController = TextEditingController(text: widget.childData['lastName']);
-    _oldSchoolController = TextEditingController(text: widget.childData['oldSchool']);
-    
+    _nameController = TextEditingController(
+      text: widget.childData['firstName'],
+    );
+    _surnameController = TextEditingController(
+      text: widget.childData['lastName'],
+    );
+    _oldSchoolController = TextEditingController(
+      text: widget.childData['oldSchool'],
+    );
+
     final initialMealPlan =
         (widget.childData['mealPlan'] as String?)?.isNotEmpty == true
         ? widget.childData['mealPlan'] as String
@@ -75,17 +81,17 @@ class _ChildRegistrationFormState extends State<ChildRegistrationForm> {
         (widget.childData['inscriptionType'] as String?)?.isNotEmpty == true
         ? widget.childData['inscriptionType'] as String
         : _inscriptionTypes.first;
-        
+
     widget.childData['inscriptionType'] = initialInscriptionType;
     widget.childData['mealPlan'] = initialMealPlan;
     _updateTotalPayment(initialMealPlan);
-    
+
     final methods = widget.paymentMethods.isNotEmpty
         ? widget.paymentMethods
               .where((e) => e == 'oneShot' || e == 'monthlyPartial')
               .toList()
         : const <String>['oneShot', 'monthlyPartial'];
-    
+
     final current = widget.childData['paymentMethod']?.toString();
     widget.childData['paymentMethod'] = methods.contains(current)
         ? current
@@ -95,7 +101,8 @@ class _ChildRegistrationFormState extends State<ChildRegistrationForm> {
   }
 
   void _updateTotalPayment(String mealPlan) {
-    widget.childData['totalPayment'] = _baseFee + (_mealPlanFees[mealPlan] ?? 0.0);
+    widget.childData['totalPayment'] =
+        _baseFee + (_mealPlanFees[mealPlan] ?? 0.0);
   }
 
   Future<void> _loadPricing() async {
@@ -146,10 +153,38 @@ class _ChildRegistrationFormState extends State<ChildRegistrationForm> {
   }
 
   Future<void> _openMedicalRecord() async {
-    final childBirthStr = (widget.childData['birthDate'] ?? '').toString().trim();
+    final childFirst = (widget.childData['firstName'] ?? '').toString().trim();
+    final childLast = (widget.childData['lastName'] ?? '').toString().trim();
+    final nameRegex = RegExp(r"^[a-zA-ZÀ-ÿ\s\-']+$");
+
+    if (childFirst.isEmpty || !nameRegex.hasMatch(childFirst)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Veuillez entrer un prénom valide d\'abord.'),
+        ),
+      );
+      return;
+    }
+
+    if (childLast.isEmpty || !nameRegex.hasMatch(childLast)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Veuillez entrer un nom valide d\'abord.'),
+        ),
+      );
+      return;
+    }
+
+    final childBirthStr = (widget.childData['birthDate'] ?? '')
+        .toString()
+        .trim();
     if (childBirthStr.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Veuillez entrer la date de naissance de l\'enfant d\'abord.')),
+        const SnackBar(
+          content: Text(
+            'Veuillez entrer la date de naissance de l\'enfant d\'abord.',
+          ),
+        ),
       );
       return;
     }
@@ -158,18 +193,24 @@ class _ChildRegistrationFormState extends State<ChildRegistrationForm> {
     final parsedDate = DateTime.tryParse(childBirthStr);
     if (parsedDate != null) {
       final now = DateTime.now();
-      int ageMonths = (now.year - parsedDate.year) * 12 + now.month - parsedDate.month;
+      int ageMonths =
+          (now.year - parsedDate.year) * 12 + now.month - parsedDate.month;
       if (now.day < parsedDate.day) ageMonths--;
       if (ageMonths < 24 || ageMonths > 64) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('L\'âge de l\'enfant doit être compris entre 2 ans et 5 ans et 4 mois.')),
+          const SnackBar(
+            content: Text(
+              'L\'âge de l\'enfant doit être compris entre 2 ans et 5 ans et 4 mois.',
+            ),
+          ),
         );
         return;
       }
     }
 
     final existingData = Map<String, dynamic>.from(
-      (widget.childData['medicalRecordForm'] as Map<String, dynamic>?) ?? <String, dynamic>{},
+      (widget.childData['medicalRecordForm'] as Map<String, dynamic>?) ??
+          <String, dynamic>{},
     );
 
     // Initial pre-fill logic
@@ -185,50 +226,78 @@ class _ChildRegistrationFormState extends State<ChildRegistrationForm> {
   }
 
   void _preFillMedicalRecord(Map<String, dynamic> data) {
-    final text = Map<String, dynamic>.from((data['text'] as Map?)?.cast<String, dynamic>() ?? <String, dynamic>{});
-    
+    final text = Map<String, dynamic>.from(
+      (data['text'] as Map?)?.cast<String, dynamic>() ?? <String, dynamic>{},
+    );
+
     final childFirst = (widget.childData['firstName'] ?? '').toString().trim();
     final childLast = (widget.childData['lastName'] ?? '').toString().trim();
-    if ((text['childFullName'] ?? '').toString().isEmpty && (childFirst.isNotEmpty || childLast.isNotEmpty)) {
+    if ((text['childFullName'] ?? '').toString().isEmpty &&
+        (childFirst.isNotEmpty || childLast.isNotEmpty)) {
       text['childFullName'] = '$childFirst $childLast'.trim();
     }
 
     final childBirth = (widget.childData['birthDate'] ?? '').toString().trim();
-    if ((text['birthDatePlace'] ?? '').toString().isEmpty && childBirth.isNotEmpty) {
+    if ((text['birthDatePlace'] ?? '').toString().isEmpty &&
+        childBirth.isNotEmpty) {
       text['birthDatePlace'] = childBirth;
     }
 
-    if ((text['nationality'] ?? '').toString().isEmpty) text['nationality'] = 'تونسية';
-    if ((text['address'] ?? '').toString().isEmpty && widget.parentAddress.isNotEmpty) {
+    if ((text['nationality'] ?? '').toString().isEmpty)
+      text['nationality'] = 'تونسية';
+    if ((text['address'] ?? '').toString().isEmpty &&
+        widget.parentAddress.isNotEmpty) {
       text['address'] = widget.parentAddress.trim();
     }
 
     final oldSchool = (widget.childData['oldSchool'] ?? '').toString().trim();
-    if ((text['institutionStudyDuration'] ?? '').toString().isEmpty && oldSchool.isNotEmpty) {
+    if ((text['institutionStudyDuration'] ?? '').toString().isEmpty &&
+        oldSchool.isNotEmpty) {
       text['institutionStudyDuration'] = oldSchool;
     }
     data['text'] = text;
 
-    final checks = Map<String, dynamic>.from((data['checks'] as Map?)?.cast<String, dynamic>() ?? <String, dynamic>{});
-    for (final key in ['fatherAlive', 'motherAlive', 'fatherLivesWithFamily', 'motherLivesWithFamily']) {
+    final checks = Map<String, dynamic>.from(
+      (data['checks'] as Map?)?.cast<String, dynamic>() ?? <String, dynamic>{},
+    );
+    for (final key in [
+      'fatherAlive',
+      'motherAlive',
+      'fatherLivesWithFamily',
+      'motherLivesWithFamily',
+    ]) {
       if (!checks.containsKey(key)) checks[key] = true;
     }
     data['checks'] = checks;
 
-    final single = Map<String, dynamic>.from((data['singleChoice'] as Map?)?.cast<String, dynamic>() ?? <String, dynamic>{});
+    final single = Map<String, dynamic>.from(
+      (data['singleChoice'] as Map?)?.cast<String, dynamic>() ??
+          <String, dynamic>{},
+    );
     if ((single['social_position_siblings'] ?? '').toString().isEmpty) {
       if (widget.totalChildren == 1) {
-        single['social_position_siblings'] = 'وحيد';
+        single['social_position_siblings'] = 'وحيد / Unique';
       } else if (widget.index == 0) {
-        single['social_position_siblings'] = 'الأكبر';
+        single['social_position_siblings'] = 'الأكبر / Aîné';
       } else if (widget.index == widget.totalChildren - 1) {
-        single['social_position_siblings'] = 'الأصغر';
+        single['social_position_siblings'] = 'الأصغر / Benjamin';
       } else {
-        single['social_position_siblings'] = 'الأوسط';
+        single['social_position_siblings'] = 'الأوسط / Cadet';
       }
     }
-    for (final _ in ['social_lives_with', 'social_family_relation', 'social_eating', 'social_sleep', 'social_time_space', 'motherPregnancyHealth', 'birthPlace', 'birthTiming', 'deliveryType', 'healthAtBirth']) {
-       // set some defaults if needed, though they are usually handled in the page itself or here
+    for (final _ in [
+      'social_lives_with',
+      'social_family_relation',
+      'social_eating',
+      'social_sleep',
+      'social_time_space',
+      'motherPregnancyHealth',
+      'birthPlace',
+      'birthTiming',
+      'deliveryType',
+      'healthAtBirth',
+    ]) {
+      // set some defaults if needed, though they are usually handled in the page itself or here
     }
     data['singleChoice'] = single;
   }
@@ -237,11 +306,16 @@ class _ChildRegistrationFormState extends State<ChildRegistrationForm> {
   Widget build(BuildContext context) {
     context.watch<ThemeManager>();
     final paymentMethods = widget.paymentMethods.isNotEmpty
-        ? widget.paymentMethods.where((e) => e == 'oneShot' || e == 'monthlyPartial').toList()
+        ? widget.paymentMethods
+              .where((e) => e == 'oneShot' || e == 'monthlyPartial')
+              .toList()
         : const <String>['oneShot', 'monthlyPartial'];
-    
-    final hasMedicalRecord = ((widget.childData['medicalRecordForm'] as Map?)?.isNotEmpty ?? false);
-    final totalPayment = (widget.childData['totalPayment'] as num?)?.toDouble() ?? (_baseFee + (_mealPlanFees[widget.childData['mealPlan']] ?? 0.0));
+
+    final hasMedicalRecord =
+        ((widget.childData['medicalRecordForm'] as Map?)?.isNotEmpty ?? false);
+    final totalPayment =
+        (widget.childData['totalPayment'] as num?)?.toDouble() ??
+        (_baseFee + (_mealPlanFees[widget.childData['mealPlan']] ?? 0.0));
 
     return Container(
       margin: const EdgeInsets.only(bottom: 24),
@@ -267,7 +341,11 @@ class _ChildRegistrationFormState extends State<ChildRegistrationForm> {
                         color: RegisterTheme.tealAccent.withValues(alpha: 0.2),
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(Icons.child_care, color: RegisterTheme.tealAccent, size: 20),
+                      child: Icon(
+                        Icons.child_care,
+                        color: RegisterTheme.tealAccent,
+                        size: 20,
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Text(
@@ -300,7 +378,9 @@ class _ChildRegistrationFormState extends State<ChildRegistrationForm> {
                   onTap: _selectDate,
                   child: AbsorbPointer(
                     child: ChildGlassTextField(
-                      controller: TextEditingController(text: widget.childData['birthDate']),
+                      controller: TextEditingController(
+                        text: widget.childData['birthDate'],
+                      ),
                       label: 'Date de naissance',
                       icon: Icons.calendar_today,
                     ),
@@ -326,7 +406,11 @@ class _ChildRegistrationFormState extends State<ChildRegistrationForm> {
 
                 ChildGlassDropdown(
                   label: 'Repas (déjeuner / goûter)',
-                  value: (widget.childData['mealPlan'] as String?)?.isNotEmpty == true ? widget.childData['mealPlan'] as String : null,
+                  value:
+                      (widget.childData['mealPlan'] as String?)?.isNotEmpty ==
+                          true
+                      ? widget.childData['mealPlan'] as String
+                      : null,
                   items: _mealPlanOptions,
                   itemLabelBuilder: (option) {
                     final price = _mealPlanFees[option];
@@ -340,7 +424,7 @@ class _ChildRegistrationFormState extends State<ChildRegistrationForm> {
                     } else if (option.contains('récupère puis le ramène')) {
                       shortLabel = 'Pas de cantine';
                     }
-                    
+
                     if (price != null && price > 0) {
                       shortLabel += ' (${price.toStringAsFixed(0)} TND)';
                     }
@@ -349,7 +433,9 @@ class _ChildRegistrationFormState extends State<ChildRegistrationForm> {
                   onChanged: (value) {
                     setState(() {
                       widget.childData['mealPlan'] = value ?? '';
-                      _updateTotalPayment(widget.childData['mealPlan'] as String);
+                      _updateTotalPayment(
+                        widget.childData['mealPlan'] as String,
+                      );
                     });
                   },
                 ),
@@ -357,44 +443,84 @@ class _ChildRegistrationFormState extends State<ChildRegistrationForm> {
                 const SizedBox(height: 16),
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 16,
+                  ),
                   decoration: BoxDecoration(
                     color: RegisterTheme.tealAccent.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: RegisterTheme.tealAccent.withValues(alpha: 0.3)),
+                    border: Border.all(
+                      color: RegisterTheme.tealAccent.withValues(alpha: 0.3),
+                    ),
                   ),
                   child: _loadingPricing
-                      ? Center(child: CircularProgressIndicator(color: RegisterTheme.tealAccent, strokeWidth: 2))
+                      ? Center(
+                          child: CircularProgressIndicator(
+                            color: RegisterTheme.tealAccent,
+                            strokeWidth: 2,
+                          ),
+                        )
                       : Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Total paiement:', style: TextStyle(fontWeight: FontWeight.w500, color: RegisterTheme.tealAccent, fontSize: 16)),
-                            Text('${RegisterController.formatAmount(totalPayment)} TND', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: RegisterTheme.tealAccent)),
+                            Text(
+                              'Total paiement:',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: RegisterTheme.tealAccent,
+                                fontSize: 16,
+                              ),
+                            ),
+                            Text(
+                              '${RegisterController.formatAmount(totalPayment)} TND',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                color: RegisterTheme.tealAccent,
+                              ),
+                            ),
                           ],
                         ),
                 ),
                 const SizedBox(height: 24),
-                Text('Méthode de paiement', style: TextStyle(fontWeight: FontWeight.bold, color: RegisterTheme.lightText, fontSize: 16, fontFamily: AppTheme.fontName)),
+                Text(
+                  'Méthode de paiement',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: RegisterTheme.lightText,
+                    fontSize: 16,
+                    fontFamily: AppTheme.fontName,
+                  ),
+                ),
                 const SizedBox(height: 12),
                 Row(
                   children: [
                     if (paymentMethods.contains('oneShot'))
                       Expanded(
                         child: ChildPaymentMethodCard(
-                          selectedValue: widget.childData['paymentMethod']?.toString(),
-                          onTap: (val) => setState(() => widget.childData['paymentMethod'] = val),
+                          selectedValue: widget.childData['paymentMethod']
+                              ?.toString(),
+                          onTap: (val) => setState(
+                            () => widget.childData['paymentMethod'] = val,
+                          ),
                           value: 'oneShot',
                           title: 'Annuel',
                           subtitle: 'Complet',
                           icon: Icons.payments_outlined,
                         ),
                       ),
-                    if (paymentMethods.contains('oneShot') && paymentMethods.contains('monthlyPartial')) const SizedBox(width: 12),
+                    if (paymentMethods.contains('oneShot') &&
+                        paymentMethods.contains('monthlyPartial'))
+                      const SizedBox(width: 12),
                     if (paymentMethods.contains('monthlyPartial'))
                       Expanded(
                         child: ChildPaymentMethodCard(
-                          selectedValue: widget.childData['paymentMethod']?.toString(),
-                          onTap: (val) => setState(() => widget.childData['paymentMethod'] = val),
+                          selectedValue: widget.childData['paymentMethod']
+                              ?.toString(),
+                          onTap: (val) => setState(
+                            () => widget.childData['paymentMethod'] = val,
+                          ),
                           value: 'monthlyPartial',
                           title: 'Mensuel',
                           subtitle: 'Partiel',
@@ -416,17 +542,32 @@ class _ChildRegistrationFormState extends State<ChildRegistrationForm> {
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.medical_services_outlined, color: hasMedicalRecord ? RegisterTheme.tealAccent : RegisterTheme.accentColor, size: 20),
+                      Icon(
+                        Icons.medical_services_outlined,
+                        color: hasMedicalRecord
+                            ? RegisterTheme.tealAccent
+                            : RegisterTheme.accentColor,
+                        size: 20,
+                      ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          hasMedicalRecord ? 'Dossier médical rempli' : 'Dossier médical vide',
-                          style: TextStyle(color: hasMedicalRecord ? RegisterTheme.lightText : RegisterTheme.mutedText),
+                          hasMedicalRecord
+                              ? 'Dossier médical rempli'
+                              : 'Dossier médical vide',
+                          style: TextStyle(
+                            color: hasMedicalRecord
+                                ? RegisterTheme.lightText
+                                : RegisterTheme.mutedText,
+                          ),
                         ),
                       ),
                       TextButton(
                         onPressed: _openMedicalRecord,
-                        child: Text(hasMedicalRecord ? 'Modifier' : 'Ajouter', style: const TextStyle(fontWeight: FontWeight.bold)),
+                        child: Text(
+                          hasMedicalRecord ? 'Modifier' : 'Ajouter',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ],
                   ),

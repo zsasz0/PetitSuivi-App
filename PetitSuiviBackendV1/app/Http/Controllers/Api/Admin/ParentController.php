@@ -236,6 +236,7 @@ class ParentController extends Controller
         }
 
         $request->validate([
+            'cin' => 'required|numeric|unique:Account,Cin,' . $account->AccountID . ',AccountID',
             'firstName' => 'required|string|max:255',
             'lastName' => 'required|string|max:255',
             'birthdate' => 'nullable|date',
@@ -245,6 +246,7 @@ class ParentController extends Controller
             'password' => 'nullable|string|min:6|confirmed',
         ]);
 
+        $account->Cin = $request->cin;
         $account->Firstname = $request->firstName;
         $account->Lastname = $request->lastName;
         $account->Birthdate = $request->birthdate;
