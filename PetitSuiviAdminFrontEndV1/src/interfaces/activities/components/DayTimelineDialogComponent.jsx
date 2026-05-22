@@ -148,7 +148,7 @@ export const DayTimelineDialogComponent = (props) => {
                         label={getStatusLabel(act.status)}
                         sx={{ backgroundColor: getStatusColor(act.status, colors), color: "#fff", fontSize: "0.75rem" }}
                       />
-                      {!isArchived && (
+                      {!isArchived && String(act.status || "").toLowerCase() === "approved" && (
                         <IconButton color="error" onClick={() => handleDeletePlannedActivity(act.id)}>
                           <DeleteOutlineIcon />
                         </IconButton>

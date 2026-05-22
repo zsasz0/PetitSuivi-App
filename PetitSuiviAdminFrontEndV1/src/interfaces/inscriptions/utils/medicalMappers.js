@@ -44,7 +44,10 @@ export const mapFlutterToFlat = (flutterData) => {
     const mapped = {};
 
     /** Helper: checks whether a multi-choice array contains a specific Arabic label. */
-    const hasMulti = (key, value) => Array.isArray(multiChoice[key]) && multiChoice[key].includes(value);
+    const hasMulti = (key, value) => Array.isArray(multiChoice[key]) && multiChoice[key].some(v => typeof v === 'string' && v.includes(value));
+
+    /** Helper: checks whether a single-choice string contains a specific Arabic label. */
+    const isSingle = (key, value) => typeof singleChoice[key] === 'string' && singleChoice[key].includes(value);
 
     // Section 1
     mapped.full_name = text.childFullName;
@@ -101,30 +104,30 @@ export const mapFlutterToFlat = (flutterData) => {
     mapped.water_home = hasMulti('waterSource', 'حنفية في البيت');
     mapped.water_public = hasMulti('waterSource', 'حنفية عمومية');
     mapped.water_well = hasMulti('waterSource', 'بئر');
-    mapped.water_bottles = hasMulti('waterSource', 'قوارير ماء');
+    mapped.water_bottles = hasMulti('waterSource', 'قوارير ماء') || hasMulti('waterSource', 'ماء معلب');
     mapped.water_other = hasMulti('waterSource', 'مصدر آخر');
 
     mapped.health_center = text.healthSupervisingStructure;
     mapped.family_doctor = text.familyDoctor;
 
     // Section 2
-    mapped.pregnancy_normal = singleChoice.motherPregnancyHealth === 'عادية';
-    mapped.pregnancy_problems = singleChoice.motherPregnancyHealth === 'مشاكل صحية';
+    mapped.pregnancy_normal = isSingle('motherPregnancyHealth', 'عادية');
+    mapped.pregnancy_problems = isSingle('motherPregnancyHealth', 'مشاكل صحية');
     mapped.pregnancy_notes = text.pregnancyHealthDetails;
 
-    mapped.birth_home = singleChoice.birthPlace === 'بالمنزل';
-    mapped.birth_hospital = singleChoice.birthPlace === 'المستشفى';
-    mapped.birth_private_clinic = singleChoice.birthPlace === 'مصحة خاصة';
+    mapped.birth_home = isSingle('birthPlace', 'بالمنزل');
+    mapped.birth_hospital = isSingle('birthPlace', 'المستشفى');
+    mapped.birth_private_clinic = isSingle('birthPlace', 'مصحة خاصة');
 
-    mapped.birth_on_time = singleChoice.birthTiming === 'في أوانها';
-    mapped.birth_premature = singleChoice.birthTiming === 'قبل أوانها';
+    mapped.birth_on_time = isSingle('birthTiming', 'في أوانها');
+    mapped.birth_premature = isSingle('birthTiming', 'قبل أوانها');
 
-    mapped.delivery_normal = singleChoice.deliveryType === 'عادية';
-    mapped.delivery_complicated = singleChoice.deliveryType === 'غير عادية';
+    mapped.delivery_normal = isSingle('deliveryType', 'عادية');
+    mapped.delivery_complicated = isSingle('deliveryType', 'غير عادية');
     mapped.delivery_notes = text.deliveryDetails;
 
-    mapped.baby_health_normal = singleChoice.healthAtBirth === 'عادية';
-    mapped.baby_health_abnormal = singleChoice.healthAtBirth === 'غير عادية';
+    mapped.baby_health_normal = isSingle('healthAtBirth', 'عادية');
+    mapped.baby_health_abnormal = isSingle('healthAtBirth', 'غير عادية');
     mapped.baby_health_notes = text.healthAtBirthDetails;
 
     mapped.congenital_yes = checks.congenitalMalformations === true;
@@ -193,19 +196,19 @@ export const mapFlutterToFlat = (flutterData) => {
     mapped.family_mutism = checks.family_mutism;
 
     // Section 4
-    mapped.sibling_only = singleChoice.social_position_siblings === 'وحيد';
-    mapped.sibling_oldest = singleChoice.social_position_siblings === 'الأكبر';
-    mapped.sibling_middle = singleChoice.social_position_siblings === 'الأوسط';
-    mapped.sibling_youngest = singleChoice.social_position_siblings === 'الأصغر';
+    mapped.sibling_only = isSingle('social_position_siblings', 'وحيد');
+    mapped.sibling_oldest = isSingle('social_position_siblings', 'الأكبر');
+    mapped.sibling_middle = isSingle('social_position_siblings', 'الأوسط');
+    mapped.sibling_youngest = isSingle('social_position_siblings', 'الأصغر');
 
-    mapped.lives_with_father = singleChoice.social_lives_with === 'والده';
-    mapped.lives_with_mother = singleChoice.social_lives_with === 'والدته';
-    mapped.lives_with_both = singleChoice.social_lives_with === 'كلا الوالدين';
-    mapped.lives_with_other = singleChoice.social_lives_with === 'شخص آخر';
+    mapped.lives_with_father = isSingle('social_lives_with', 'والده');
+    mapped.lives_with_mother = isSingle('social_lives_with', 'والدته');
+    mapped.lives_with_both = isSingle('social_lives_with', 'كلا الوالدين');
+    mapped.lives_with_other = isSingle('social_lives_with', 'شخص آخر');
 
-    mapped.family_relation_normal = singleChoice.social_family_relation === 'عادية';
-    mapped.family_relation_good = singleChoice.social_family_relation === 'جيدة';
-    mapped.family_relation_difficult = singleChoice.social_family_relation === 'صعبة';
+    mapped.family_relation_normal = isSingle('social_family_relation', 'عادية');
+    mapped.family_relation_good = isSingle('social_family_relation', 'جيدة');
+    mapped.family_relation_difficult = isSingle('social_family_relation', 'صعبة');
 
     mapped.behavior_normal = hasMulti('social_behavior', 'عادي');
     mapped.behavior_irritable = hasMulti('social_behavior', 'سريع الانفعال');
@@ -213,16 +216,16 @@ export const mapFlutterToFlat = (flutterData) => {
     mapped.behavior_shy = hasMulti('social_behavior', 'خجول');
     mapped.behavior_hyperactive = hasMulti('social_behavior', 'كثير الحركة');
 
-    mapped.eating_good = singleChoice.social_eating === 'جيد';
-    mapped.eating_poor = singleChoice.social_eating === 'ضعيف';
-    mapped.eating_refuse = singleChoice.social_eating === 'يرفض الأكل';
+    mapped.eating_good = isSingle('social_eating', 'جيد');
+    mapped.eating_poor = isSingle('social_eating', 'ضعيف');
+    mapped.eating_refuse = isSingle('social_eating', 'يرفض الأكل');
 
-    mapped.sleep_good = singleChoice.social_sleep === 'جيد';
-    mapped.sleep_anxious = singleChoice.social_sleep === 'قلق';
-    mapped.sleep_nightmares = singleChoice.social_sleep === 'كوابيس';
+    mapped.sleep_good = isSingle('social_sleep', 'جيد');
+    mapped.sleep_anxious = isSingle('social_sleep', 'قلق');
+    mapped.sleep_nightmares = isSingle('social_sleep', 'كوابيس');
 
-    mapped.orientation_normal = singleChoice.social_time_space === 'طبيعي';
-    mapped.orientation_disorganized = singleChoice.social_time_space === 'غير منظم';
+    mapped.orientation_normal = isSingle('social_time_space', 'طبيعي');
+    mapped.orientation_disorganized = isSingle('social_time_space', 'غير منظم');
 
     // Section 5
     mapped.additional_notes = text.socialAdditionalInfo;

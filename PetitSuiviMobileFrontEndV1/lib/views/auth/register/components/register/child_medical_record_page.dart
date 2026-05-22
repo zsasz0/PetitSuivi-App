@@ -119,6 +119,70 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
   ];
 
   void _save() {
+    final nameRegex = RegExp(r"^[a-zA-ZÀ-ÿ\u0600-\u06FF\s\-']+$");
+
+    final invalidNames = <String>[];
+    final nameConfigs = [
+      {'key': 'childFullName', 'label': 'الاسم واللقب / Nom & Prénom'},
+      {'key': 'fatherName', 'label': 'اسم الأب / Prénom du père'},
+      {'key': 'motherName', 'label': 'اسم الأم / Prénom de la mère'},
+    ];
+    for (final config in nameConfigs) {
+      final key = config['key']!;
+      final value = _textControllers[key]?.text.trim() ?? '';
+      if (value.isNotEmpty && !nameRegex.hasMatch(value)) {
+        invalidNames.add(config['label']!);
+      }
+    }
+    if (invalidNames.isNotEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'يجب ألا تحتوي الأسماء على أرقام أو رموز / Les noms ne doivent pas contenir de chiffres ou de symboles : ${invalidNames.join('، ')}',
+            textDirection: TextDirection.rtl,
+          ),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+      return;
+    }
+
+    final fatherBirthYearStr =
+        _textControllers['fatherBirthYear']?.text.trim() ?? '';
+    if (fatherBirthYearStr.isNotEmpty) {
+      final year = int.tryParse(fatherBirthYearStr);
+      if (year == null || DateTime.now().year - year < 18) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'يجب أن يكون عمر الأب 18 سنة على الأقل / L\'âge du père doit être d\'au moins 18 ans',
+              textDirection: TextDirection.rtl,
+            ),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+        return;
+      }
+    }
+
+    final motherBirthYearStr =
+        _textControllers['motherBirthYear']?.text.trim() ?? '';
+    if (motherBirthYearStr.isNotEmpty) {
+      final year = int.tryParse(motherBirthYearStr);
+      if (year == null || DateTime.now().year - year < 18) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'يجب أن يكون عمر الأم 18 سنة على الأقل / L\'âge de la mère doit être d\'au moins 18 ans',
+              textDirection: TextDirection.rtl,
+            ),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+        return;
+      }
+    }
+
     final missingText = <String>[];
     final requiredTextConfigs = [
       {'key': 'childFullName', 'label': 'الاسم واللقب / Nom & Prénom'},
@@ -520,7 +584,7 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
           _text('kinshipDetails', 'إن نعم، حددها / Si oui, précisez'),
 
         _sectionHeader('الأب / Père', Icons.man_outlined),
-        _text('fatherName', 'اسم الأب / Nom du père'),
+        _text('fatherName', 'اسم الأب / Prénom du père'),
         _text(
           'fatherBirthYear',
           'سنة الولادة / Année de naissance',
@@ -535,7 +599,7 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
         _yesNo('fatherSmoking', 'السجائر / Fumeur'),
 
         _sectionHeader('الأم / Mère', Icons.woman_outlined),
-        _text('motherName', 'اسم الأم / Nom de la mère'),
+        _text('motherName', 'اسم الأم / Prénom de la mère'),
         _text(
           'motherBirthYear',
           'سنة الولادة / Année de naissance',

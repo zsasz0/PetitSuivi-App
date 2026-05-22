@@ -10,7 +10,7 @@ class RegisterValidators {
     required String password,
     required String confirmPassword,
   }) {
-    final nameRegex = RegExp(r"^[a-zA-ZÀ-ÿ\s\-']+$");
+    final nameRegex = RegExp(r"^[a-zA-ZÀ-ÿ\u0600-\u06FF\s\-']+$");
 
     if (firstName.isEmpty) return 'Le prénom est requis.';
     if (!nameRegex.hasMatch(firstName))
@@ -80,7 +80,7 @@ class RegisterValidators {
       final lastName = child['lastName']?.toString().trim() ?? '';
       final birthDateStr = child['birthDate']?.toString().trim() ?? '';
 
-      final nameRegex = RegExp(r"^[a-zA-ZÀ-ÿ\s\-']+$");
+      final nameRegex = RegExp(r"^[a-zA-ZÀ-ÿ\u0600-\u06FF\s\-']+$");
 
       if (firstName.isEmpty)
         return 'Le prénom de l\'enfant ${i + 1} est requis.';
