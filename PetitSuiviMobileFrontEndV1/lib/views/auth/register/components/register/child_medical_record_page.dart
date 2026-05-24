@@ -121,24 +121,27 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
   void _save() {
     final nameRegex = RegExp(r"^[a-zA-ZÀ-ÿ\u0600-\u06FF\s\-']+$");
 
-    final invalidNames = <String>[];
-    final nameConfigs = [
+    final invalidTextFields = <String>[];
+    final textValidationConfigs = [
       {'key': 'childFullName', 'label': 'الاسم واللقب / Nom & Prénom'},
       {'key': 'fatherName', 'label': 'اسم الأب / Prénom du père'},
       {'key': 'motherName', 'label': 'اسم الأم / Prénom de la mère'},
+      {'key': 'nationality', 'label': 'الجنسية / Nationalité'},
+      {'key': 'fatherJob', 'label': 'مهنة الأب / Profession du père'},
+      {'key': 'motherJob', 'label': 'مهنة الأم / Profession de la mère'},
     ];
-    for (final config in nameConfigs) {
+    for (final config in textValidationConfigs) {
       final key = config['key']!;
       final value = _textControllers[key]?.text.trim() ?? '';
       if (value.isNotEmpty && !nameRegex.hasMatch(value)) {
-        invalidNames.add(config['label']!);
+        invalidTextFields.add(config['label']!);
       }
     }
-    if (invalidNames.isNotEmpty) {
+    if (invalidTextFields.isNotEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'يجب ألا تحتوي الأسماء على أرقام أو رموز / Les noms ne doivent pas contenir de chiffres ou de symboles : ${invalidNames.join('، ')}',
+            'يجب ألا تحتوي هذه الحقول على أرقام أو رموز / Ces champs ne doivent pas contenir de chiffres ou de symboles : ${invalidTextFields.join('، ')}',
             textDirection: TextDirection.rtl,
           ),
           backgroundColor: Colors.redAccent,
@@ -189,6 +192,18 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
       {'key': 'birthDatePlace', 'label': 'الولادة / Naissance (Date & Lieu)'},
       {'key': 'nationality', 'label': 'الجنسية / Nationalité'},
       {'key': 'address', 'label': 'العنوان / Adresse'},
+      {'key': 'fatherName', 'label': 'اسم الأب / Prénom du père'},
+      {
+        'key': 'fatherBirthYear',
+        'label': 'سنة ولادة الأب / Année de naissance du père',
+      },
+      {'key': 'fatherJob', 'label': 'مهنة الأب / Profession du père'},
+      {'key': 'motherName', 'label': 'اسم الأم / Prénom de la mère'},
+      {
+        'key': 'motherBirthYear',
+        'label': 'سنة ولادة الأم / Année de naissance de la mère',
+      },
+      {'key': 'motherJob', 'label': 'مهنة الأم / Profession de la mère'},
     ];
     for (final config in requiredTextConfigs) {
       final key = config['key']!;
