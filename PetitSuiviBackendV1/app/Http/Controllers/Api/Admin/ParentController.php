@@ -58,7 +58,9 @@ class ParentController extends Controller
      */
     public function index()
     {
-        $accounts = Account::where('RoleID', 3)->get();
+        $accounts = Account::where('RoleID', 3)
+            ->orderByDesc('PersonID')
+            ->get();
         $formatted = [];
 
         foreach ($accounts as $account) {

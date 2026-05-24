@@ -17,7 +17,11 @@ export const fetchDashboardData = async () => {
     api.get("/admin/parents").catch(() => ({ data: { data: [] } })),
     api.get("/admin/teachers").catch(() => ({ data: { data: [] } })),
     api.get("/admin/classes").catch(() => ({ data: { data: [] } })),
-    api.get("/admin/inscriptions").catch(() => ({ data: { data: [] } })),
+    api
+      .get("/admin/inscriptions", {
+        params: { include_unapproved_parent_children: 1 },
+      })
+      .catch(() => ({ data: { data: [] } })),
     api.get("/admin/payments").catch(() => ({ data: { data: [] } })),
     api.get("/admin/plannings").catch(() => ({ data: { data: [] } })),
     api.get("/admin/events/upcoming").catch(() => ({ data: { data: [] } })),

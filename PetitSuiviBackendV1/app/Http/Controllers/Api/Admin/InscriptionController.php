@@ -68,6 +68,8 @@ class InscriptionController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
+        $includeUnapprovedParentChildren = $request->boolean('include_unapproved_parent_children');
+
         // Fetch all inscriptions with related data via raw joins for full control
         $inscriptions = DB::table('Inscription')
             ->select(
@@ -132,13 +134,15 @@ class InscriptionController extends Controller
             ->groupBy('ChildID')
             ->pluck('cnt', 'ChildID');
 
-        // Filter inscriptions to only those whose parent is approved
-        $inscriptions = $inscriptions->filter(function ($insc) use ($parentAccounts) {
-            if ($insc->ParentID && isset($parentAccounts[$insc->ParentID])) {
-                return $parentAccounts[$insc->ParentID]->Approval_status === 'approved';
-            }
-            return false;
-        });
+        if (!$includeUnapprovedParentChildren) {
+            // Keep the registrations view limited to children whose parent is approved.
+            $inscriptions = $inscriptions->filter(function ($insc) use ($parentAccounts) {
+                if ($insc->ParentID && isset($parentAccounts[$insc->ParentID])) {
+                    return $parentAccounts[$insc->ParentID]->Approval_status === 'approved';
+                }
+                return false;
+            });
+        }
 
         $result = $inscriptions->map(function ($insc) use (
             $statusMap, $paymentMethodMap, $typeMap, $classTypeMap,
