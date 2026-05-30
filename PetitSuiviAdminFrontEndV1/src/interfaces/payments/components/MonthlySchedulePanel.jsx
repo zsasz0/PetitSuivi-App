@@ -12,6 +12,8 @@ const MonthlySchedulePanel = ({
   handlePayMonth,
   setReceiptData,
   setIsReceiptDialogOpen,
+  setIsConfirmPayOpen,
+  setConfirmPayData,
   colors,
   isDark
 }) => {
@@ -142,7 +144,14 @@ const MonthlySchedulePanel = ({
                 checked={isPaid}
                 disabled={isPaid || !isNext || txSubmitting}
                 onChange={() => {
-                  handlePayMonth(historyRow, monthlyAmount, m.value);
+                  setConfirmPayData({
+                    type: "monthly",
+                    amount: monthlyAmount,
+                    targetMonthValue: m.value,
+                    targetMonthLabel: m.label,
+                    row: historyRow,
+                  });
+                  setIsConfirmPayOpen(true);
                 }}
                 sx={{
                   color: isNext ? (isDark ? colors.grey[300] : "#64748b") : colors.grey[500],

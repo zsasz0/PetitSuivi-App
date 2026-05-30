@@ -104,90 +104,104 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
     super.dispose();
   }
 
-  static const List<String> _requiredSingleKeys = [
-    'motherPregnancyHealth',
-    'birthPlace',
-    'birthTiming',
-    'deliveryType',
-    'healthAtBirth',
-    'social_position_siblings',
-    'social_lives_with',
-    'social_family_relation',
-    'social_eating',
-    'social_sleep',
-    'social_time_space',
-  ];
+  void _showValidationSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message, textDirection: TextDirection.rtl),
+        backgroundColor: Colors.redAccent,
+      ),
+    );
+  }
 
-  void _save() {
-    final nameRegex = RegExp(r"^[a-zA-ZÀ-ÿ\u0600-\u06FF\s\-']+$");
-
-    final invalidTextFields = <String>[];
-    final textValidationConfigs = [
-      {'key': 'childFullName', 'label': 'الاسم واللقب / Nom & Prénom'},
-      {'key': 'fatherName', 'label': 'اسم الأب / Prénom du père'},
-      {'key': 'motherName', 'label': 'اسم الأم / Prénom de la mère'},
-      {'key': 'nationality', 'label': 'الجنسية / Nationalité'},
-      {'key': 'fatherJob', 'label': 'مهنة الأب / Profession du père'},
-      {'key': 'motherJob', 'label': 'مهنة الأم / Profession de la mère'},
-    ];
-    for (final config in textValidationConfigs) {
+  bool _validatePatternFields({
+    required List<Map<String, String>> configs,
+    required RegExp pattern,
+    required String message,
+  }) {
+    final invalidFields = <String>[];
+    for (final config in configs) {
       final key = config['key']!;
       final value = _textControllers[key]?.text.trim() ?? '';
-      if (value.isNotEmpty && !nameRegex.hasMatch(value)) {
-        invalidTextFields.add(config['label']!);
-      }
-    }
-    if (invalidTextFields.isNotEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'يجب ألا تحتوي هذه الحقول على أرقام أو رموز / Ces champs ne doivent pas contenir de chiffres ou de symboles : ${invalidTextFields.join('، ')}',
-            textDirection: TextDirection.rtl,
-          ),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
-      return;
-    }
-
-    final fatherBirthYearStr =
-        _textControllers['fatherBirthYear']?.text.trim() ?? '';
-    if (fatherBirthYearStr.isNotEmpty) {
-      final year = int.tryParse(fatherBirthYearStr);
-      if (year == null || DateTime.now().year - year < 18) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'يجب أن يكون عمر الأب 18 سنة على الأقل / L\'âge du père doit être d\'au moins 18 ans',
-              textDirection: TextDirection.rtl,
-            ),
-            backgroundColor: Colors.redAccent,
-          ),
-        );
-        return;
+      if (value.isNotEmpty && !pattern.hasMatch(value)) {
+        invalidFields.add(config['label']!);
       }
     }
 
-    final motherBirthYearStr =
-        _textControllers['motherBirthYear']?.text.trim() ?? '';
-    if (motherBirthYearStr.isNotEmpty) {
-      final year = int.tryParse(motherBirthYearStr);
-      if (year == null || DateTime.now().year - year < 18) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'يجب أن يكون عمر الأم 18 سنة على الأقل / L\'âge de la mère doit être d\'au moins 18 ans',
-              textDirection: TextDirection.rtl,
-            ),
-            backgroundColor: Colors.redAccent,
-          ),
-        );
-        return;
+    if (invalidFields.isEmpty) return true;
+
+    _showValidationSnackBar('$message : ${invalidFields.join('، ')}');
+    return false;
+  }
+
+  bool _validateRequiredTextFields(List<Map<String, String>> configs) {
+    final missingFields = <String>[];
+    for (final config in configs) {
+      final key = config['key']!;
+      final value = _textControllers[key]?.text.trim() ?? '';
+      if (value.isEmpty) {
+        missingFields.add(config['label']!);
       }
     }
 
-    final missingText = <String>[];
-    final requiredTextConfigs = [
+    if (missingFields.isEmpty) return true;
+
+    _showValidationSnackBar(
+      'يرجى ملء الحقول الإلزامية التالية / Veuillez remplir les champs obligatoires suivants : ${missingFields.join('، ')}',
+    );
+    return false;
+  }
+
+  bool _validateRequiredSingleFields(List<Map<String, String>> configs) {
+    final missingFields = <String>[];
+    for (final config in configs) {
+      final key = config['key']!;
+      if ((_singleChoice[key] ?? '').isEmpty) {
+        missingFields.add(config['label']!);
+      }
+    }
+
+    if (missingFields.isEmpty) return true;
+
+    _showValidationSnackBar(
+      'يرجى اختيار المعلومات التالية / Veuillez sélectionner les informations suivantes : ${missingFields.join('، ')}',
+    );
+    return false;
+  }
+
+  bool _validateRequiredMultiFields(List<Map<String, String>> configs) {
+    final missingFields = <String>[];
+    for (final config in configs) {
+      final key = config['key']!;
+      if ((_multiChoice[key] ?? const <String>{}).isEmpty) {
+        missingFields.add(config['label']!);
+      }
+    }
+
+    if (missingFields.isEmpty) return true;
+
+    _showValidationSnackBar(
+      'يرجى اختيار المعلومات التالية / Veuillez sélectionner les informations suivantes : ${missingFields.join('، ')}',
+    );
+    return false;
+  }
+
+  bool _validateAdultBirthYear(String key, String message) {
+    final value = _textControllers[key]?.text.trim() ?? '';
+    if (value.isEmpty) return true;
+
+    final year = int.tryParse(value);
+    if (year == null || DateTime.now().year - year < 18) {
+      _showValidationSnackBar(message);
+      return false;
+    }
+
+    return true;
+  }
+
+  bool _validateSection1() {
+    final nameRegex = RegExp(r"^[a-zA-ZÀ-ÿ\u0600-\u06FF\s\-']+$");
+
+    if (!_validateRequiredTextFields([
       {'key': 'childFullName', 'label': 'الاسم واللقب / Nom & Prénom'},
       {'key': 'birthDatePlace', 'label': 'الولادة / Naissance (Date & Lieu)'},
       {'key': 'nationality', 'label': 'الجنسية / Nationalité'},
@@ -204,43 +218,262 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
         'label': 'سنة ولادة الأم / Année de naissance de la mère',
       },
       {'key': 'motherJob', 'label': 'مهنة الأم / Profession de la mère'},
-    ];
-    for (final config in requiredTextConfigs) {
-      final key = config['key']!;
-      final value = _textControllers[key]?.text.trim() ?? '';
-      if (value.isEmpty) {
-        missingText.add(config['label']!);
-      }
-    }
-    if (missingText.isNotEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'يرجى ملء الحقول الإلزامية التالية / Veuillez remplir les champs obligatoires suivants : ${missingText.join('، ')}',
-            textDirection: TextDirection.rtl,
-          ),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
-      return;
+    ])) {
+      return false;
     }
 
-    final missingSingle = <String>[];
-    for (final key in _requiredSingleKeys) {
-      if ((_singleChoice[key] ?? '').isEmpty) {
-        missingSingle.add(key);
-      }
+    if (_checks['parentsKinship'] == true &&
+        !_validateRequiredTextFields([
+          {
+            'key': 'kinshipDetails',
+            'label': 'إن نعم، حددها / Si oui, précisez',
+          },
+        ])) {
+      return false;
     }
-    if (missingSingle.isNotEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'يرجى الإجابة على جميع الأسئلة ذات الاختيار الواحد / Veuillez répondre à toutes les questions à choix unique',
-            textDirection: TextDirection.rtl,
-          ),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
+
+    if (!_validatePatternFields(
+      configs: [
+        {'key': 'childFullName', 'label': 'الاسم واللقب / Nom & Prénom'},
+        {'key': 'fatherName', 'label': 'اسم الأب / Prénom du père'},
+        {'key': 'motherName', 'label': 'اسم الأم / Prénom de la mère'},
+        {'key': 'nationality', 'label': 'الجنسية / Nationalité'},
+        {'key': 'fatherJob', 'label': 'مهنة الأب / Profession du père'},
+        {'key': 'motherJob', 'label': 'مهنة الأم / Profession de la mère'},
+      ],
+      pattern: nameRegex,
+      message:
+          'يجب ألا تحتوي هذه الحقول على أرقام أو رموز / Ces champs ne doivent pas contenir de chiffres ou de symboles',
+    )) {
+      return false;
+    }
+
+    if (!_validateRequiredMultiFields([
+      {
+        'key': 'previousEnrollment',
+        'label': 'هل كان الطفل مرسما؟ / L\'enfant était-il inscrit avant ?',
+      },
+    ])) {
+      return false;
+    }
+
+    if (!_validateAdultBirthYear(
+      'fatherBirthYear',
+      'يجب أن يكون عمر الأب 18 سنة على الأقل / L\'âge du père doit être d\'au moins 18 ans',
+    )) {
+      return false;
+    }
+
+    if (!_validateAdultBirthYear(
+      'motherBirthYear',
+      'يجب أن يكون عمر الأم 18 سنة على الأقل / L\'âge de la mère doit être d\'au moins 18 ans',
+    )) {
+      return false;
+    }
+
+    return true;
+  }
+
+  bool _validateSection2() {
+    if (!_validateRequiredSingleFields([
+      {
+        'key': 'motherPregnancyHealth',
+        'label':
+            'الحالة الصحية للأم أثناء الحمل / Santé de la mère pendant la grossesse',
+      },
+      {'key': 'birthPlace', 'label': 'مكان الولادة / Lieu de naissance'},
+      {
+        'key': 'birthTiming',
+        'label': 'توقيت الولادة / Moment de l\'accouchement',
+      },
+      {'key': 'deliveryType', 'label': 'نوع الولادة / Type d\'accouchement'},
+      {
+        'key': 'healthAtBirth',
+        'label':
+            'الحالة الصحية للطفل عند الولادة / État de santé à la naissance',
+      },
+    ])) {
+      return false;
+    }
+
+    if (_singleChoice['motherPregnancyHealth'] ==
+            'مشاكل صحية / Problèmes de santé' &&
+        !_validateRequiredTextFields([
+          {
+            'key': 'pregnancyHealthDetails',
+            'label': 'المشاكل الصحية / Préciser les problèmes',
+          },
+        ])) {
+      return false;
+    }
+
+    if (_singleChoice['deliveryType'] == 'غير عادية / Compliqué' &&
+        !_validateRequiredTextFields([
+          {
+            'key': 'deliveryDetails',
+            'label': 'تفاصيل الولادة / Préciser les détails',
+          },
+        ])) {
+      return false;
+    }
+
+    if (_singleChoice['healthAtBirth'] == 'غير عادية / Anormal' &&
+        !_validateRequiredTextFields([
+          {
+            'key': 'healthAtBirthDetails',
+            'label': 'تفاصيل الحالة / Préciser les détails',
+          },
+        ])) {
+      return false;
+    }
+
+    if (_checks['congenitalMalformations'] == true &&
+        !_validateRequiredTextFields([
+          {
+            'key': 'malformationsDetails',
+            'label': 'التشوهات / Préciser les malformations',
+          },
+        ])) {
+      return false;
+    }
+
+    if (_multiChoice['diseases']?.contains('أمراض أخرى / Autres maladies') ==
+            true &&
+        !_validateRequiredTextFields([
+          {
+            'key': 'diseaseOtherDetails',
+            'label': 'أمراض أخرى / Autres maladies',
+          },
+        ])) {
+      return false;
+    }
+
+    if (_multiChoice['diseases2']?.contains(
+              'حالة صحية أخرى / Autre condition',
+            ) ==
+            true &&
+        !_validateRequiredTextFields([
+          {
+            'key': 'healthConditionOtherDetails',
+            'label': 'حالة أخرى / Autre condition',
+          },
+        ])) {
+      return false;
+    }
+
+    if (_checks['hospitalized'] == true &&
+        !_validateRequiredTextFields([
+          {
+            'key': 'hospitalizationDetails',
+            'label': 'تفاصيل الإقامة / Détails d\'hospitalisation',
+          },
+        ])) {
+      return false;
+    }
+
+    if (_checks['surgeries'] == true &&
+        !_validateRequiredTextFields([
+          {
+            'key': 'surgeriesDetails',
+            'label': 'تفاصيل العمليات / Détails des chirurgies',
+          },
+        ])) {
+      return false;
+    }
+
+    return true;
+  }
+
+  bool _validateSection3() {
+    if (_checks['current_allergy'] == true &&
+        !_validateRequiredTextFields([
+          {
+            'key': 'allergyDetails',
+            'label': 'تفاصيل الحساسية / Détails des allergies',
+          },
+        ])) {
+      return false;
+    }
+
+    if (_checks['current_takes_medications'] == true &&
+        !_validateRequiredTextFields([
+          {
+            'key': 'medicationDetails',
+            'label': 'أسماء الأدوية / Noms des médicaments',
+          },
+        ])) {
+      return false;
+    }
+
+    if (_checks['current_under_treatment'] == true &&
+        !_validateRequiredTextFields([
+          {
+            'key': 'treatmentDetails',
+            'label': 'نوع العلاج / Quel traitement ?',
+          },
+        ])) {
+      return false;
+    }
+
+    return true;
+  }
+
+  bool _validateSection4() {
+    if (!_validateRequiredSingleFields([
+      {
+        'key': 'social_position_siblings',
+        'label': 'وضعية الطفل بين الإخوة / Position parmi les frères et sœurs',
+      },
+      {
+        'key': 'social_lives_with',
+        'label': 'يقيم الطفل عادة مع / L\'enfant vit avec',
+      },
+      {
+        'key': 'social_family_relation',
+        'label': 'علاقة الطفل مع العائلة / Relation avec la famille',
+      },
+      {'key': 'social_eating', 'label': 'طبيعة تناول الأكل / Alimentation'},
+      {'key': 'social_sleep', 'label': 'طبيعة النوم / Sommeil'},
+      {
+        'key': 'social_time_space',
+        'label': 'النظام الزمني والمكاني / Repères spatio-temporels',
+      },
+    ])) {
+      return false;
+    }
+
+    if (!_validateRequiredMultiFields([
+      {
+        'key': 'social_behavior',
+        'label': 'السلوك العام للطفل / Comportement général',
+      },
+    ])) {
+      return false;
+    }
+
+    return true;
+  }
+
+  bool _validateCurrentPage() {
+    switch (_currentPage) {
+      case 0:
+        return _validateSection1();
+      case 1:
+        return _validateSection2();
+      case 2:
+        return _validateSection3();
+      case 3:
+        return _validateSection4();
+      default:
+        return true;
+    }
+  }
+
+  void _save() {
+    if (!_validateSection1() ||
+        !_validateSection2() ||
+        !_validateSection3() ||
+        !_validateSection4()) {
       return;
     }
 
@@ -537,6 +770,7 @@ class _ChildMedicalRecordPageState extends State<ChildMedicalRecordPage> {
 
   void _goNext() {
     if (_currentPage >= _totalPages - 1) return;
+    if (!_validateCurrentPage()) return;
     _pageController.nextPage(
       duration: const Duration(milliseconds: 300),
       curve: Curves.fastOutSlowIn,

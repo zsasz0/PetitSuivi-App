@@ -147,7 +147,28 @@ const Parameters = () => {
               <Button variant="contained" onClick={() => signatureInputRef.current?.click()} disabled={state.uploadingSignature || state.deletingSignature} sx={styles.primaryBtn}>
                 {state.uploadingSignature ? "Téléversement..." : state.signature.isDefault ? "Téléverser une signature" : "Remplacer la signature"}
               </Button>
-              <Button variant="outlined" onClick={actions.handleDeleteSignature} disabled={state.deletingSignature || state.uploadingSignature || state.signature.isDefault} sx={{ borderRadius: "12px", px: 2.5, py: 1.1 }}>
+              <Button
+                variant="outlined"
+                onClick={actions.handleDeleteSignature}
+                disabled={state.deletingSignature || state.uploadingSignature || state.signature.isDefault}
+                sx={{
+                  ...styles.secondaryBtn,
+                  borderRadius: "12px",
+                  px: 2.5,
+                  py: 1.1,
+                  color: isDark ? colors.grey[100] : "#334155",
+                  borderColor: isDark ? colors.grey[500] : "#94a3b8",
+                  backgroundColor: isDark ? "rgba(51,65,85,0.16)" : "rgba(241,245,249,0.9)",
+                  "&:hover": {
+                    borderColor: isDark ? colors.grey[300] : "#64748b",
+                    backgroundColor: isDark ? "rgba(71,85,105,0.24)" : "rgba(226,232,240,0.96)",
+                  },
+                  "&.Mui-disabled": {
+                    borderColor: isDark ? "rgba(148,163,184,0.2)" : "rgba(148,163,184,0.35)",
+                    color: isDark ? "rgba(226,232,240,0.38)" : "rgba(51,65,85,0.38)",
+                  },
+                }}
+              >
                 {state.deletingSignature ? "Restauration..." : "Restaurer la signature par défaut"}
               </Button>
             </Box>

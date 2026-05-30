@@ -25,6 +25,8 @@ const TransactionHistoryDialog = ({
   setIsInvoiceDialogOpen,
   setReceiptData,
   setIsReceiptDialogOpen,
+  setIsConfirmPayOpen,
+  setConfirmPayData,
   colors,
   isDark
 }) => {
@@ -73,6 +75,8 @@ const TransactionHistoryDialog = ({
             handlePayMonth={handlePayMonth}
             setReceiptData={setReceiptData}
             setIsReceiptDialogOpen={setIsReceiptDialogOpen}
+            setIsConfirmPayOpen={setIsConfirmPayOpen}
+            setConfirmPayData={setConfirmPayData}
             colors={colors}
             isDark={isDark}
           />

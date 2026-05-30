@@ -76,6 +76,7 @@ const Payments = () => {
     isConfirmPayOpen,
     setIsConfirmPayOpen,
     confirmPayData,
+    setConfirmPayData,
     txSubmitting,
     handleConfirmTransaction,
     handleToggleFrais,
@@ -156,6 +157,8 @@ const Payments = () => {
         setIsInvoiceDialogOpen={setIsInvoiceDialogOpen}
         setReceiptData={setReceiptData}
         setIsReceiptDialogOpen={setIsReceiptDialogOpen}
+        setIsConfirmPayOpen={setIsConfirmPayOpen}
+        setConfirmPayData={setConfirmPayData}
         colors={colors}
         isDark={isDark}
       />
