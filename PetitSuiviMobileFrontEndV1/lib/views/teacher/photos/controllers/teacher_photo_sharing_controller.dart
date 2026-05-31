@@ -11,7 +11,10 @@ class TeacherPhotoSharingController {
   final BuildContext context;
   final Function(VoidCallback) setState;
 
-  TeacherPhotoSharingController({required this.context, required this.setState});
+  TeacherPhotoSharingController({
+    required this.context,
+    required this.setState,
+  });
 
   final PhotoService _photoService = PhotoService();
 
@@ -66,7 +69,10 @@ class TeacherPhotoSharingController {
     }
 
     try {
-      final response = await TeacherPhotoSharingApis.getTeacherClasses(_cin!, _token!);
+      final response = await TeacherPhotoSharingApis.getTeacherClasses(
+        _cin!,
+        _token!,
+      );
 
       if (!mounted) return;
 
@@ -106,7 +112,10 @@ class TeacherPhotoSharingController {
     });
 
     try {
-      final response = await TeacherPhotoSharingApis.getClassStudents(classId, _token!);
+      final response = await TeacherPhotoSharingApis.getClassStudents(
+        classId,
+        _token!,
+      );
 
       if (!mounted) return;
 
@@ -116,6 +125,28 @@ class TeacherPhotoSharingController {
         final students = dataMap['students'] as List? ?? [];
         final normalizedChildren = students
             .whereType<Map>()
+            .where((child) {
+              bool isArchived =
+                  child['is_archived'] == true ||
+                  child['is_archived'] == 1 ||
+                  child['isArchived'] == true ||
+                  child['isArchived'] == 1;
+
+              final inscriptions = child['inscriptions'];
+              if (inscriptions is List && inscriptions.isNotEmpty) {
+                final lastInscription = inscriptions.last;
+                if (lastInscription is Map) {
+                  isArchived =
+                      isArchived ||
+                      lastInscription['is_archived'] == true ||
+                      lastInscription['is_archived'] == 1 ||
+                      lastInscription['isArchived'] == true ||
+                      lastInscription['isArchived'] == 1;
+                }
+              }
+
+              return !isArchived;
+            })
             .map((child) => _normalizeChild(child.cast<String, dynamic>()))
             .toList();
         setState(() {

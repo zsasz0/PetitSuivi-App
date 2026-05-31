@@ -32,6 +32,7 @@ export const PlanActivityDialogComponent = (props) => {
     allActivities,
     classOptions,
     isWeekendDate,
+    selectedPlanning,
   } = props;
 
   return (
@@ -79,6 +80,7 @@ export const PlanActivityDialogComponent = (props) => {
               setAddActivityError={setAddActivityError} 
               isWeekendDate={isWeekendDate} 
               styles={styles} 
+              selectedPlanning={selectedPlanning}
             />
 
             <TimeRangeSelector 

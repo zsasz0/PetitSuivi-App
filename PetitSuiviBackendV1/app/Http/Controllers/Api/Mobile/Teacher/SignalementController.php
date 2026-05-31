@@ -90,9 +90,13 @@ class SignalementController extends Controller
 
             $childName = trim(($child->Firstname ?? '') . ' ' . ($child->Lastname ?? ''));
             $title = 'Nouveau signalement';
+            $description = trim($validated['description'] ?? '');
             $message = $childName !== ''
                 ? "Un signalement de type {$validated['type']} a ete ajoute pour {$childName}."
                 : "Un signalement de type {$validated['type']} a ete ajoute pour votre enfant.";
+            if ($description !== '') {
+                $message .= "\nDescription : {$description}";
+            }
 
             DB::table('Notification')->insert([
                 'Recipientcin' => $parentAccount->Cin,
@@ -104,6 +108,7 @@ class SignalementController extends Controller
                     'child_id' => $validated['child_id'],
                     'child_name' => $childName,
                     'signalement_type' => $validated['type'],
+                    'description' => $description,
                     'signalement_date' => $validated['date'],
                 ], JSON_UNESCAPED_UNICODE),
                 'Isread' => 0,

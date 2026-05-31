@@ -355,9 +355,13 @@ class SignalementController extends Controller
 
                 if ($parentAccount && !empty($parentAccount->Cin)) {
                     $childName = trim(($child->Firstname ?? '') . ' ' . ($child->Lastname ?? ''));
+                    $trimmedComment = trim((string) $comment);
                     $message = $childName !== ''
                         ? "Un signalement de type {$alertType} a ete ajoute pour {$childName}."
                         : "Un nouveau signalement a ete ajoute pour votre enfant.";
+                    if ($trimmedComment !== '') {
+                        $message .= "\nDescription : {$trimmedComment}";
+                    }
 
                      DB::table('Notification')->insert([
                          'Recipientcin' => $parentAccount->Cin,

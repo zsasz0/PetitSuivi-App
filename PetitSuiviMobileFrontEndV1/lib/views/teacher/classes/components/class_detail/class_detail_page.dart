@@ -18,7 +18,8 @@ class ClassDetailPage extends StatefulWidget {
   State<ClassDetailPage> createState() => _ClassDetailPageState();
 }
 
-class _ClassDetailPageState extends State<ClassDetailPage> with SingleTickerProviderStateMixin {
+class _ClassDetailPageState extends State<ClassDetailPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final ClassDetailController _controller = ClassDetailController();
 
@@ -67,7 +68,10 @@ class _ClassDetailPageState extends State<ClassDetailPage> with SingleTickerProv
         backgroundColor: TeacherClassesTheme.surfaceDark,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: TeacherClassesTheme.lightText),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: TeacherClassesTheme.lightText,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         bottom: TabBar(
@@ -96,10 +100,13 @@ class _ClassDetailPageState extends State<ClassDetailPage> with SingleTickerProv
               isMounted: () => mounted,
             ),
             attendance: _controller.attendance,
-            onToggleAttendance: (childId) => _controller.toggleAttendance(childId, context, setState),
+            onToggleAttendance: (childId) =>
+                _controller.toggleAttendance(childId, context, setState),
             presentCount: _controller.getPresentCount(),
             absentCount: _controller.getAbsentCount(),
-            isBusy: _controller.isLoadingAttendance || _controller.isSavingAttendance,
+            isBusy:
+                _controller.isLoadingAttendance ||
+                _controller.isSavingAttendance,
             errorMessage: _controller.attendanceError,
             onRetry: _loadData,
           ),
@@ -118,7 +125,11 @@ class _ClassDetailPageState extends State<ClassDetailPage> with SingleTickerProv
           ),
         ],
       ),
-      floatingActionButton: _tabController.index == 0
+      floatingActionButton:
+          _tabController.index == 0 &&
+              _controller.selectedDate.year == DateTime.now().year &&
+              _controller.selectedDate.month == DateTime.now().month &&
+              _controller.selectedDate.day == DateTime.now().day
           ? FloatingActionButton.extended(
               onPressed: () => _controller.saveAttendance(
                 context: context,

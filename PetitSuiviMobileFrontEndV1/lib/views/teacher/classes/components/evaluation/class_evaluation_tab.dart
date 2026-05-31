@@ -40,7 +40,8 @@ class _ClassEvaluationTabState extends State<ClassEvaluationTab> {
   @override
   void didUpdateWidget(ClassEvaluationTab old) {
     super.didUpdateWidget(old);
-    if (old.selectedDate != widget.selectedDate || old.classId != widget.classId) {
+    if (old.selectedDate != widget.selectedDate ||
+        old.classId != widget.classId) {
       _loadData();
     }
   }
@@ -59,42 +60,79 @@ class _ClassEvaluationTabState extends State<ClassEvaluationTab> {
   @override
   Widget build(BuildContext context) {
     context.watch<ThemeManager>();
-    final isLoading = _controller.isLoadingActivities || _controller.isLoadingStudents;
+    final isLoading =
+        _controller.isLoadingActivities || _controller.isLoadingStudents;
     final int activitiesCount = _controller.activities.length;
-    final int totalCriteria = _controller.activities.fold(0, (sum, a) => sum + a.criteria.length);
+    final int totalCriteria = _controller.activities.fold(
+      0,
+      (sum, a) => sum + a.criteria.length,
+    );
 
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Column(
         children: [
           _buildDateHeader(),
-          if (!isLoading && _controller.students.isNotEmpty && _controller.activities.isNotEmpty)
+          if (!isLoading &&
+              _controller.students.isNotEmpty &&
+              _controller.activities.isNotEmpty)
             _buildSummaryStats(activitiesCount, totalCriteria),
-          if (isLoading)
-            _buildLoadingIndicator(),
-          if (!isLoading && _controller.activitiesError == null && _controller.studentsError == null)
+          if (isLoading) _buildLoadingIndicator(),
+          if (!isLoading &&
+              _controller.activitiesError == null &&
+              _controller.studentsError == null)
             _buildLayoutToggle(),
           if (_controller.activitiesError != null)
-            _errorBanner(_controller.activitiesError!, () => _controller.loadActivities(context: context, classId: widget.classId, selectedDate: widget.selectedDate, token: widget.token, setState: setState, isMounted: () => mounted)),
+            _errorBanner(
+              _controller.activitiesError!,
+              () => _controller.loadActivities(
+                context: context,
+                classId: widget.classId,
+                selectedDate: widget.selectedDate,
+                token: widget.token,
+                setState: setState,
+                isMounted: () => mounted,
+              ),
+            ),
           if (_controller.studentsError != null)
-            _errorBanner(_controller.studentsError!, () => _controller.loadStudents(context: context, classId: widget.classId, token: widget.token, setState: setState, isMounted: () => mounted)),
+            _errorBanner(
+              _controller.studentsError!,
+              () => _controller.loadStudents(
+                context: context,
+                classId: widget.classId,
+                token: widget.token,
+                setState: setState,
+                isMounted: () => mounted,
+              ),
+            ),
           _buildMainList(isLoading),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _controller.saveAllEvals(
-          context: context,
-          selectedDate: widget.selectedDate,
-          token: widget.token,
-          teacherCin: widget.teacherCin,
-          setState: setState,
-          isMounted: () => mounted,
-        ),
-        backgroundColor: TeacherClassesTheme.tealAccent,
-        foregroundColor: TeacherClassesTheme.baseDark,
-        icon: const Icon(Icons.save),
-        label: const Text('Enregistrer', style: TextStyle(fontFamily: TeacherClassesTheme.fontName, fontWeight: FontWeight.w600)),
-      ),
+      floatingActionButton:
+          (widget.selectedDate.year == DateTime.now().year &&
+              widget.selectedDate.month == DateTime.now().month &&
+              widget.selectedDate.day == DateTime.now().day)
+          ? FloatingActionButton.extended(
+              onPressed: () => _controller.saveAllEvals(
+                context: context,
+                selectedDate: widget.selectedDate,
+                token: widget.token,
+                teacherCin: widget.teacherCin,
+                setState: setState,
+                isMounted: () => mounted,
+              ),
+              backgroundColor: TeacherClassesTheme.tealAccent,
+              foregroundColor: TeacherClassesTheme.baseDark,
+              icon: const Icon(Icons.save),
+              label: const Text(
+                'Enregistrer',
+                style: TextStyle(
+                  fontFamily: TeacherClassesTheme.fontName,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            )
+          : null,
     );
   }
 
@@ -110,7 +148,11 @@ class _ClassEvaluationTabState extends State<ClassEvaluationTab> {
           decoration: TeacherClassesTheme.surfaceCard(borderRadius: 12),
           child: Row(
             children: [
-              Icon(Icons.calendar_today, color: TeacherClassesTheme.tealAccent, size: 20),
+              Icon(
+                Icons.calendar_today,
+                color: TeacherClassesTheme.tealAccent,
+                size: 20,
+              ),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
@@ -123,7 +165,10 @@ class _ClassEvaluationTabState extends State<ClassEvaluationTab> {
                   ),
                 ),
               ),
-              Icon(Icons.arrow_drop_down, color: TeacherClassesTheme.mutedText.withValues(alpha: 0.5)),
+              Icon(
+                Icons.arrow_drop_down,
+                color: TeacherClassesTheme.mutedText.withValues(alpha: 0.5),
+              ),
             ],
           ),
         ),
@@ -136,11 +181,32 @@ class _ClassEvaluationTabState extends State<ClassEvaluationTab> {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
-          Expanded(child: _summaryChip(icon: Icons.child_care, label: 'Élèves', value: '${_controller.students.length}', color: TeacherClassesTheme.indigoAccent)),
+          Expanded(
+            child: _summaryChip(
+              icon: Icons.child_care,
+              label: 'Élèves',
+              value: '${_controller.students.length}',
+              color: TeacherClassesTheme.indigoAccent,
+            ),
+          ),
           const SizedBox(width: 10),
-          Expanded(child: _summaryChip(icon: Icons.event_note, label: 'Activités', value: '$activitiesCount', color: const Color(0xFF64B5F6))),
+          Expanded(
+            child: _summaryChip(
+              icon: Icons.event_note,
+              label: 'Activités',
+              value: '$activitiesCount',
+              color: const Color(0xFF64B5F6),
+            ),
+          ),
           const SizedBox(width: 10),
-          Expanded(child: _summaryChip(icon: Icons.rule, label: 'Critères', value: '$totalCriteria', color: TeacherClassesTheme.tealAccent)),
+          Expanded(
+            child: _summaryChip(
+              icon: Icons.rule,
+              label: 'Critères',
+              value: '$totalCriteria',
+              color: TeacherClassesTheme.tealAccent,
+            ),
+          ),
         ],
       ),
     );
@@ -149,7 +215,10 @@ class _ClassEvaluationTabState extends State<ClassEvaluationTab> {
   Widget _buildLoadingIndicator() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
-      child: LinearProgressIndicator(minHeight: 2, color: TeacherClassesTheme.tealAccent),
+      child: LinearProgressIndicator(
+        minHeight: 2,
+        color: TeacherClassesTheme.tealAccent,
+      ),
     );
   }
 
@@ -158,11 +227,22 @@ class _ClassEvaluationTabState extends State<ClassEvaluationTab> {
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
       child: Container(
         height: 40,
-        decoration: BoxDecoration(color: ThemeColors.glassBorderSubtle, borderRadius: BorderRadius.circular(8)),
+        decoration: BoxDecoration(
+          color: ThemeColors.glassBorderSubtle,
+          borderRadius: BorderRadius.circular(8),
+        ),
         child: Row(
           children: [
-            _toggleItem('Par Élève', _controller.isStudentLayout, () => setState(() => _controller.isStudentLayout = true)),
-            _toggleItem('Par Activité', !_controller.isStudentLayout, () => setState(() => _controller.isStudentLayout = false)),
+            _toggleItem(
+              'Par Élève',
+              _controller.isStudentLayout,
+              () => setState(() => _controller.isStudentLayout = true),
+            ),
+            _toggleItem(
+              'Par Activité',
+              !_controller.isStudentLayout,
+              () => setState(() => _controller.isStudentLayout = false),
+            ),
           ],
         ),
       ),
@@ -175,9 +255,19 @@ class _ClassEvaluationTabState extends State<ClassEvaluationTab> {
         onTap: onTap,
         child: Container(
           decoration: BoxDecoration(
-            color: active ? TeacherClassesTheme.surfaceDark : Colors.transparent,
+            color: active
+                ? TeacherClassesTheme.surfaceDark
+                : Colors.transparent,
             borderRadius: BorderRadius.circular(8),
-            boxShadow: active ? [BoxShadow(color: ThemeColors.shadow, blurRadius: 4, offset: const Offset(0, 2))] : null,
+            boxShadow: active
+                ? [
+                    BoxShadow(
+                      color: ThemeColors.shadow,
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : null,
           ),
           alignment: Alignment.center,
           child: Text(
@@ -186,7 +276,9 @@ class _ClassEvaluationTabState extends State<ClassEvaluationTab> {
               fontFamily: TeacherClassesTheme.fontName,
               fontWeight: active ? FontWeight.bold : FontWeight.normal,
               fontSize: 13,
-              color: active ? TeacherClassesTheme.tealAccent : TeacherClassesTheme.mutedText,
+              color: active
+                  ? TeacherClassesTheme.tealAccent
+                  : TeacherClassesTheme.mutedText,
             ),
           ),
         ),
@@ -195,16 +287,28 @@ class _ClassEvaluationTabState extends State<ClassEvaluationTab> {
   }
 
   Widget _buildMainList(bool isLoading) {
-    if (!isLoading && _controller.activitiesError == null && _controller.studentsError == null && _controller.activities.isEmpty) {
+    if (!isLoading &&
+        _controller.activitiesError == null &&
+        _controller.studentsError == null &&
+        _controller.activities.isEmpty) {
       return Padding(
         padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(color: TeacherClassesTheme.indigoAccent.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
+          decoration: BoxDecoration(
+            color: TeacherClassesTheme.indigoAccent.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
           child: Text(
-            _controller.isStudentLayout ? 'Aucun élève trouvé.' : 'Aucune activité prévue pour cette date.',
-            style: TextStyle(fontFamily: TeacherClassesTheme.fontName, fontSize: 13, color: TeacherClassesTheme.lightText),
+            _controller.isStudentLayout
+                ? 'Aucun élève trouvé.'
+                : 'Aucune activité prévue pour cette date.',
+            style: TextStyle(
+              fontFamily: TeacherClassesTheme.fontName,
+              fontSize: 13,
+              color: TeacherClassesTheme.lightText,
+            ),
           ),
         ),
       );
@@ -215,7 +319,8 @@ class _ClassEvaluationTabState extends State<ClassEvaluationTab> {
         child: ListView.builder(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
           itemCount: _controller.students.length,
-          itemBuilder: (context, i) => _buildChildCard(context, _controller.students[i]),
+          itemBuilder: (context, i) =>
+              _buildChildCard(context, _controller.students[i]),
         ),
       );
     } else {
@@ -223,7 +328,8 @@ class _ClassEvaluationTabState extends State<ClassEvaluationTab> {
         child: ListView.builder(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
           itemCount: _controller.activities.length,
-          itemBuilder: (context, i) => _buildActivityCard(_controller.activities[i]),
+          itemBuilder: (context, i) =>
+              _buildActivityCard(_controller.activities[i]),
         ),
       );
     }
@@ -247,10 +353,16 @@ class _ClassEvaluationTabState extends State<ClassEvaluationTab> {
                   children: [
                     CircleAvatar(
                       radius: 21,
-                      backgroundColor: TeacherClassesTheme.tealAccent.withValues(alpha: 0.15),
+                      backgroundColor: TeacherClassesTheme.tealAccent
+                          .withValues(alpha: 0.15),
                       child: Text(
                         '${child.firstName[0]}${child.lastName[0]}',
-                        style: TextStyle(fontFamily: TeacherClassesTheme.fontName, fontWeight: FontWeight.bold, color: TeacherClassesTheme.tealAccent, fontSize: 14),
+                        style: TextStyle(
+                          fontFamily: TeacherClassesTheme.fontName,
+                          fontWeight: FontWeight.bold,
+                          color: TeacherClassesTheme.tealAccent,
+                          fontSize: 14,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -258,17 +370,45 @@ class _ClassEvaluationTabState extends State<ClassEvaluationTab> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(child.fullName, style: TextStyle(fontFamily: TeacherClassesTheme.fontName, fontWeight: FontWeight.bold, fontSize: 15, color: TeacherClassesTheme.lightText)),
+                          Text(
+                            child.fullName,
+                            style: TextStyle(
+                              fontFamily: TeacherClassesTheme.fontName,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                              color: TeacherClassesTheme.lightText,
+                            ),
+                          ),
                           const SizedBox(height: 2),
-                          Text('5 ans', style: TextStyle(fontFamily: TeacherClassesTheme.fontName, fontSize: 12, color: TeacherClassesTheme.mutedText)),
+                          Text(
+                            '5 ans',
+                            style: TextStyle(
+                              fontFamily: TeacherClassesTheme.fontName,
+                              fontSize: 12,
+                              color: TeacherClassesTheme.mutedText,
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                    Icon(Icons.arrow_forward_ios, size: 16, color: TeacherClassesTheme.mutedText.withValues(alpha: 0.6)),
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      size: 16,
+                      color: TeacherClassesTheme.mutedText.withValues(
+                        alpha: 0.6,
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 10),
-                Text('Touchez pour voir les activités et évaluer les compétences.', style: TextStyle(fontFamily: TeacherClassesTheme.fontName, fontSize: 12, color: TeacherClassesTheme.mutedText)),
+                Text(
+                  'Touchez pour voir les activités et évaluer les compétences.',
+                  style: TextStyle(
+                    fontFamily: TeacherClassesTheme.fontName,
+                    fontSize: 12,
+                    color: TeacherClassesTheme.mutedText,
+                  ),
+                ),
               ],
             ),
           ),
@@ -287,32 +427,73 @@ class _ClassEvaluationTabState extends State<ClassEvaluationTab> {
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(color: TeacherClassesTheme.indigoAccent.withValues(alpha: 0.15), borderRadius: const BorderRadius.vertical(top: Radius.circular(16))),
+            decoration: BoxDecoration(
+              color: TeacherClassesTheme.indigoAccent.withValues(alpha: 0.15),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16),
+              ),
+            ),
             child: Row(
               children: [
-                Icon(Icons.event_note, color: TeacherClassesTheme.indigoAccent, size: 18),
+                Icon(
+                  Icons.event_note,
+                  color: TeacherClassesTheme.indigoAccent,
+                  size: 18,
+                ),
                 const SizedBox(width: 8),
-                Expanded(child: Text(activity.activityName, style: TextStyle(fontFamily: TeacherClassesTheme.fontName, fontWeight: FontWeight.bold, fontSize: 14, color: TeacherClassesTheme.lightText))),
-                _miniChip('${activity.criteria.length} critère(s)', TeacherClassesTheme.tealAccent),
+                Expanded(
+                  child: Text(
+                    activity.activityName,
+                    style: TextStyle(
+                      fontFamily: TeacherClassesTheme.fontName,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      color: TeacherClassesTheme.lightText,
+                    ),
+                  ),
+                ),
+                _miniChip(
+                  '${activity.criteria.length} critère(s)',
+                  TeacherClassesTheme.tealAccent,
+                ),
               ],
             ),
           ),
           if (activity.criteria.isEmpty)
-            Padding(padding: const EdgeInsets.all(14), child: Text('Aucun critère défini pour cette activité.', style: TextStyle(fontFamily: TeacherClassesTheme.fontName, fontSize: 12, color: TeacherClassesTheme.mutedText)))
+            Padding(
+              padding: const EdgeInsets.all(14),
+              child: Text(
+                'Aucun critère défini pour cette activité.',
+                style: TextStyle(
+                  fontFamily: TeacherClassesTheme.fontName,
+                  fontSize: 12,
+                  color: TeacherClassesTheme.mutedText,
+                ),
+              ),
+            )
           else
-            ...activity.criteria.map((criterion) => _buildCriterionRow(activity, criterion)),
+            ...activity.criteria.map(
+              (criterion) => _buildCriterionRow(activity, criterion),
+            ),
         ],
       ),
     );
   }
 
-  Widget _buildCriterionRow(ClassActivityWithCriteria activity, ActivityCriterion criterion) {
+  Widget _buildCriterionRow(
+    ClassActivityWithCriteria activity,
+    ActivityCriterion criterion,
+  ) {
     final criterionKey = '${activity.activityId}|${criterion.criteriaId}';
     final isExpanded = _controller.expandedCriteria.contains(criterionKey);
 
     int evaluatedCount = 0;
     for (final s in _controller.students) {
-      final key = _controller.evalKey(s.id, activity.activityId, criterion.criteriaId);
+      final key = _controller.evalKey(
+        s.id,
+        activity.activityId,
+        criterion.criteriaId,
+      );
       if (_controller.pending[key] != null) evaluatedCount++;
     }
 
@@ -320,39 +501,100 @@ class _ClassEvaluationTabState extends State<ClassEvaluationTab> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         InkWell(
-          onTap: () => _controller.toggleCriteriaExpansion(criterionKey, setState),
+          onTap: () =>
+              _controller.toggleCriteriaExpansion(criterionKey, setState),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
             child: Row(
               children: [
-                Icon(Icons.rule, size: 15, color: TeacherClassesTheme.tealAccent),
-                const SizedBox(width: 6),
-                Expanded(child: Text(criterion.criteriaName, style: TextStyle(fontFamily: TeacherClassesTheme.fontName, fontWeight: FontWeight.w600, fontSize: 13, color: TeacherClassesTheme.lightText))),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(color: TeacherClassesTheme.indigoAccent.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(10)),
-                  child: Text('$evaluatedCount/${_controller.students.length}', style: TextStyle(fontFamily: TeacherClassesTheme.fontName, fontSize: 11, fontWeight: FontWeight.bold, color: TeacherClassesTheme.indigoAccent)),
+                Icon(
+                  Icons.rule,
+                  size: 15,
+                  color: TeacherClassesTheme.tealAccent,
                 ),
                 const SizedBox(width: 6),
-                AnimatedRotation(turns: isExpanded ? 0.5 : 0.0, duration: const Duration(milliseconds: 200), child: Icon(Icons.expand_more, size: 20, color: TeacherClassesTheme.mutedText)),
+                Expanded(
+                  child: Text(
+                    criterion.criteriaName,
+                    style: TextStyle(
+                      fontFamily: TeacherClassesTheme.fontName,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 13,
+                      color: TeacherClassesTheme.lightText,
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
+                  decoration: BoxDecoration(
+                    color: TeacherClassesTheme.indigoAccent.withValues(
+                      alpha: 0.15,
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    '$evaluatedCount/${_controller.students.length}',
+                    style: TextStyle(
+                      fontFamily: TeacherClassesTheme.fontName,
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: TeacherClassesTheme.indigoAccent,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 6),
+                AnimatedRotation(
+                  turns: isExpanded ? 0.5 : 0.0,
+                  duration: const Duration(milliseconds: 200),
+                  child: Icon(
+                    Icons.expand_more,
+                    size: 20,
+                    color: TeacherClassesTheme.mutedText,
+                  ),
+                ),
               ],
             ),
           ),
         ),
         AnimatedCrossFade(
           firstChild: const SizedBox.shrink(),
-          secondChild: Column(children: _controller.students.map((student) => _buildStudentEvalRow(activity, criterion, student)).toList()),
-          crossFadeState: isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          secondChild: Column(
+            children: _controller.students
+                .map(
+                  (student) =>
+                      _buildStudentEvalRow(activity, criterion, student),
+                )
+                .toList(),
+          ),
+          crossFadeState: isExpanded
+              ? CrossFadeState.showSecond
+              : CrossFadeState.showFirst,
           duration: const Duration(milliseconds: 250),
           sizeCurve: Curves.easeInOut,
         ),
-        Divider(color: ThemeColors.glassBorderSubtle, thickness: 1, indent: 16, endIndent: 16),
+        Divider(
+          color: ThemeColors.glassBorderSubtle,
+          thickness: 1,
+          indent: 16,
+          endIndent: 16,
+        ),
       ],
     );
   }
 
-  Widget _buildStudentEvalRow(ClassActivityWithCriteria activity, ActivityCriterion criterion, ClassStudent student) {
-    final key = _controller.evalKey(student.id, activity.activityId, criterion.criteriaId);
+  Widget _buildStudentEvalRow(
+    ClassActivityWithCriteria activity,
+    ActivityCriterion criterion,
+    ClassStudent student,
+  ) {
+    final key = _controller.evalKey(
+      student.id,
+      activity.activityId,
+      criterion.criteriaId,
+    );
     final status = _controller.pending[key];
 
     return Padding(
@@ -371,42 +613,111 @@ class _ClassEvaluationTabState extends State<ClassEvaluationTab> {
                     children: [
                       CircleAvatar(
                         radius: 15,
-                        backgroundColor: TeacherClassesTheme.indigoAccent.withValues(alpha: 0.15),
-                        child: Text('${student.firstName[0]}${student.lastName[0]}', style: TextStyle(fontFamily: TeacherClassesTheme.fontName, fontWeight: FontWeight.bold, fontSize: 11, color: TeacherClassesTheme.indigoAccent)),
+                        backgroundColor: TeacherClassesTheme.indigoAccent
+                            .withValues(alpha: 0.15),
+                        child: Text(
+                          '${student.firstName[0]}${student.lastName[0]}',
+                          style: TextStyle(
+                            fontFamily: TeacherClassesTheme.fontName,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 11,
+                            color: TeacherClassesTheme.indigoAccent,
+                          ),
+                        ),
                       ),
                       const SizedBox(width: 10),
-                      Expanded(child: Text(student.fullName, style: TextStyle(fontFamily: TeacherClassesTheme.fontName, fontSize: 13, color: TeacherClassesTheme.lightText))),
+                      Expanded(
+                        child: Text(
+                          student.fullName,
+                          style: TextStyle(
+                            fontFamily: TeacherClassesTheme.fontName,
+                            fontSize: 13,
+                            color: TeacherClassesTheme.lightText,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
             ),
           ),
-          _evalChip(label: 'Acquise', icon: Icons.check_circle_outline, color: Colors.greenAccent, isSelected: status == CriteriaEvalStatus.acquise, onTap: () => _controller.toggleStatus(student.id, activity.activityId, criterion.criteriaId, CriteriaEvalStatus.acquise, setState)),
+          _evalChip(
+            label: 'Acquise',
+            icon: Icons.check_circle_outline,
+            color: Colors.greenAccent,
+            isSelected: status == CriteriaEvalStatus.acquise,
+            onTap: () => _controller.toggleStatus(
+              student.id,
+              activity.activityId,
+              criterion.criteriaId,
+              CriteriaEvalStatus.acquise,
+              setState,
+              widget.selectedDate,
+              context,
+            ),
+          ),
           const SizedBox(width: 6),
-          _evalChip(label: 'À renforcer', icon: Icons.warning_amber_rounded, color: Colors.redAccent, isSelected: status == CriteriaEvalStatus.aRenforcer, onTap: () => _controller.toggleStatus(student.id, activity.activityId, criterion.criteriaId, CriteriaEvalStatus.aRenforcer, setState)),
+          _evalChip(
+            label: 'À renforcer',
+            icon: Icons.warning_amber_rounded,
+            color: Colors.redAccent,
+            isSelected: status == CriteriaEvalStatus.aRenforcer,
+            onTap: () => _controller.toggleStatus(
+              student.id,
+              activity.activityId,
+              criterion.criteriaId,
+              CriteriaEvalStatus.aRenforcer,
+              setState,
+              widget.selectedDate,
+              context,
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _evalChip({required String label, required IconData icon, required Color color, required bool isSelected, required VoidCallback onTap}) {
+  Widget _evalChip({
+    required String label,
+    required IconData icon,
+    required Color color,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
-          color: isSelected ? color.withValues(alpha: 0.15) : TeacherClassesTheme.cardDark,
+          color: isSelected
+              ? color.withValues(alpha: 0.15)
+              : TeacherClassesTheme.cardDark,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: isSelected ? color : ThemeColors.glassBorder, width: isSelected ? 1.6 : 1),
+          border: Border.all(
+            color: isSelected ? color : ThemeColors.glassBorder,
+            width: isSelected ? 1.6 : 1,
+          ),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 13, color: isSelected ? color : TeacherClassesTheme.mutedText),
+            Icon(
+              icon,
+              size: 13,
+              color: isSelected ? color : TeacherClassesTheme.mutedText,
+            ),
             const SizedBox(width: 4),
-            Text(label, style: TextStyle(fontFamily: TeacherClassesTheme.fontName, fontSize: 11, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, color: isSelected ? color : TeacherClassesTheme.mutedText)),
+            Text(
+              label,
+              style: TextStyle(
+                fontFamily: TeacherClassesTheme.fontName,
+                fontSize: 11,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                color: isSelected ? color : TeacherClassesTheme.mutedText,
+              ),
+            ),
           ],
         ),
       ),
@@ -416,8 +727,19 @@ class _ClassEvaluationTabState extends State<ClassEvaluationTab> {
   Widget _miniChip(String label, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(color: color.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(10)),
-      child: Text(label, style: TextStyle(fontFamily: TeacherClassesTheme.fontName, fontSize: 11, fontWeight: FontWeight.w600, color: color)),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontFamily: TeacherClassesTheme.fontName,
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+          color: color,
+        ),
+      ),
     );
   }
 
@@ -427,35 +749,70 @@ class _ClassEvaluationTabState extends State<ClassEvaluationTab> {
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(color: Colors.redAccent.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(10)),
+        decoration: BoxDecoration(
+          color: Colors.redAccent.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(10),
+        ),
         child: Row(
           children: [
             const Icon(Icons.error_outline, color: Colors.redAccent, size: 18),
             const SizedBox(width: 8),
-            Expanded(child: Text(message, style: TextStyle(fontFamily: TeacherClassesTheme.fontName, color: Colors.redAccent, fontSize: 12))),
-            TextButton(onPressed: onRetry, style: TextButton.styleFrom(foregroundColor: Colors.redAccent), child: const Text('Réessayer')),
+            Expanded(
+              child: Text(
+                message,
+                style: TextStyle(
+                  fontFamily: TeacherClassesTheme.fontName,
+                  color: Colors.redAccent,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: onRetry,
+              style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
+              child: const Text('Réessayer'),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _summaryChip({required IconData icon, required String label, required String value, required Color color}) {
+  Widget _summaryChip({
+    required IconData icon,
+    required String label,
+    required String value,
+    required Color color,
+  }) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-      decoration: BoxDecoration(color: color.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(12)),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Column(
         children: [
           Icon(icon, color: color, size: 18),
           const SizedBox(height: 4),
-          Text(value, style: TeacherClassesTheme.summaryValueStyle.copyWith(color: color)),
-          Text(label, style: TeacherClassesTheme.summaryLabelStyle.copyWith(color: color.withValues(alpha: 0.8))),
+          Text(
+            value,
+            style: TeacherClassesTheme.summaryValueStyle.copyWith(color: color),
+          ),
+          Text(
+            label,
+            style: TeacherClassesTheme.summaryLabelStyle.copyWith(
+              color: color.withValues(alpha: 0.8),
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Future<void> _openStudentProfile(BuildContext context, ClassStudent student) async {
+  Future<void> _openStudentProfile(
+    BuildContext context,
+    ClassStudent student,
+  ) async {
     final mockChild = MockChild(
       id: student.id.toString(),
       classId: widget.classId.toString(),
@@ -464,16 +821,20 @@ class _ClassEvaluationTabState extends State<ClassEvaluationTab> {
       age: 5,
     );
 
-    final dailyActivities = _controller.activities.map((a) => DailyClassActivity(
-          id: a.activityId,
-          planDayId: 0,
-          title: a.activityName,
-          description: '',
-          date: widget.selectedDate,
-          startTime: '',
-          endTime: '',
-          criteria: a.criteria.map((c) => c.criteriaName).toList(),
-        )).toList();
+    final dailyActivities = _controller.activities
+        .map(
+          (a) => DailyClassActivity(
+            id: a.activityId,
+            planDayId: 0,
+            title: a.activityName,
+            description: '',
+            date: widget.selectedDate,
+            startTime: '',
+            endTime: '',
+            criteria: a.criteria.map((c) => c.criteriaName).toList(),
+          ),
+        )
+        .toList();
 
     await Navigator.push(
       context,
@@ -488,7 +849,12 @@ class _ClassEvaluationTabState extends State<ClassEvaluationTab> {
           token: widget.token,
           teacherCin: widget.teacherCin,
           onEvaluationsChanged: (updatedLevels) async {
-            await _controller.loadExistingEvals(selectedDate: widget.selectedDate, token: widget.token, setState: setState, isMounted: () => mounted);
+            await _controller.loadExistingEvals(
+              selectedDate: widget.selectedDate,
+              token: widget.token,
+              setState: setState,
+              isMounted: () => mounted,
+            );
           },
         ),
       ),
@@ -496,8 +862,31 @@ class _ClassEvaluationTabState extends State<ClassEvaluationTab> {
   }
 
   String _formatDate(DateTime date) {
-    const months = ['', 'janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
-    const days = ['', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'];
+    const months = [
+      '',
+      'janvier',
+      'février',
+      'mars',
+      'avril',
+      'mai',
+      'juin',
+      'juillet',
+      'août',
+      'septembre',
+      'octobre',
+      'novembre',
+      'décembre',
+    ];
+    const days = [
+      '',
+      'lundi',
+      'mardi',
+      'mercredi',
+      'jeudi',
+      'vendredi',
+      'samedi',
+      'dimanche',
+    ];
     return '${days[date.weekday]} ${date.day} ${months[date.month]} ${date.year}';
   }
 }

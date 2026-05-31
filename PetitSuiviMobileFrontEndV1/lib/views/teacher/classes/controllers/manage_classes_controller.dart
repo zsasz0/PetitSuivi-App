@@ -33,7 +33,10 @@ class ManageClassesController {
     });
 
     try {
-      final response = await TeacherClassesApi.getTeacherClasses(teacherCin.toString(), token);
+      final response = await TeacherClassesApi.getTeacherClasses(
+        teacherCin.toString(),
+        token,
+      );
 
       if (!isMounted() || !context.mounted) {
         return;
@@ -57,9 +60,13 @@ class ManageClassesController {
         final String? pEndStr = body['planning_end']?.toString();
         final String? pLabel = body['planning_label']?.toString();
         final bool pArchived = body['planning_is_archived'] == true;
-        
-        final DateTime? pStart = pStartStr != null ? DateTime.tryParse(pStartStr) : null;
-        final DateTime? pEnd = pEndStr != null ? DateTime.tryParse(pEndStr) : null;
+
+        final DateTime? pStart = pStartStr != null
+            ? DateTime.tryParse(pStartStr)
+            : null;
+        final DateTime? pEnd = pEndStr != null
+            ? DateTime.tryParse(pEndStr)
+            : null;
 
         final fetchedClassrooms = (body['data'] as List)
             .whereType<Map>()
@@ -81,7 +88,9 @@ class ManageClassesController {
       } else {
         setState(() {
           isLoading = false;
-          error = body['message']?.toString() ?? 'Impossible de charger les classes.';
+          error =
+              body['message']?.toString() ??
+              'Impossible de charger les classes.';
         });
       }
     } catch (_) {
@@ -103,21 +112,77 @@ class ClassMapper {
     bool? pArchived,
   ]) {
     final classId = json['id']?.toString() ?? '';
-    final rawStudents = (json['students'] is List) ? json['students'] as List : const [];
+    final rawStudents = (json['students'] is List)
+        ? json['students'] as List
+        : const [];
 
-    final children = rawStudents.whereType<Map>().map((item) {
-      final child = item.cast<String, dynamic>();
-      final rawFirst = child['first_name']?.toString() ?? child['firstName']?.toString() ?? '';
-      final rawLast = child['last_name']?.toString() ?? child['lastName']?.toString() ?? '';
+    final children = rawStudents
+        .whereType<Map>()
+        .where((item) {
+          final child = item.cast<String, dynamic>();
 
-      return MockChild(
-        id: child['id']?.toString() ?? '',
-        firstName: rawFirst.trim().isEmpty ? 'U' : rawFirst.trim(),
-        lastName: rawLast.trim().isEmpty ? 'U' : rawLast.trim(),
-        age: _calculateAge(child['birthdate']?.toString()),
-        classId: classId,
-      );
-    }).toList();
+          bool isArchived = false;
+
+          // 1) Check on child itself
+          if (child['is_archived'] == true ||
+              child['is_archived'] == 1 ||
+              child['isArchived'] == true ||
+              child['isArchived'] == 1) {
+            isArchived = true;
+          }
+
+          // 2) Check pivot
+          final pivot = child['pivot'];
+          if (pivot is Map) {
+            if (pivot['is_archived'] == true ||
+                pivot['is_archived'] == 1 ||
+                pivot['isArchived'] == true ||
+                pivot['isArchived'] == 1) {
+              isArchived = true;
+            }
+          }
+
+          // 3) Check inscriptions
+          final inscriptions = child['inscriptions'];
+          if (inscriptions is List && inscriptions.isNotEmpty) {
+            final lastInscription = inscriptions.last;
+            if (lastInscription is Map) {
+              if (lastInscription['is_archived'] == true ||
+                  lastInscription['is_archived'] == 1 ||
+                  lastInscription['isArchived'] == true ||
+                  lastInscription['isArchived'] == 1) {
+                isArchived = true;
+              }
+            }
+          }
+
+          // If inscriptions array is present but EMPTY, should we filter it out?
+          // Parent app does: if (inscriptions.isEmpty) return false;
+          // But maybe the teacher API doesn't always include inscriptions.
+          // We will strictly filter if isArchived is true.
+
+          return !isArchived;
+        })
+        .map((item) {
+          final child = item.cast<String, dynamic>();
+          final rawFirst =
+              child['first_name']?.toString() ??
+              child['firstName']?.toString() ??
+              '';
+          final rawLast =
+              child['last_name']?.toString() ??
+              child['lastName']?.toString() ??
+              '';
+
+          return MockChild(
+            id: child['id']?.toString() ?? '',
+            firstName: rawFirst.trim().isEmpty ? 'U' : rawFirst.trim(),
+            lastName: rawLast.trim().isEmpty ? 'U' : rawLast.trim(),
+            age: _calculateAge(child['birthdate']?.toString()),
+            classId: classId,
+          );
+        })
+        .toList();
 
     return ClassRoom(
       id: classId,
@@ -140,7 +205,8 @@ class ClassMapper {
       final birthDate = DateTime.parse(birthDateString);
       final today = DateTime.now();
       var age = today.year - birthDate.year;
-      if (today.month < birthDate.month || (today.month == birthDate.month && today.day < birthDate.day)) {
+      if (today.month < birthDate.month ||
+          (today.month == birthDate.month && today.day < birthDate.day)) {
         age--;
       }
       return age < 0 ? 0 : age;

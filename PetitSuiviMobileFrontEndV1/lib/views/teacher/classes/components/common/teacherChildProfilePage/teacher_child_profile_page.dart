@@ -37,7 +37,8 @@ class TeacherChildProfilePage extends StatefulWidget {
   });
 
   @override
-  State<TeacherChildProfilePage> createState() => _TeacherChildProfilePageState();
+  State<TeacherChildProfilePage> createState() =>
+      _TeacherChildProfilePageState();
 }
 
 class _TeacherChildProfilePageState extends State<TeacherChildProfilePage> {
@@ -64,7 +65,7 @@ class _TeacherChildProfilePageState extends State<TeacherChildProfilePage> {
   @override
   Widget build(BuildContext context) {
     context.watch<ThemeManager>();
-    
+
     final className = widget.className?.trim().isNotEmpty == true
         ? widget.className!.trim()
         : (widget.child.classId.isNotEmpty ? widget.child.classId : '');
@@ -91,7 +92,13 @@ class _TeacherChildProfilePageState extends State<TeacherChildProfilePage> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      floatingActionButton: (_controller.idsLoaded && widget.activitiesForDay.isNotEmpty)
+      floatingActionButton:
+          (_controller.idsLoaded &&
+              widget.activitiesForDay.isNotEmpty &&
+              widget.selectedDate != null &&
+              widget.selectedDate!.year == DateTime.now().year &&
+              widget.selectedDate!.month == DateTime.now().month &&
+              widget.selectedDate!.day == DateTime.now().day)
           ? FloatingActionButton.extended(
               onPressed: _controller.isSaving ? null : _controller.saveAllEvals,
               backgroundColor: TeacherTheme.tealAccent,
@@ -135,6 +142,11 @@ class _TeacherChildProfilePageState extends State<TeacherChildProfilePage> {
               ratedCount: _controller.getRatedCriteriaCount(),
               getCurrentLevel: _controller.getCurrentLevel,
               onLevelSelected: _controller.setActivityLevel,
+              isEditable:
+                  widget.selectedDate != null &&
+                  widget.selectedDate!.year == DateTime.now().year &&
+                  widget.selectedDate!.month == DateTime.now().month &&
+                  widget.selectedDate!.day == DateTime.now().day,
             ),
             const SizedBox(height: 24),
             TeacherChildAiSummarySection(
@@ -155,11 +167,29 @@ class _TeacherChildProfilePageState extends State<TeacherChildProfilePage> {
 
   String _formatDate(DateTime date) {
     const months = [
-      '', 'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
-      'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre',
+      '',
+      'janvier',
+      'février',
+      'mars',
+      'avril',
+      'mai',
+      'juin',
+      'juillet',
+      'août',
+      'septembre',
+      'octobre',
+      'novembre',
+      'décembre',
     ];
     const days = [
-      '', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche',
+      '',
+      'lundi',
+      'mardi',
+      'mercredi',
+      'jeudi',
+      'vendredi',
+      'samedi',
+      'dimanche',
     ];
     return '${days[date.weekday]} ${date.day} ${months[date.month]} ${date.year}';
   }

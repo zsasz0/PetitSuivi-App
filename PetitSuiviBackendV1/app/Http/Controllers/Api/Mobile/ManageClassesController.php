@@ -72,6 +72,13 @@ class ManageClassesController extends Controller
             $students = DB::table('Child')
                 ->join('ChildClass', 'Child.ChildID', '=', 'ChildClass.ChildID')
                 ->where('ChildClass.ClassID', $class->ClassID)
+                ->whereNotExists(function ($query) {
+                    $query->select(DB::raw(1))
+                          ->from('Payment')
+                          ->join('Inscription', 'Payment.InscriptionID', '=', 'Inscription.InscriptionID')
+                          ->whereColumn('Payment.ChildID', 'Child.ChildID')
+                          ->where('Inscription.Isarchived', 1);
+                })
                 ->select(
                     'Child.ChildID as id',
                     'Child.Firstname as first_name',
@@ -123,6 +130,13 @@ class ManageClassesController extends Controller
         $students = DB::table('Child')
             ->join('ChildClass', 'Child.ChildID', '=', 'ChildClass.ChildID')
             ->where('ChildClass.ClassID', $classId)
+            ->whereNotExists(function ($query) {
+                $query->select(DB::raw(1))
+                      ->from('Payment')
+                      ->join('Inscription', 'Payment.InscriptionID', '=', 'Inscription.InscriptionID')
+                      ->whereColumn('Payment.ChildID', 'Child.ChildID')
+                      ->where('Inscription.Isarchived', 1);
+            })
             ->select(
                 'Child.ChildID as id',
                 'Child.Firstname as first_name',

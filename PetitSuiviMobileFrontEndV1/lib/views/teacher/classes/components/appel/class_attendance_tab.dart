@@ -35,10 +35,34 @@ class ClassAttendanceTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.watch<ThemeManager>();
-    const months = ['', 'janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
-    const days = ['', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'];
+    const months = [
+      '',
+      'janvier',
+      'février',
+      'mars',
+      'avril',
+      'mai',
+      'juin',
+      'juillet',
+      'août',
+      'septembre',
+      'octobre',
+      'novembre',
+      'décembre',
+    ];
+    const days = [
+      '',
+      'lundi',
+      'mardi',
+      'mercredi',
+      'jeudi',
+      'vendredi',
+      'samedi',
+      'dimanche',
+    ];
     final dayName = days[selectedDate.weekday];
-    final formattedDate = '$dayName ${selectedDate.day} ${months[selectedDate.month]} ${selectedDate.year}';
+    final formattedDate =
+        '$dayName ${selectedDate.day} ${months[selectedDate.month]} ${selectedDate.year}';
 
     return Column(
       children: [
@@ -52,7 +76,11 @@ class ClassAttendanceTab extends StatelessWidget {
               decoration: TeacherClassesTheme.surfaceCard(borderRadius: 12),
               child: Row(
                 children: [
-                  Icon(Icons.calendar_today, color: TeacherClassesTheme.tealAccent, size: 20),
+                  Icon(
+                    Icons.calendar_today,
+                    color: TeacherClassesTheme.tealAccent,
+                    size: 20,
+                  ),
                   const SizedBox(width: 12),
                   Text(
                     formattedDate,
@@ -64,7 +92,10 @@ class ClassAttendanceTab extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
-                  Icon(Icons.arrow_drop_down, color: TeacherClassesTheme.mutedText.withValues(alpha: 0.5)),
+                  Icon(
+                    Icons.arrow_drop_down,
+                    color: TeacherClassesTheme.mutedText.withValues(alpha: 0.5),
+                  ),
                 ],
               ),
             ),
@@ -74,18 +105,36 @@ class ClassAttendanceTab extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Row(
             children: [
-              _statChip(Icons.people, 'Total', '${attendance.length}', TeacherClassesTheme.indigoAccent),
+              _statChip(
+                Icons.people,
+                'Total',
+                '${attendance.length}',
+                TeacherClassesTheme.indigoAccent,
+              ),
               const SizedBox(width: 10),
-              _statChip(Icons.check_circle, 'Présents', '$presentCount', Colors.greenAccent),
+              _statChip(
+                Icons.check_circle,
+                'Présents',
+                '$presentCount',
+                Colors.greenAccent,
+              ),
               const SizedBox(width: 10),
-              _statChip(Icons.cancel, 'Absents', '$absentCount', Colors.redAccent),
+              _statChip(
+                Icons.cancel,
+                'Absents',
+                '$absentCount',
+                Colors.redAccent,
+              ),
             ],
           ),
         ),
         if (isBusy)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: LinearProgressIndicator(minHeight: 2, color: TeacherClassesTheme.tealAccent),
+            child: LinearProgressIndicator(
+              minHeight: 2,
+              color: TeacherClassesTheme.tealAccent,
+            ),
           ),
         if (errorMessage != null)
           Padding(
@@ -99,7 +148,11 @@ class ClassAttendanceTab extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.error_outline, color: Colors.redAccent, size: 18),
+                  const Icon(
+                    Icons.error_outline,
+                    color: Colors.redAccent,
+                    size: 18,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -114,7 +167,9 @@ class ClassAttendanceTab extends StatelessWidget {
                   if (onRetry != null)
                     TextButton(
                       onPressed: isBusy ? null : onRetry,
-                      style: TextButton.styleFrom(foregroundColor: Colors.redAccent),
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.redAccent,
+                      ),
                       child: const Text('Réessayer'),
                     ),
                 ],
@@ -134,10 +189,16 @@ class ClassAttendanceTab extends StatelessWidget {
                   color: TeacherClassesTheme.surfaceDark,
                   borderRadius: BorderRadius.circular(14),
                   boxShadow: [
-                    BoxShadow(color: ThemeColors.shadow, offset: const Offset(0, 2), blurRadius: 8),
+                    BoxShadow(
+                      color: ThemeColors.shadow,
+                      offset: const Offset(0, 2),
+                      blurRadius: 8,
+                    ),
                   ],
                   border: Border.all(
-                    color: isPresent ? Colors.greenAccent.withValues(alpha: 0.3) : Colors.redAccent.withValues(alpha: 0.3),
+                    color: isPresent
+                        ? Colors.greenAccent.withValues(alpha: 0.3)
+                        : Colors.redAccent.withValues(alpha: 0.3),
                     width: 1.2,
                   ),
                 ),
@@ -145,20 +206,33 @@ class ClassAttendanceTab extends StatelessWidget {
                   color: Colors.transparent,
                   child: InkWell(
                     borderRadius: BorderRadius.circular(14),
-                    onTap: isBusy ? null : () => onToggleAttendance(child.id),
+                    onTap:
+                        (isBusy ||
+                            selectedDate.year != DateTime.now().year ||
+                            selectedDate.month != DateTime.now().month ||
+                            selectedDate.day != DateTime.now().day)
+                        ? null
+                        : () => onToggleAttendance(child.id),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 12,
+                      ),
                       child: Row(
                         children: [
                           CircleAvatar(
                             radius: 20,
-                            backgroundColor: isPresent ? Colors.greenAccent.withValues(alpha: 0.1) : Colors.redAccent.withValues(alpha: 0.1),
+                            backgroundColor: isPresent
+                                ? Colors.greenAccent.withValues(alpha: 0.1)
+                                : Colors.redAccent.withValues(alpha: 0.1),
                             child: Text(
                               '${child.firstName[0]}${child.lastName[0]}',
                               style: TextStyle(
                                 fontFamily: TeacherClassesTheme.fontName,
                                 fontWeight: FontWeight.bold,
-                                color: isPresent ? Colors.greenAccent : Colors.redAccent,
+                                color: isPresent
+                                    ? Colors.greenAccent
+                                    : Colors.redAccent,
                                 fontSize: 14,
                               ),
                             ),
@@ -191,9 +265,14 @@ class ClassAttendanceTab extends StatelessWidget {
                           ),
                           AnimatedContainer(
                             duration: const Duration(milliseconds: 250),
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
                             decoration: BoxDecoration(
-                              color: isPresent ? Colors.greenAccent.withValues(alpha: 0.12) : Colors.redAccent.withValues(alpha: 0.12),
+                              color: isPresent
+                                  ? Colors.greenAccent.withValues(alpha: 0.12)
+                                  : Colors.redAccent.withValues(alpha: 0.12),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Row(
@@ -202,7 +281,9 @@ class ClassAttendanceTab extends StatelessWidget {
                                 Icon(
                                   isPresent ? Icons.check_circle : Icons.cancel,
                                   size: 18,
-                                  color: isPresent ? Colors.greenAccent : Colors.redAccent,
+                                  color: isPresent
+                                      ? Colors.greenAccent
+                                      : Colors.redAccent,
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
@@ -211,7 +292,9 @@ class ClassAttendanceTab extends StatelessWidget {
                                     fontFamily: TeacherClassesTheme.fontName,
                                     fontSize: 13,
                                     fontWeight: FontWeight.w600,
-                                    color: isPresent ? Colors.greenAccent : Colors.redAccent,
+                                    color: isPresent
+                                        ? Colors.greenAccent
+                                        : Colors.redAccent,
                                   ),
                                 ),
                               ],

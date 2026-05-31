@@ -36,7 +36,11 @@ class ClassDetailController {
     required Function(VoidCallback fn) setState,
     required bool Function() isMounted,
   }) async {
-    final requestedDate = DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
+    final requestedDate = DateTime(
+      selectedDate.year,
+      selectedDate.month,
+      selectedDate.day,
+    );
     final defaultAttendance = <String, bool>{
       for (final child in classroom.children) child.id: true,
     };
@@ -48,7 +52,8 @@ class ClassDetailController {
         attendance = defaultAttendance;
         presenceIdByChild = {};
         presenceStatusByChild = {};
-        attendanceError = 'Session invalide ou identifiant de classe incorrect.';
+        attendanceError =
+            'Session invalide ou identifiant de classe incorrect.';
         isLoadingAttendance = false;
       });
       return;
@@ -63,12 +68,20 @@ class ClassDetailController {
     });
 
     try {
-      final response = await TeacherClassesApi.getAttendance(classId, requestedDate.month, requestedDate.year, token);
+      final response = await TeacherClassesApi.getAttendance(
+        classId,
+        requestedDate.month,
+        requestedDate.year,
+        token,
+      );
 
       if (!isMounted() || !context.mounted) {
         return;
       }
-      if (UnauthorizedHandler.handle(context: context, statusCode: response.statusCode)) {
+      if (UnauthorizedHandler.handle(
+        context: context,
+        statusCode: response.statusCode,
+      )) {
         return;
       }
 
@@ -80,10 +93,14 @@ class ClassDetailController {
           ? jsonDecode(response.body) as Map<String, dynamic>
           : <String, dynamic>{};
 
-      if (response.statusCode < 200 || response.statusCode >= 300 || body['data'] is! List) {
+      if (response.statusCode < 200 ||
+          response.statusCode >= 300 ||
+          body['data'] is! List) {
         setState(() {
           isLoadingAttendance = false;
-          attendanceError = body['message']?.toString() ?? 'Impossible de charger les présences.';
+          attendanceError =
+              body['message']?.toString() ??
+              'Impossible de charger les présences.';
         });
         return;
       }
@@ -100,14 +117,22 @@ class ClassDetailController {
         if (date == null || !_isSameDay(date, requestedDate)) continue;
 
         final childRaw = item['child'];
-        String childId = (childRaw is Map) ? (childRaw['id']?.toString() ?? '') : '';
-        childId = childId.isNotEmpty ? childId : (item['child_id']?.toString() ?? '');
-        
+        String childId = (childRaw is Map)
+            ? (childRaw['id']?.toString() ?? '')
+            : '';
+        childId = childId.isNotEmpty
+            ? childId
+            : (item['child_id']?.toString() ?? '');
+
         if (childId.isEmpty || !nextAttendance.containsKey(childId)) continue;
 
         final statusRaw = item['status'];
-        final statusName = statusRaw is Map ? statusRaw['name']?.toString().toLowerCase() : null;
-        if (statusName == null || (statusName != 'present' && statusName != 'absent')) continue;
+        final statusName = statusRaw is Map
+            ? statusRaw['name']?.toString().toLowerCase()
+            : null;
+        if (statusName == null ||
+            (statusName != 'present' && statusName != 'absent'))
+          continue;
 
         final presenceId = int.tryParse(item['id']?.toString() ?? '');
         if (presenceId == null) continue;
@@ -133,10 +158,29 @@ class ClassDetailController {
     }
   }
 
-  void toggleAttendance(String childId, BuildContext context, Function(VoidCallback fn) setState) {
+  void toggleAttendance(
+    String childId,
+    BuildContext context,
+    Function(VoidCallback fn) setState,
+  ) {
     if (isWeekend(selectedDate)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Impossible de marquer la présence le week-end.'), backgroundColor: Colors.orange),
+        const SnackBar(
+          content: Text('Impossible de marquer la présence le week-end.'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+    final now = DateTime.now();
+    if (!_isSameDay(selectedDate, now)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Vous ne pouvez modifier que l\'appel d\'aujourd\'hui.',
+          ),
+          backgroundColor: Colors.orange,
+        ),
       );
       return;
     }
@@ -156,14 +200,32 @@ class ClassDetailController {
 
     if (isWeekend(selectedDate)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Impossible d\'enregistrer la présence le week-end.'), backgroundColor: Colors.orange),
+        const SnackBar(
+          content: Text('Impossible d\'enregistrer la présence le week-end.'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
+    final now = DateTime.now();
+    if (!_isSameDay(selectedDate, now)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Vous ne pouvez modifier que l\'appel d\'aujourd\'hui.',
+          ),
+          backgroundColor: Colors.orange,
+        ),
       );
       return;
     }
 
     final classId = int.tryParse(classroom.id);
     if (token == null || token.isEmpty || classId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Session invalide. Reconnectez-vous.')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Session invalide. Reconnectez-vous.')),
+      );
       return;
     }
 
@@ -197,13 +259,18 @@ class ClassDetailController {
         if (!isMounted() || !context.mounted) {
           return;
         }
-        if (UnauthorizedHandler.handle(context: context, statusCode: response.statusCode)) {
+        if (UnauthorizedHandler.handle(
+          context: context,
+          statusCode: response.statusCode,
+        )) {
           setState(() => isSavingAttendance = false);
           return;
         }
 
         if (response.statusCode >= 200 && response.statusCode < 300) {
-          final body = response.body.isNotEmpty ? jsonDecode(response.body) as Map<String, dynamic> : <String, dynamic>{};
+          final body = response.body.isNotEmpty
+              ? jsonDecode(response.body) as Map<String, dynamic>
+              : <String, dynamic>{};
           final data = body['data'];
           if (data is Map) {
             final createdId = int.tryParse(data['id']?.toString() ?? '');
@@ -220,15 +287,20 @@ class ClassDetailController {
 
       if (existingStatus == desiredStatus) continue;
 
-      final response = await TeacherClassesApi.putAttendance(classId, existingPresenceId, {
-        'date': dateString,
-        'status': desiredStatus,
-      }, token);
+      final response = await TeacherClassesApi.putAttendance(
+        classId,
+        existingPresenceId,
+        {'date': dateString, 'status': desiredStatus},
+        token,
+      );
 
       if (!isMounted() || !context.mounted) {
         return;
       }
-      if (UnauthorizedHandler.handle(context: context, statusCode: response.statusCode)) {
+      if (UnauthorizedHandler.handle(
+        context: context,
+        statusCode: response.statusCode,
+      )) {
         setState(() => isSavingAttendance = false);
         return;
       }
@@ -249,17 +321,33 @@ class ClassDetailController {
     if (failures.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Présence enregistrée avec succès !', style: TextStyle(fontFamily: TeacherClassesTheme.fontName)),
+          content: Text(
+            'Présence enregistrée avec succès !',
+            style: TextStyle(fontFamily: TeacherClassesTheme.fontName),
+          ),
           backgroundColor: Colors.green,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(failures.first), backgroundColor: Colors.redAccent));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(failures.first),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
     }
 
-    await loadAttendance(context: context, classroom: classroom, token: token, setState: setState, isMounted: isMounted);
+    await loadAttendance(
+      context: context,
+      classroom: classroom,
+      token: token,
+      setState: setState,
+      isMounted: isMounted,
+    );
   }
 
   Future<void> pickDate({
@@ -270,10 +358,13 @@ class ClassDetailController {
     required bool Function() isMounted,
   }) async {
     final DateTime now = DateTime.now();
-    final DateTime firstDate = classroom.planning?.startDate ?? DateTime(now.year - 1, now.month, now.day);
+    final DateTime firstDate =
+        classroom.planning?.startDate ??
+        DateTime(now.year - 1, now.month, now.day);
     DateTime lastDate = classroom.planning?.endDate ?? now;
 
-    if (lastDate.isBefore(firstDate)) lastDate = firstDate.add(const Duration(days: 365));
+    if (lastDate.isBefore(firstDate))
+      lastDate = firstDate.add(const Duration(days: 365));
 
     DateTime initial = selectedDate;
     if (initial.isBefore(firstDate)) {
@@ -311,11 +402,18 @@ class ClassDetailController {
     if (picked != null) {
       setState(() => selectedDate = picked);
       if (!context.mounted) return;
-      await loadAttendance(context: context, classroom: classroom, token: token, setState: setState, isMounted: isMounted);
+      await loadAttendance(
+        context: context,
+        classroom: classroom,
+        token: token,
+        setState: setState,
+        isMounted: isMounted,
+      );
     }
   }
 
-  bool _isSameDay(DateTime a, DateTime b) => a.year == b.year && a.month == b.month && a.day == b.day;
+  bool _isSameDay(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month && a.day == b.day;
 
   String _formatDate(DateTime date) {
     final month = date.month.toString().padLeft(2, '0');
@@ -328,7 +426,8 @@ class ClassDetailController {
       try {
         final body = jsonDecode(responseBody) as Map<String, dynamic>;
         final message = body['message']?.toString();
-        if (message != null && message.isNotEmpty) return '$childName: $message';
+        if (message != null && message.isNotEmpty)
+          return '$childName: $message';
       } catch (_) {}
     }
     return '$childName: erreur lors de l\'enregistrement.';

@@ -181,13 +181,55 @@ class ClassEvaluationController {
       if (data is Map && data['students'] is List) {
         for (final item in data['students'] as List) {
           if (item is Map<String, dynamic>) {
-            parsed.add(ClassStudent.fromJson(item));
+            bool isArchived =
+                item['is_archived'] == true ||
+                item['is_archived'] == 1 ||
+                item['isArchived'] == true ||
+                item['isArchived'] == 1;
+
+            final inscriptions = item['inscriptions'];
+            if (inscriptions is List && inscriptions.isNotEmpty) {
+              final lastInscription = inscriptions.last;
+              if (lastInscription is Map) {
+                if (lastInscription['is_archived'] == true ||
+                    lastInscription['is_archived'] == 1 ||
+                    lastInscription['isArchived'] == true ||
+                    lastInscription['isArchived'] == 1) {
+                  isArchived = true;
+                }
+              }
+            }
+
+            if (!isArchived) {
+              parsed.add(ClassStudent.fromJson(item));
+            }
           }
         }
       } else if (data is List) {
         for (final item in data) {
           if (item is Map<String, dynamic>) {
-            parsed.add(ClassStudent.fromJson(item));
+            bool isArchived =
+                item['is_archived'] == true ||
+                item['is_archived'] == 1 ||
+                item['isArchived'] == true ||
+                item['isArchived'] == 1;
+
+            final inscriptions = item['inscriptions'];
+            if (inscriptions is List && inscriptions.isNotEmpty) {
+              final lastInscription = inscriptions.last;
+              if (lastInscription is Map) {
+                if (lastInscription['is_archived'] == true ||
+                    lastInscription['is_archived'] == 1 ||
+                    lastInscription['isArchived'] == true ||
+                    lastInscription['isArchived'] == 1) {
+                  isArchived = true;
+                }
+              }
+            }
+
+            if (!isArchived) {
+              parsed.add(ClassStudent.fromJson(item));
+            }
           }
         }
       }
@@ -308,7 +350,23 @@ class ClassEvaluationController {
     int criteriaId,
     CriteriaEvalStatus tapped,
     Function(VoidCallback fn) setState,
+    DateTime selectedDate,
+    BuildContext context,
   ) {
+    final now = DateTime.now();
+    if (selectedDate.year != now.year ||
+        selectedDate.month != now.month ||
+        selectedDate.day != now.day) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Vous ne pouvez modifier que les évaluations d\'aujourd\'hui.',
+          ),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
     final key = evalKey(studentId, activityId, criteriaId);
     final current = pending[key];
     setState(() => pending[key] = (current == tapped) ? null : tapped);
@@ -322,6 +380,21 @@ class ClassEvaluationController {
     required Function(VoidCallback fn) setState,
     required bool Function() isMounted,
   }) async {
+    final now = DateTime.now();
+    if (selectedDate.year != now.year ||
+        selectedDate.month != now.month ||
+        selectedDate.day != now.day) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Vous ne pouvez modifier que les évaluations d\'aujourd\'hui.',
+          ),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
     final evaluations = [];
     pending.forEach((key, status) {
       if (status != null) {

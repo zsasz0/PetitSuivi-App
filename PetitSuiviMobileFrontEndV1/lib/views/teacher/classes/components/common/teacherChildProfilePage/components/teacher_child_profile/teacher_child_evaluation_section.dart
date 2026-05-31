@@ -13,6 +13,7 @@ class TeacherChildEvaluationSection extends StatelessWidget {
   final int ratedCount;
   final CompetencyLevel? Function(DailyClassActivity, String) getCurrentLevel;
   final Function(DailyClassActivity, String, CompetencyLevel) onLevelSelected;
+  final bool isEditable;
 
   const TeacherChildEvaluationSection({
     super.key,
@@ -22,6 +23,7 @@ class TeacherChildEvaluationSection extends StatelessWidget {
     required this.ratedCount,
     required this.getCurrentLevel,
     required this.onLevelSelected,
+    this.isEditable = true,
   });
 
   @override
@@ -89,7 +91,7 @@ class TeacherChildEvaluationSection extends StatelessWidget {
             (a) => TeacherChildActivityCard(
               activity: a,
               getCurrentLevel: getCurrentLevel,
-              onLevelSelected: onLevelSelected,
+              onLevelSelected: isEditable ? onLevelSelected : (a, c, l) {},
             ),
           ),
       ],
