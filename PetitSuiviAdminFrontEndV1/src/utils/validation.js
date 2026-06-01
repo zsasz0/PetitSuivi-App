@@ -199,10 +199,10 @@ export const validateOptionalGenericString = (str, fieldName = "Ce champ") => {
  */
 export const validateTeacherForm = (data, isEdit = false) => {
     const errors = {};
-    if (!isEdit) {
-        const cinError = validateCin(data.cin);
-        if (cinError) errors.cin = cinError;
+    const cinError = validateCin(data.cin);
+    if (cinError) errors.cin = cinError;
 
+    if (!isEdit) {
         const addressError = validateGenericString(data.adresse, "L'adresse");
         if (addressError) errors.adresse = addressError;
     } else {
@@ -238,10 +238,8 @@ export const validateTeacherForm = (data, isEdit = false) => {
  */
 export const validateParentForm = (data, isEdit = false) => {
     const errors = {};
-    if (!isEdit) {
-        const cinError = validateCin(data.cin);
-        if (cinError) errors.cin = cinError;
-    }
+    const cinError = validateCin(data.cin);
+    if (cinError) errors.cin = cinError;
 
     const addressError = validateOptionalGenericString(data.adresse, "L'adresse");
     if (addressError) errors.adresse = addressError;

@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Typography, TextField } from "@mui/material";
-import { getLabel } from "../utils/parametersUtils";
+import { getLabel, isNameField, isValidNameValue } from "../utils/parametersUtils";
 
 export const SettingsGroupCard = ({ title, description, params, columns = 2, colors, styles, handleChange, getInputType, sanitizeNumericInput }) => {
   if (params.length === 0) return null;
@@ -12,9 +12,13 @@ export const SettingsGroupCard = ({ title, description, params, columns = 2, col
       <Box display="grid" gridTemplateColumns={{ xs: "1fr", md: `repeat(${columns}, minmax(0, 1fr))` }} gap="16px" sx={{ flex: 1, alignItems: "start" }}>
         {params.map((param) => {
           const isNumber = getInputType(param.name) === "number";
-          const isValid = !isNumber || /^\d*\.?\d*$/.test(param.value);
+          const isName = isNameField(param.name);
+          const numValid = !isNumber || /^\d*\.?\d*$/.test(param.value);
+          const nameValid = !isName || isValidNameValue(param.value);
+          const isValid = numValid && nameValid;
           const normalized = String(param.name).toLowerCase();
           const span = normalized.includes("address") || normalized.includes("adresse") ? { xs: "span 1", md: "span 2" } : { xs: "span 1", md: "span 1" };
+          const helperText = !numValid ? "Seuls les nombres positifs sont autorisés" : !nameValid ? "Ce champ doit contenir uniquement des lettres et des espaces." : " ";
           return (
             <Box key={param.id} gridColumn={span}>
               <TextField
@@ -25,7 +29,7 @@ export const SettingsGroupCard = ({ title, description, params, columns = 2, col
                 type={isNumber ? "text" : getInputType(param.name)}
                 fullWidth
                 error={!isValid}
-                helperText={!isValid ? "Seuls les nombres positifs sont autorisés" : " "}
+                helperText={helperText}
                 InputLabelProps={{ shrink: true }}
                 sx={styles.field}
                 inputProps={isNumber ? { inputMode: "decimal", pattern: "[0-9.]*" } : undefined}

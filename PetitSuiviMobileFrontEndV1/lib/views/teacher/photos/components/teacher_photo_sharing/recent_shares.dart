@@ -83,15 +83,6 @@ class RecentShares extends StatelessWidget {
                   ),
                 ),
                 isThreeLine: true,
-                trailing: IconButton(
-                  icon: Icon(
-                    Icons.delete_outline,
-                    color: PhotosTheme.accentRed.withValues(alpha: 0.8),
-                    size: 20,
-                  ),
-                  onPressed: () => controller.deletePhoto(photoId),
-                  tooltip: 'Supprimer',
-                ),
               ),
             );
           }),

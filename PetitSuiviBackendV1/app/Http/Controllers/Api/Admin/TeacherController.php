@@ -98,12 +98,14 @@ class TeacherController extends Controller
     public function store(Request $request): JsonResponse
     {
         $request->validate([
-            'cin' => 'required|integer|unique:Account,Cin',
+            'cin' => 'required|integer|digits:8|unique:Account,Cin',
             'firstName' => 'required|string|max:255',
             'lastName' => 'required|string|max:255',
             'email' => ['required', 'email', 'max:255', AccountEmailUniqueness::validationRule()],
             'adresse' => 'required|string|max:255',
             'password' => 'required|string|min:6|confirmed',
+        ], [
+            'cin.digits' => 'Le CIN doit comporter exactement 8 chiffres.',
         ]);
 
         try {
@@ -194,11 +196,13 @@ class TeacherController extends Controller
         $account = Account::where('Cin', $cin)->where('RoleID', 1)->firstOrFail();
 
         $request->validate([
-            'cin' => 'required|integer|unique:Account,Cin,' . $account->AccountID . ',AccountID',
+            'cin' => 'required|integer|digits:8|unique:Account,Cin,' . $account->AccountID . ',AccountID',
             'firstName' => 'required|string|max:255',
             'lastName' => 'required|string|max:255',
             'email' => ['required', 'email', 'max:255', AccountEmailUniqueness::validationRule($account->AccountID)],
             'password' => 'nullable|string|min:6|confirmed',
+        ], [
+            'cin.digits' => 'Le CIN doit comporter exactement 8 chiffres.',
         ]);
 
         $updateData = [

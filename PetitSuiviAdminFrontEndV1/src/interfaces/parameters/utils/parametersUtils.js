@@ -124,6 +124,26 @@ export function getInputType(name) {
 }
 
 /**
+ * Checks if a parameter is a name field that should only contain letters and spaces.
+ * @param {string} name - Parameter name.
+ * @returns {boolean} True if the parameter is a name field.
+ */
+export function isNameField(name) {
+  const normalized = String(name).toLowerCase();
+  return normalized === "director_name" || (normalized.includes("director") && normalized.includes("name"));
+}
+
+/**
+ * Validates a name field value (letters and spaces only).
+ * @param {string} value - The input value.
+ * @returns {boolean} True if valid.
+ */
+export function isValidNameValue(value) {
+  if (!value || String(value).trim() === '') return true;
+  return /^[\p{L} ]+$/u.test(String(value));
+}
+
+/**
  * Sanitizes numeric input to allow only digits and a single decimal point.
  * @param {string|number} value - The input value.
  * @returns {string} Sanitized numeric string.

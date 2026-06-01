@@ -63,6 +63,7 @@ class ManageClassesController extends Controller
             ->join('TeacherClass', 'Class.ClassID', '=', 'TeacherClass.ClassID')
             ->where('TeacherClass.TeacherID', $teacherId)
             ->where('Class.PlanningID', $planning->PlanningID)
+            ->where('Class.Isarchived', 0)
             ->select('Class.ClassID', 'Class.Name')
             ->get();
 

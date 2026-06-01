@@ -126,7 +126,7 @@ class ParentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'cin' => 'required|numeric|unique:Account,Cin',
+            'cin' => 'required|numeric|digits:8|unique:Account,Cin',
             'firstName' => 'required|string|max:255',
             'lastName' => 'required|string|max:255',
             'birthdate' => 'nullable|date',
@@ -138,6 +138,8 @@ class ParentController extends Controller
             'children.*.firstName' => 'required|string|max:255',
             'children.*.lastName' => 'required|string|max:255',
             'children.*.birthdate' => 'nullable|date',
+        ], [
+            'cin.digits' => 'Le CIN doit comporter exactement 8 chiffres.',
         ]);
 
         DB::beginTransaction();
@@ -238,7 +240,7 @@ class ParentController extends Controller
         }
 
         $request->validate([
-            'cin' => 'required|numeric|unique:Account,Cin,' . $account->AccountID . ',AccountID',
+            'cin' => 'required|numeric|digits:8|unique:Account,Cin,' . $account->AccountID . ',AccountID',
             'firstName' => 'required|string|max:255',
             'lastName' => 'required|string|max:255',
             'birthdate' => 'nullable|date',
@@ -246,6 +248,8 @@ class ParentController extends Controller
             'email' => ['required', 'email', 'max:255', AccountEmailUniqueness::validationRule($account->AccountID)],
             'adresse' => 'nullable|string',
             'password' => 'nullable|string|min:6|confirmed',
+        ], [
+            'cin.digits' => 'Le CIN doit comporter exactement 8 chiffres.',
         ]);
 
         $account->Cin = $request->cin;

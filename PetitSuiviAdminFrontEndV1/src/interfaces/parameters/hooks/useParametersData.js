@@ -4,6 +4,8 @@ import {
   HIDDEN_PARAMS,
   getParamCategory,
   getInputType,
+  isNameField,
+  isValidNameValue,
 } from "../utils/parametersUtils";
 
 export const useParametersData = ({ ui, planningsData }) => {
@@ -68,7 +70,9 @@ export const useParametersData = ({ ui, planningsData }) => {
 
   const hasParamValidationError = visibleParams.some((p) => {
     const isNumber = getInputType(p.name) === "number";
-    return isNumber && !/^\d*\.?\d*$/.test(p.value);
+    if (isNumber && !/^\d*\.?\d*$/.test(p.value)) return true;
+    if (isNameField(p.name) && !isValidNameValue(p.value)) return true;
+    return false;
   });
 
   const handleChange = (id, newValue) => {
