@@ -275,44 +275,6 @@ Authenticated (Sanctum) groups cover:
 
 Full request/response documentation: [`PetitSuiviBackendV1/docs/BACKEND_API.md`](PetitSuiviBackendV1/docs/BACKEND_API.md).
 
----
-
-## Repository layout
-
-```text
-PetitSuivi-App/
-â”œâ”€â”€ PetitSuiviBackendV1/          Laravel API
-â”‚   â”œâ”€â”€ app/Http/Controllers/Api/  Admin Â· Mobile/{Parent,Teacher} Â· Auth controllers
-â”‚   â”œâ”€â”€ app/Models/                ~55 Eloquent models
-â”‚   â”œâ”€â”€ routes/                    api.php Â· admin.php Â· teacher.php
-â”‚   â”œâ”€â”€ database/                  minimal migrations + seeders
-â”‚   â”œâ”€â”€ docs/BACKEND_API.md        Scribe-generated API reference
-â”‚   â””â”€â”€ Dockerfile, docker/entrypoint.sh
-â”œâ”€â”€ PetitSuiviAdminFrontEndV1/    React admin dashboard
-â”‚   â”œâ”€â”€ src/interfaces/            feature slices: dashboard Â· classes Â· inscriptions Â·
-â”‚   â”‚                              events Â· activities Â· food Â· payments Â· reports Â· ...
-â”‚   â”œâ”€â”€ src/components/            shared Header, StatBox, ProgressCircle
-â”‚   â”œâ”€â”€ src/context/               AuthContext
-â”‚   â”œâ”€â”€ nginx.conf                 SPA fallback config
-â”‚   â””â”€â”€ Dockerfile.prod
-â”œâ”€â”€ PetitSuiviMobileFrontEndV1/  Flutter parent + teacher app
-â”‚   â”œâ”€â”€ lib/models/                data models
-â”‚   â”œâ”€â”€ lib/services/              notifications, photos, evaluations
-â”‚   â”œâ”€â”€ lib/views/{auth,intro,parent,teacher,shared,themes}
-â”‚   â””â”€â”€ Dockerfile                 builds Flutter web bundle
-â”œâ”€â”€ copilot-api/                  GitHub Copilot -> OpenAI-compatible proxy (Bun)
-â”œâ”€â”€ scripts/                      deploy.sh Â· cloudflared-control.sh
-â”œâ”€â”€ deploy/systemd/               petitsuivi-app.service
-â”œâ”€â”€ .github/workflows/deploy.yml  CI/CD
-â”œâ”€â”€ docker-compose.yml            full local/production stack
-â”œâ”€â”€ switch_env.sh                 switch local/prod API URLs across apps
-â”œâ”€â”€ bkpetitsuivi8.sql             database dump (authoritative schema)
-â”œâ”€â”€ main.pdf                      project report
-â”œâ”€â”€ domainev3.jpg                 domain diagram
-â””â”€â”€ cas d'utilisationv3.jpg       use-case diagram
-```
-
----
 
 ## Design documentation
 
