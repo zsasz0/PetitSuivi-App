@@ -1,4 +1,4 @@
-﻿# PetitSuivi
+# PetitSuivi
 
 **PetitSuivi** is a daycare / kindergarten management platform. It covers the full daily life of a childcare centre: children, classes, inscriptions (enrolment) and approvals, attendance, meals and dietary exceptions, activities and planning, competency evaluations, photo sharing, payments, events and notifications â€” for **administrators**, **teachers** and **parents**.
 
@@ -280,15 +280,15 @@ Full request/response documentation: [`PetitSuiviBackendV1/docs/BACKEND_API.md`]
 
 ### Class diagram
 
-![Class diagram](images/class%20diagram.png)
+![Class diagram](<images/class diagram.png>)
 
 ### Use-case diagram
 
-![Use-case diagram](images/use%20case%20diag.png)
+![Use-case diagram](<images/use case diag.png>)
 
 ### Architecture layers
 
-![Architecture layers](images/arch.png)
+![Architecture layers](<images/arch.png>)
 
 ### Further reading
 
