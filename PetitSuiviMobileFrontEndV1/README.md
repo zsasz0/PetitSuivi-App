@@ -1,16 +1,49 @@
-# newv
+# PetitSuivi Mobile
 
-A new Flutter project.
+Flutter app for **PetitSuivi**, the daycare management platform. One codebase, two roles: **parents** and **teachers**.
 
-## Getting Started
+## Requirements
 
-This project is a starting point for a Flutter application.
+- Flutter SDK **3.38+** (Dart 3.10+)
+- Android Studio or Xcode for device builds
 
-A few resources to get you started if this is your first Flutter project:
+## Setup
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+```bash
+flutter pub get
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Point the app at your backend with `--dart-define`:
+
+```bash
+flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8000   # Android emulator
+flutter run --dart-define=API_BASE_URL=http://localhost:8000  # iOS simulator / desktop
+```
+
+The default is `https://api.petitsuivi.me` (set in `lib/utils/api_constants.dart`).
+
+Web build:
+
+```bash
+flutter build web --release --dart-define=API_BASE_URL=https://api.petitsuivi.me
+```
+
+## Structure
+
+```text
+lib/
+├── main.dart
+├── l10n/          French localization (.arb)
+├── models/        child, payment, evaluation, planning, notification, ...
+├── services/      notifications, photos, evaluations, auth session
+├── utils/         API constants, unauthorized handler
+└── views/
+    ├── auth/      login + multi-step registration
+    ├── intro/     splash + onboarding
+    ├── parent/    home, child tracking, payments, photos, profile, notifications
+    ├── teacher/   home, classes, activities, photos, profile, notifications
+    ├── shared/    combined home shell, event details, support
+    └── themes/    app theme + theme manager
+```
+
+Each feature folder follows `apis / components / controllers / themes`.
