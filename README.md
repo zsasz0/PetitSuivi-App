@@ -1,15 +1,15 @@
-# PetitSuivi
+﻿# PetitSuivi
 
-**PetitSuivi** is a daycare / kindergarten management platform. It covers the full daily life of a childcare centre: children, classes, inscriptions (enrolment) and approvals, attendance, meals and dietary exceptions, activities and planning, competency evaluations, photo sharing, payments, events and notifications — for **administrators**, **teachers** and **parents**.
+**PetitSuivi** is a daycare / kindergarten management platform. It covers the full daily life of a childcare centre: children, classes, inscriptions (enrolment) and approvals, attendance, meals and dietary exceptions, activities and planning, competency evaluations, photo sharing, payments, events and notifications â€” for **administrators**, **teachers** and **parents**.
 
 The repository is a monorepo containing four services, orchestrated with Docker Compose:
 
 | Module | Stack | Dev port | Role |
 | --- | --- | --- | --- |
-| [`PetitSuiviBackendV1`](PetitSuiviBackendV1) | Laravel 13 · PHP 8.3+ · Sanctum | `8000` | REST API shared by the admin and mobile apps |
-| [`PetitSuiviAdminFrontEndV1`](PetitSuiviAdminFrontEndV1) | React 18 · MUI 5 · CRA · axios | `5000` | Admin / staff web dashboard |
-| [`PetitSuiviMobileFrontEndV1`](PetitSuiviMobileFrontEndV1) | Flutter 3 · Dart · Provider | — | Parent + teacher mobile app (Android, iOS, web, desktop) |
-| [`copilot-api`](copilot-api) | Bun · TypeScript | `4141` | GitHub Copilot → OpenAI-compatible proxy used for AI features |
+| [`PetitSuiviBackendV1`](PetitSuiviBackendV1) | Laravel 13 Â· PHP 8.3+ Â· Sanctum | `8000` | REST API shared by the admin and mobile apps |
+| [`PetitSuiviAdminFrontEndV1`](PetitSuiviAdminFrontEndV1) | React 18 Â· MUI 5 Â· CRA Â· axios | `5000` | Admin / staff web dashboard |
+| [`PetitSuiviMobileFrontEndV1`](PetitSuiviMobileFrontEndV1) | Flutter 3 Â· Dart Â· Provider | â€” | Parent + teacher mobile app (Android, iOS, web, desktop) |
+| [`copilot-api`](copilot-api) | Bun Â· TypeScript | `4141` | GitHub Copilot â†’ OpenAI-compatible proxy used for AI features |
 
 Supporting services: **MySQL 8.4** (`3307`) and **phpMyAdmin** (`8081`).
 
@@ -56,9 +56,9 @@ Production runs at **https://petitsuivi.me** (dashboard) and **https://api.petit
 
 The backend splits its routes by audience:
 
-- `routes/api.php` — public auth, shared endpoints, and the parent + teacher mobile API (Sanctum-protected).
-- `routes/admin.php` — admin dashboard API under `/api/admin`.
-- `routes/teacher.php` — teacher API under `/api/teacher`.
+- `routes/api.php` â€” public auth, shared endpoints, and the parent + teacher mobile API (Sanctum-protected).
+- `routes/admin.php` â€” admin dashboard API under `/api/admin`.
+- `routes/teacher.php` â€” teacher API under `/api/teacher`.
 
 AI-assisted features (activity suggestions, behavioural summaries, report analysis) call the `copilot-api` service through `COPILOT_API_URL`.
 
@@ -103,7 +103,7 @@ COPILOT_API_URL=http://copilot:4141
 GH_TOKEN=            # required by copilot-api for AI features
 ```
 
-> The mobile app is **not** part of `docker-compose.yml`. Its `Dockerfile` builds a Flutter **web** bundle served by nginx and accepts `API_BASE_URL` as a build arg — add it as an extra Compose service if you want the web build in the stack.
+> The mobile app is **not** part of `docker-compose.yml`. Its `Dockerfile` builds a Flutter **web** bundle served by nginx and accepts `API_BASE_URL` as a build arg â€” add it as an extra Compose service if you want the web build in the stack.
 
 Stop the stack with `docker compose down` (add `-v` to drop the MySQL and copilot volumes).
 
@@ -130,7 +130,7 @@ php artisan serve --host=0.0.0.0 --port=8000
 Notes:
 
 - `.env.example` defaults to **SQLite**; the Docker stack overrides it to MySQL.
-- Only two migration files are committed — the authoritative schema is the SQL dump (see [Database](#database)).
+- Only two migration files are committed â€” the authoritative schema is the SQL dump (see [Database](#database)).
 - API docs are generated with **Scribe** and committed to [`docs/BACKEND_API.md`](PetitSuiviBackendV1/docs/BACKEND_API.md). Regenerate with `php artisan scribe:generate`.
 - Code style: `vendor/bin/pint`. Tests: `php artisan test`.
 
@@ -154,7 +154,7 @@ npm start      # dev server on http://localhost:5000
 npm run build  # production build into build/
 ```
 
-In production the build is served by nginx using `nginx.conf` (SPA fallback to `index.html`) — see `Dockerfile.prod`. The API URL is baked in at build time via the `REACT_APP_API_URL` build arg.
+In production the build is served by nginx using `nginx.conf` (SPA fallback to `index.html`) â€” see `Dockerfile.prod`. The API URL is baked in at build time via the `REACT_APP_API_URL` build arg.
 
 ### Mobile app (`PetitSuiviMobileFrontEndV1`)
 
@@ -224,10 +224,10 @@ phpMyAdmin is available at http://localhost:8081 for browsing and editing data.
 
 It updates:
 
-- `PetitSuiviAdminFrontEndV1/.env` → `REACT_APP_API_URL`
-- root `.env` → `APP_URL`, `FRONTEND_URL`, `REACT_APP_API_URL`
-- `PetitSuiviMobileFrontEndV1/lib/utils/api_constants.dart` → `baseUrl`
-- `PetitSuiviBackendV1/.env` → `APP_URL`
+- `PetitSuiviAdminFrontEndV1/.env` â†’ `REACT_APP_API_URL`
+- root `.env` â†’ `APP_URL`, `FRONTEND_URL`, `REACT_APP_API_URL`
+- `PetitSuiviMobileFrontEndV1/lib/utils/api_constants.dart` â†’ `baseUrl`
+- `PetitSuiviBackendV1/.env` â†’ `APP_URL`
 
 Bash (Git Bash / WSL / Linux) is required on Windows.
 
@@ -268,10 +268,10 @@ Authentication uses **Laravel Sanctum** bearer tokens. Public endpoints:
 
 Authenticated (Sanctum) groups cover:
 
-- **Shared** — `/logout`, `/me`, classes & activities, attendance (`/classes/{id}/presences`), evaluations, signalements, child AI summaries.
-- **Parent** — `/parents/{cin}/children`, re-registration, profile, payments, child presences, photos, pickup notifications, notification inbox + unread counts, password change.
-- **Admin** — see `routes/admin.php`.
-- **Teacher** — see `routes/teacher.php`.
+- **Shared** â€” `/logout`, `/me`, classes & activities, attendance (`/classes/{id}/presences`), evaluations, signalements, child AI summaries.
+- **Parent** â€” `/parents/{cin}/children`, re-registration, profile, payments, child presences, photos, pickup notifications, notification inbox + unread counts, password change.
+- **Admin** â€” see `routes/admin.php`.
+- **Teacher** â€” see `routes/teacher.php`.
 
 Full request/response documentation: [`PetitSuiviBackendV1/docs/BACKEND_API.md`](PetitSuiviBackendV1/docs/BACKEND_API.md).
 
@@ -281,46 +281,57 @@ Full request/response documentation: [`PetitSuiviBackendV1/docs/BACKEND_API.md`]
 
 ```text
 PetitSuivi-App/
-├── PetitSuiviBackendV1/          Laravel API
-│   ├── app/Http/Controllers/Api/  Admin · Mobile/{Parent,Teacher} · Auth controllers
-│   ├── app/Models/                ~55 Eloquent models
-│   ├── routes/                    api.php · admin.php · teacher.php
-│   ├── database/                  minimal migrations + seeders
-│   ├── docs/BACKEND_API.md        Scribe-generated API reference
-│   └── Dockerfile, docker/entrypoint.sh
-├── PetitSuiviAdminFrontEndV1/    React admin dashboard
-│   ├── src/interfaces/            feature slices: dashboard · classes · inscriptions ·
-│   │                              events · activities · food · payments · reports · ...
-│   ├── src/components/            shared Header, StatBox, ProgressCircle
-│   ├── src/context/               AuthContext
-│   ├── nginx.conf                 SPA fallback config
-│   └── Dockerfile.prod
-├── PetitSuiviMobileFrontEndV1/  Flutter parent + teacher app
-│   ├── lib/models/                data models
-│   ├── lib/services/              notifications, photos, evaluations
-│   ├── lib/views/{auth,intro,parent,teacher,shared,themes}
-│   └── Dockerfile                 builds Flutter web bundle
-├── copilot-api/                  GitHub Copilot -> OpenAI-compatible proxy (Bun)
-├── scripts/                      deploy.sh · cloudflared-control.sh
-├── deploy/systemd/               petitsuivi-app.service
-├── .github/workflows/deploy.yml  CI/CD
-├── docker-compose.yml            full local/production stack
-├── switch_env.sh                 switch local/prod API URLs across apps
-├── bkpetitsuivi8.sql             database dump (authoritative schema)
-├── main.pdf                      project report
-├── domainev3.jpg                 domain diagram
-└── cas d'utilisationv3.jpg       use-case diagram
+â”œâ”€â”€ PetitSuiviBackendV1/          Laravel API
+â”‚   â”œâ”€â”€ app/Http/Controllers/Api/  Admin Â· Mobile/{Parent,Teacher} Â· Auth controllers
+â”‚   â”œâ”€â”€ app/Models/                ~55 Eloquent models
+â”‚   â”œâ”€â”€ routes/                    api.php Â· admin.php Â· teacher.php
+â”‚   â”œâ”€â”€ database/                  minimal migrations + seeders
+â”‚   â”œâ”€â”€ docs/BACKEND_API.md        Scribe-generated API reference
+â”‚   â””â”€â”€ Dockerfile, docker/entrypoint.sh
+â”œâ”€â”€ PetitSuiviAdminFrontEndV1/    React admin dashboard
+â”‚   â”œâ”€â”€ src/interfaces/            feature slices: dashboard Â· classes Â· inscriptions Â·
+â”‚   â”‚                              events Â· activities Â· food Â· payments Â· reports Â· ...
+â”‚   â”œâ”€â”€ src/components/            shared Header, StatBox, ProgressCircle
+â”‚   â”œâ”€â”€ src/context/               AuthContext
+â”‚   â”œâ”€â”€ nginx.conf                 SPA fallback config
+â”‚   â””â”€â”€ Dockerfile.prod
+â”œâ”€â”€ PetitSuiviMobileFrontEndV1/  Flutter parent + teacher app
+â”‚   â”œâ”€â”€ lib/models/                data models
+â”‚   â”œâ”€â”€ lib/services/              notifications, photos, evaluations
+â”‚   â”œâ”€â”€ lib/views/{auth,intro,parent,teacher,shared,themes}
+â”‚   â””â”€â”€ Dockerfile                 builds Flutter web bundle
+â”œâ”€â”€ copilot-api/                  GitHub Copilot -> OpenAI-compatible proxy (Bun)
+â”œâ”€â”€ scripts/                      deploy.sh Â· cloudflared-control.sh
+â”œâ”€â”€ deploy/systemd/               petitsuivi-app.service
+â”œâ”€â”€ .github/workflows/deploy.yml  CI/CD
+â”œâ”€â”€ docker-compose.yml            full local/production stack
+â”œâ”€â”€ switch_env.sh                 switch local/prod API URLs across apps
+â”œâ”€â”€ bkpetitsuivi8.sql             database dump (authoritative schema)
+â”œâ”€â”€ main.pdf                      project report
+â”œâ”€â”€ domainev3.jpg                 domain diagram
+â””â”€â”€ cas d'utilisationv3.jpg       use-case diagram
 ```
 
 ---
 
 ## Design documentation
 
-- [`images/class diagram.png`](images/class%20diagram.png) — class diagram
-- [`images/use case diag.png`](images/use%20case%20diag.png) — use-case diagram
-- [`images/arch.png`](images/arch.png) — architecture layers
-- [`main.pdf`](main.pdf) — full project report
-- [`PetitSuiviBackendV1/docs/BACKEND_API.md`](PetitSuiviBackendV1/docs/BACKEND_API.md) — API reference
+### Class diagram
+
+![Class diagram](images/class%20diagram.png)
+
+### Use-case diagram
+
+![Use-case diagram](images/use%20case%20diag.png)
+
+### Architecture layers
+
+![Architecture layers](images/arch.png)
+
+### Further reading
+
+- [`main.pdf`](main.pdf) - full project report
+- [`PetitSuiviBackendV1/docs/BACKEND_API.md`](PetitSuiviBackendV1/docs/BACKEND_API.md) - API reference
 
 ---
 
